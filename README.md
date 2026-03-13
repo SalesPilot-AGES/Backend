@@ -1,92 +1,61 @@
-# Backend
+# Sales Pilot - Guia de Arquitetura do Backend
 
+Bem-vindo ao backend do Sales Pilot! Este projeto é construído utilizando os princípios da **Clean Architecture** (Arquitetura Limpa) combinados com os padrões de design **SOLID**.
 
+Nosso principal objetivo é manter uma base de código altamente desacoplada, testável e de fácil manutenção, onde a lógica de negócios seja completamente isolada dos detalhes de implementação técnica (como banco de dados, frameworks ou APIs externas).
 
-## Getting started
+## Fluxo de Dependências
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+A regra mais crítica dessa arquitetura é a **Regra de Dependência**: as dependências do código-fonte devem apontar *apenas* para dentro, em direção ao Domínio (Domain).
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Camadas internas não sabem **nada** sobre as camadas externas. Camadas externas são mecanismos; camadas internas são políticas/regras.
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+```text
+┌───────────────────┐       ┌────────────────────────┐
+│   Presentation    │       │     Infrastructure     │
+│  (Controllers)    │       │  (JPA, External APIs)  │
+└────────┬──────────┘       └──────────┬─────────────┘
+         │                             │
+         ↓                             ↓
+┌───────────────────────────────────────────────┐
+│       Application (Use Cases, DTOs)           │
+└───────────────────────┬───────────────────────┘
+                        │
+                        ↓
+┌───────────────────────────────────────────────┐
+│     Domain (Entities, Repository Interfaces)  │
+└───────────────────────────────────────────────┘
 ```
-cd existing_repo
-git remote add origin https://tools.ages.pucrs.br/salespilot/backend.git
-git branch -M main
-git push -uf origin main
-```
 
-## Integrate with your tools
+## Responsabilidades das Camadas
 
-- [ ] [Set up project integrations](https://tools.ages.pucrs.br/salespilot/backend/-/settings/integrations)
+### 1. Domain (`domain`)
+Este é o núcleo absoluto da aplicação. Contém as regras de negócio da empresa e não possui **nenhuma dependência** de frameworks ou camadas externas.
+* **Entities (Entidades):** POJOs (Plain Old Java Objects) puros que representam nossos conceitos centrais de negócio (ex: `Client`, `Order`). Sem anotações do Spring, sem JPA (`@Entity`, `@Table`), sem Jackson.
+* **Services (Serviços de Domínio):** Lógica de negócios pura que envolve múltiplas entidades ou que não se encaixa naturalmente dentro de uma única entidade.
+* **Repositories (Interfaces):** Definições de interfaces para acesso a dados. O domínio dita *o que* precisa ser salvo ou buscado, mas não *como*.
 
-## Collaborate with your team
+### 2. Application (`application`)
+Esta camada contém as regras de negócio específicas da aplicação. Ela orquestra o fluxo de dados, mas não contém lógica de negócios pura em si.
+* **Use Cases (Casos de Uso):** Classes altamente coesas focadas em uma única responsabilidade ou ação do usuário (ex: `CreateOrderUseCase`). Eles coordenam tarefas: buscam entidades do Domínio, acionam comportamentos do Domínio e salvam os resultados.
+* **DTOs (Data Transfer Objects):** Objetos simples usados para passar dados para dentro e para fora da camada de aplicação sem expor nossas entidades internas do Domínio para o mundo externo.
+* **Dependências:** Depende *apenas* da camada de `Domain`. **Nenhuma importação do Spring (`@RestController`) ou JPA aqui.**
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### 3. Presentation (`presentation`)
+Este é o mecanismo de entrega (como o mundo exterior interage com nossa aplicação).
+* **Controllers:** Classes `@RestController` do Spring. Eles recebem requisições HTTP, traduzem os payloads JSON em DTOs da Aplicação, os passam para os Casos de Uso (Use Cases) e formatam a resposta HTTP.
+* **Dependências:** Aponta para dentro, para a camada de `Application`.
 
-## Test and Deploy
+### 4. Infrastructure (`infrastructure`)
+É aqui que vivem todos os detalhes técnicos.
+* **Persistence (JPA):** Contém as interfaces `@Repository` do Spring Data, classes `@Entity` específicas do JPA (que mapeiam para as tabelas do banco de dados) e as classes concretas que *implementam* as interfaces de repositório do `Domain`.
+* **Config:** Configurações específicas de frameworks (Spring Beans, Security, CORS, etc.).
+* **Dependências:** Aponta para dentro, para as camadas de `Application` e `Domain`, para implementar seus contratos.
 
-Use the built-in continuous integration in GitLab.
+## Como o Fluxo Funciona (Inversão de Dependência)
+Para manter o banco de dados na camada externa de Infraestrutura e ainda permitir que a camada interna de Aplicação o utilize, usamos o Princípio da Inversão de Dependência (Dependency Inversion):
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+1. O **Domain** define uma interface: `UserRepository`.
+2. O **Use Case (Application)** depende dessa interface para fazer o seu trabalho.
+3. A camada de **Infrastructure** fornece uma classe concreta `JpaUserRepositoryImpl` que implementa `UserRepository` usando o Spring Data.
+4. Em tempo de execução (runtime), o Spring injeta a implementação da Infraestrutura na camada de Aplicação.
