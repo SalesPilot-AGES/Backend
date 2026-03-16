@@ -12,12 +12,5 @@
     <name>domain</name>
     <description>Domain layer - entities, repository interfaces, domain services</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
 
 </project>
