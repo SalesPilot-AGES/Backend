@@ -1,0 +1,33 @@
+stages:
+  - build
+  - security
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+
+compile:
+  stage: build
+  image: eclipse-temurin:21-jdk-alpine
+  script:
+    - ./mvnw compile
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "development"
+
+secret-detection:
+  stage: security
+  inherit:
+    variables: false
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "development"
+  variables:
+    SECRET_DETECTION_HISTORIC_SCAN: "false"
+  include:
+    - template: Security/Secret-Detection.gitlab-ci.yml
