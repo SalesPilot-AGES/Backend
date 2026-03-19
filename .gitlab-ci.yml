@@ -21,7 +21,9 @@ compile:
 
 secret-detection:
   stage: security
-  image: zricethezav/gitleaks:latest
+  image:
+    name: zricethezav/gitleaks:latest
+    entrypoint: [""]
   script:
     - gitleaks detect --source . --no-git --exit-code 1
   rules:
