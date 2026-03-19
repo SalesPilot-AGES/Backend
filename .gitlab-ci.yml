@@ -1,3 +1,6 @@
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 stages:
   - build
   - security
@@ -29,5 +32,3 @@ secret-detection:
     - if: $CI_COMMIT_BRANCH == "development"
   variables:
     SECRET_DETECTION_HISTORIC_SCAN: "false"
-  include:
-    - template: Security/Secret-Detection.gitlab-ci.yml
