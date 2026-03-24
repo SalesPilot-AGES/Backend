@@ -13,6 +13,7 @@ compile:
   stage: build
   image: eclipse-temurin:21-jdk-alpine
   script:
+    - chmod +x ./mvnw
     - ./mvnw compile
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
