@@ -25,7 +25,7 @@ secret-detection:
     name: zricethezav/gitleaks:latest
     entrypoint: [""]
   script:
-    - gitleaks detect --source . --no-git --exit-code 1
+    - gitleaks detect --source . --exit-code 1
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "main"
