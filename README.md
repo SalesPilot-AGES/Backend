@@ -1,103 +1,63 @@
-# Sales Pilot - Guia de Arquitetura do Backend
+# Sales Pilot - Backend
 
-Bem-vindo ao backend do Sales Pilot! Este projeto é construído utilizando os princípios da **Clean Architecture** (Arquitetura Limpa) combinados com os padrões de design **SOLID**.
+Bem-vindo ao backend do Sales Pilot! Este projeto é construído utilizando os princípios da **Clean Architecture** combinados com os padrões de design **SOLID**.
 
 O nosso principal objetivo é manter uma base de código altamente desacoplada, testável e de fácil manutenção, onde a lógica de negócios seja completamente isolada dos detalhes de implementação técnica (como banco de dados, frameworks ou APIs externas).
 
-## Estrutura do Projeto
+---
 
-O projeto utiliza uma estrutura **multimódulo Maven**, onde cada camada da arquitetura é um módulo independente com o seu próprio `pom.xml`:
+## Guia de Arquitetura
 
-```
-backend/
-├── pom.xml               ← POM raiz (agregador)
-│
-├── domain/               ← Entidades e interfaces de repositório
-├── application/          ← Casos de uso e DTOs
-├── infrastructure/       ← Implementações JPA, configurações Spring
-├── presentation/         ← Controllers REST
-└── bootstrap/            ← Ponto de entrada da aplicação
-```
+O projeto utiliza uma estrutura **multimódulo Maven**, onde cada camada da arquitetura é um módulo independente com o seu próprio `pom.xml` (divididos em `domain`, `application`, `infrastructure`, `presentation` e `bootstrap`).
 
-## Fluxo de Dependências
+**Para entender o fluxo de dados, a Regra de Dependência e a responsabilidade de cada camada, leia o nosso [Guia de Arquitetura](docs/ArchitectureGuide.md).**
 
-A regra mais crítica dessa arquitetura é a **Regra de Dependência**: as dependências do código-fonte devem apontar *apenas* para dentro, em direção ao Domínio (Domain).
+---
 
-Camadas internas não sabem **nada** sobre as camadas externas. Camadas externas são mecanismos; camadas internas são políticas/regras.
+## Padrões de Commit
 
-```text
-┌───────────────────┐       ┌────────────────────────┐
-│   Presentation    │       │     Infrastructure     │
-│  (Controllers)    │       │  (JPA, External APIs)  │
-└────────┬──────────┘       └──────────┬─────────────┘
-         │                             │
-         ↓                             ↓
-┌───────────────────────────────────────────────┐
-│       Application (Use Cases, DTOs)           │
-└───────────────────────┬───────────────────────┘
-                        │
-                        ↓
-┌───────────────────────────────────────────────┐
-│     Domain (Entities, Repository Interfaces)  │
-└───────────────────────────────────────────────┘
+Usaremos o Conventional Commits para manter o histórico do repositório mais organizado e legível, além de melhorar a comunicação interna.
 
-Bootstrap depende de todos os módulos acima para montar a aplicação.
-```
+1. Todo commit deve seguir o formato: `<type>: <short description>`.
+   * **type**: Indica o propósito da mudança.
+   * **short description**: Deve ser clara, objetiva, escrita em inglês e no imperativo (ex.: "add", "fix", "remove").
+2. Escreva as mensagens de commit em inglês.
+3. Seja claro e objetivo, isso é, invés de 1 único commit com todas as mudanças, faça commit a cada trecho significativo de código.
 
-## Responsabilidades dos Módulos
+### Types Disponíveis
+* `feat`: Nova funcionalidade
+* `fix`: Correção de bug
+* `refactor`: Refatoração de código
+* `style`: Estilo / legibilidade (sem mudança de lógica)
+* `test`: Testes automatizados
+* `build`: Build e dependências
+* `perf`: Melhoria de performance
+* `ci`: Integração contínua (CI/CD)
+* `revert`: Reversão de commit anterior
 
-### 1. `domain`
-Este é o núcleo absoluto da aplicação. Contém as regras de negócio da empresa e não possui **nenhuma dependência** de frameworks ou camadas externas.
-* **Entities (Entidades):** POJOs (Plain Old Java Objects) puros que representam os conceitos centrais de negócio. Sem anotações do Spring, sem JPA (`@Entity`), sem Jackson.
-* **Repositories (Interfaces):** Contratos de acesso a dados. O domínio dita *o que* precisa ser buscado, mas não *como*.
-* **Services (Serviços de Domínio):** Lógica de negócios pura envolvendo múltiplas entidades.
+---
 
-### 2. `application`
-Contém as regras de negócio específicas da aplicação. Orquestra o fluxo de dados sem conter lógica de negócios pura em si.
-* **Use Cases (Casos de Uso):** Classes focadas numa única responsabilidade (ex: `GetSystemStatusUseCase`). Coordenam entidades do Domínio e retornam resultados.
-* **DTOs (Data Transfer Objects):** Objetos simples usados para passar dados para dentro e para fora da camada de aplicação sem expor as nossas entidades internas do Domínio para o mundo externo.
-* **Dependências:** Depende *apenas* da camada de `Domain`. **Nenhuma importação do Spring (`@RestController`) ou JPA aqui.**
+## Como Executar o Projeto
 
-### 3. `infrastructure`
-É aqui que vivem todos os detalhes técnicos.
-* **Persistence:** Contém as interfaces `@Repository` do Spring Data, classes `@Entity` específicas do JPA (que mapeiam para as tabelas do banco de dados) e as classes concretas que *implementam* as interfaces de repositório do `domain` (ex: `SystemStatusRepositoryImpl`).
-* **Config:** Configurações do Spring (`@Configuration`), injeção de dependências dos casos de uso.
-* **Dependências:** Módulos `domain` e `application`.
+Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele subirá automaticamente a nossa API, o banco de dados PostgreSQL e o SonarQube.
 
-### 4. `presentation`
-Este é o mecanismo de entrega (como o mundo exterior interage com a nossa aplicação).
-* **Controllers:** Classes `@RestController` do Spring. Eles recebem requisições HTTP, traduzem os payloads JSON em DTOs da Aplicação, os passam para os Casos de Uso (Use Cases) e formatam a resposta HTTP.
-* **Dependências:** Apenas o módulo `application`.
+### Passo a Passo
 
-### 5. `bootstrap`
-Ponto de entrada e montagem da aplicação.
-* Contém a classe `ApiApplication` (`@SpringBootApplication`) e o `application.properties`.
-* É o único módulo que referencia todos os outros, responsável por montar o contexto Spring completo.
-* É aqui que o `spring-boot-maven-plugin` gera o JAR executável.
-* **Dependências:** Todos os outros módulos.
-
-## Como o Fluxo Funciona (Inversão de Dependência)
-
-Para manter o banco de dados na camada externa de Infraestrutura e ainda permitir que a camada interna de Aplicação o utilize, usamos o Princípio da Inversão de Dependência:
-
-1. O **`domain`** define uma interface: `SystemStatusRepository`.
-2. O **Use Case (`application`)** depende dessa interface para fazer o seu trabalho.
-3. O **`infrastructure`** fornece a implementação concreta `SystemStatusRepositoryImpl` que implementa a interface.
-4. O **`bootstrap`**, via configuração Spring no `infrastructure` (`UseCaseConfig`), injeta a implementação correta em tempo de execução.
-
-## Como Executar
-
-### Com Maven
-```bash
-./mvnw clean package -DskipTests
-java -jar bootstrap/target/bootstrap-0.0.1-SNAPSHOT.jar
-```
-
-### Com Docker
-```bash
-docker build -t salespilot-api .
-docker run -p 8080:8080 salespilot-api
-```
+1. **Instale o Docker:** Certifique-se de ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando na sua máquina.
+2. **Configure as Variáveis de Ambiente:** Na raiz do projeto, crie um arquivo chamado `.env` e adicione as credenciais do banco de dados:
+   ```env
+   DB_NAME=
+   DB_USER=
+   DB_PASSWORD=
+3. **Suba os Contêineres:** Abra o terminal na raiz do projeto e execute o comando abaixo para construir a aplicação e iniciar os serviços:
+   ```text
+    docker-compose up -d --build
+   ```
+4. **Verifique a Execução:** A API estará rodando em http://localhost:8080.
+   - O banco de dados PostgreSQL estará disponível na porta 5432.
+   - SonarQube estará acessível em http://localhost:9000.
+   - (Para parar a execução, utilize o comando docker-compose down).
+---
 
 ## Endpoints Disponíveis
 
