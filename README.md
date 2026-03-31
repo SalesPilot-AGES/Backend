@@ -56,6 +56,7 @@ Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele su
 4. **Verifique a Execução:** A API estará rodando em http://localhost:8080.
    - O banco de dados PostgreSQL estará disponível na porta 5432.
    - SonarQube estará acessível em http://localhost:9000.
+   - Grafana estará acessível em http://localhost:3000
    - (Para parar a execução, utilize o comando docker-compose down).
 ---
 
