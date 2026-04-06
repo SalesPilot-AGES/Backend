@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-reverse-engineering>
+    <!-- Scan public tables and auth.users only -->
+    <schema-selection match-catalog="salespilot" match-schema="public"/>
+    <schema-selection match-catalog="salespilot" match-schema="auth"/>
+
+    <table-filter match-catalog="salespilot" match-schema="public" match-name=".*"/>
+    <table-filter match-catalog="salespilot" match-schema="auth" match-name="users"/>
+    <table-filter match-catalog="salespilot" match-schema="auth" match-name=".*" exclude="true"/>
+</hibernate-reverse-engineering>
