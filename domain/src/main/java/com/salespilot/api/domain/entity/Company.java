@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Enterprise {
+public class Company {
     private final UUID id;
     private final String nome;
     private final String cnpj;

@@ -11,8 +11,8 @@ import java.util.UUID;
 
 @Getter
 @Entity
-@Table(name = "enterprises")
-public class EnterpriseEntity {
+@Table(name = "companies")
+public class CompanyEntity {
     @Id
     @Column(name = "uuid")
     private UUID id;
@@ -24,7 +24,7 @@ public class EnterpriseEntity {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    public EnterpriseEntity() {
+    public CompanyEntity() {
 
     }
 }
