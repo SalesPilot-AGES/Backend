@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import com.salespilot.api.domain.entity.Enterprise;
 
 public interface EnterpriseRepository {
-    Page<Enterprise> getAllEnterprises(String nome, String cnpj, String plano, Boolean is_active, Pageable pageable);
+    Page<Enterprise> getAllEnterprises(String nome, String cnpj, String plano, Boolean isActive, Pageable pageable);
 }

@@ -12,7 +12,7 @@ public class EnterpriseMapper {
         if (enterpriseEntity == null) {
             return null;
         }
-        Enterprise enterprise = new Enterprise(enterpriseEntity.getId(), enterpriseEntity.getNome(), enterpriseEntity.getCnpj(), enterpriseEntity.getPlano(), enterpriseEntity.getIs_active(), enterpriseEntity.getCreated_at());
+        Enterprise enterprise = new Enterprise(enterpriseEntity.getId(), enterpriseEntity.getNome(), enterpriseEntity.getCnpj(), enterpriseEntity.getPlano(), enterpriseEntity.getIsActive(), enterpriseEntity.getCreated_at());
         return enterprise;
     }
 }

@@ -21,6 +21,6 @@ public class EnterpriseEntity {
     private String nome;
     private String cnpj;
     private String plano;
-    private Boolean is_active;
+    private Boolean isActive;
     private Timestamp created_at;
 }

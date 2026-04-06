@@ -24,13 +24,13 @@ public class EnterpriseRepositoryImpl implements EnterpriseRepository {
     }
 
     @Override
-    public Page<Enterprise> getAllEnterprises(String nome, String cnpj, String plano, Boolean is_active, Pageable pageable) {
+    public Page<Enterprise> getAllEnterprises(String nome, String cnpj, String plano, Boolean isActive, Pageable pageable) {
         Specification<EnterpriseEntity> spec = Specification
         .where(EnterpriseSpecification.nomeLike(nome))
         .and(EnterpriseSpecification.cnpjEquals(cnpj))
         .and(EnterpriseSpecification.planoEquals(plano))
-        .and(EnterpriseSpecification.isActiveEquals(is_active));
-        
+        .and(EnterpriseSpecification.isActiveEquals(isActive));
+
         return enterpriseJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
 }

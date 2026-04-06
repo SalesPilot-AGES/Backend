@@ -15,15 +15,15 @@ public class GetAllEnterprisesUseCase {
         this.repository = repository;
     }
 
-    public Page<EnterpriseResponseDTO> execute(String nome, String cnpj, String plano, Boolean is_active, Pageable pageable) {
-        return repository.getAllEnterprises(nome, cnpj, plano, is_active, pageable)
+    public Page<EnterpriseResponseDTO> execute(String nome, String cnpj, String plano, Boolean isActive, Pageable pageable) {
+        return repository.getAllEnterprises(nome, cnpj, plano, isActive, pageable)
         .map(e -> new EnterpriseResponseDTO(
             e.getId(),
             e.getNome(),
             e.getCnpj(),
             e.getPlano(),
-            e.is_active(),
-            e.getCreated_at()
+            e.isActive(),
+            e.getCreatedAt()
         ));
     }
 }

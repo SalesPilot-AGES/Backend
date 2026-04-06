@@ -13,6 +13,6 @@ public class Enterprise {
     private final String nome;
     private final String cnpj;
     private final String plano;
-    private final boolean is_active;
-    private final Timestamp created_at;
+    private final boolean isActive;
+    private final Timestamp createdAt;
 }

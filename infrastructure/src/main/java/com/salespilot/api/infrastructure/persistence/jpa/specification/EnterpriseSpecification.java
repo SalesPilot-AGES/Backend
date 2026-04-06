@@ -18,11 +18,11 @@ public class EnterpriseSpecification {
 
     public static Specification<EnterpriseEntity> planoEquals(String plano){
         return (root, query, cb) -> plano == null || plano.isBlank() ? null
-        : cb.equal(root.get("is_active"), plano);
+        : cb.equal(root.get("plano"), plano);
     }
 
-    public static Specification<EnterpriseEntity> isActiveEquals(Boolean is_active){
-        return (root, query, cb) -> is_active == null ? null
-        : cb.equal(root.get("is_active"), is_active);
+    public static Specification<EnterpriseEntity> isActiveEquals(Boolean isActive){
+        return (root, query, cb) -> isActive == null ? null
+        : cb.equal(root.get("isActive"), isActive);
     }
 }
