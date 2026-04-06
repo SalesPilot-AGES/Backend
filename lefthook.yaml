@@ -1,0 +1,40 @@
+fail: commit
+
+pre-commit:
+  parallel: true
+  commands:
+    branch-name:
+      run: java scripts/ValidateBranchName.java --strict
+
+    spotless:
+      glob: '**/*.java'
+      run: ./mvnw spotless:apply && git add {staged_files}
+
+    tests:
+      glob: '**/*Test.java'
+      run: ./mvnw test
+      skip: merge
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: java scripts/ValidateCommitMsg.java $1
+
+post-checkout:
+  commands:
+    branch-name:
+      run: java scripts/ValidateBranchName.java
+
+pre-push:
+  parallel: true
+  commands:
+    branch-name:
+      run: java scripts/ValidateBranchName.java --strict
+
+    spotless:
+      glob: '**/*.java'
+      run: ./mvnw spotless:check
+
+    tests:
+      glob: '**/*Test.java'
+      run: ./mvnw test
