@@ -22,7 +22,7 @@ public class EnterpriseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetEnterpriseByIdResponseDTO> getEnterpiseById(@PathVariable UUID id) {
+    public ResponseEntity<GetEnterpriseByIdResponseDTO> getEnterpriseById(@PathVariable UUID id) {
         return ResponseEntity.ok(getEnterpriseByIdUseCase.execute(id));
     }
 }

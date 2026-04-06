@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EnterpriseMapper {
-    public static Enterprise toEnterprise(EnterpriseEntity enterpriseEntity) {
+    public Enterprise toEnterprise(EnterpriseEntity enterpriseEntity) {
         return new Enterprise(enterpriseEntity.getId(), enterpriseEntity.getNome(), enterpriseEntity.getCnpj(), enterpriseEntity.getPlano(), enterpriseEntity.isActive(), enterpriseEntity.getCreatedAt());
     }
 }

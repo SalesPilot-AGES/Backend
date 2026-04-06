@@ -25,7 +25,7 @@ public class EnterpriseRepositoryImpl implements EnterpriseRepository {
         Optional<EnterpriseEntity> enterpriseEntity = enterpriseJpaRepository.findById(id);
 
         if(enterpriseEntity.isPresent()){
-            return EnterpriseMapper.toEnterprise(enterpriseEntity.get());
+            return new EnterpriseMapper().toEnterprise(enterpriseEntity.get());
         }
 
         return null;

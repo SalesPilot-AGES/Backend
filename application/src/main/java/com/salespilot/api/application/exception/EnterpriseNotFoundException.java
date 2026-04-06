@@ -8,6 +8,6 @@ import java.util.UUID;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class EnterpriseNotFoundException extends RuntimeException {
     public EnterpriseNotFoundException(UUID enterpriseId) {
-        super("Enterprise not found" + enterpriseId);
+        super("Enterprise not found: " + enterpriseId);
     }
 }
