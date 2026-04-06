@@ -8,27 +8,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.salespilot.api.application.dto.EnterpriseResponseDTO;
-import com.salespilot.api.application.usecase.GetAllEnterprisesUseCase;
+import com.salespilot.api.application.dto.CompanyResponseDTO;
+import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 
 @RestController
 @RequestMapping("/api/empresas")
-public class EnterpriseController {
+public class CompanyController {
 
-    private final GetAllEnterprisesUseCase getEnterpriseUseCase;
+    private final GetAllCompaniesUseCase getCompanyUseCase;
 
-    public EnterpriseController(GetAllEnterprisesUseCase getEnterpriseUseCase) {
-        this.getEnterpriseUseCase = getEnterpriseUseCase;
+    public CompanyController(GetAllCompaniesUseCase getCompanyUseCase) {
+        this.getCompanyUseCase = getCompanyUseCase;
     }
 
     @GetMapping
-    public ResponseEntity<Page<EnterpriseResponseDTO>> getAll(
+    public ResponseEntity<Page<CompanyResponseDTO>> getAll(
         @RequestParam(required = false) String nome,
         @RequestParam(required = false) String cnpj,
         @RequestParam(required = false) String plano,
         @RequestParam(required = false) Boolean isActive,
         Pageable pageable)
         {
-        return ResponseEntity.ok(getEnterpriseUseCase.execute(nome, cnpj, plano, isActive, pageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(nome, cnpj, plano, isActive, pageable));
     }
 }

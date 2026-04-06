@@ -13,8 +13,8 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @Entity
-@Table(name = "enterprises")
-public class EnterpriseEntity {
+@Table(name = "companies")
+public class CompanyEntity {
 
     @Id
     private UUID id;
