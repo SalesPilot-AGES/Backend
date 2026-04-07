@@ -6,14 +6,14 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 
 public class CompanySpecification {
 
-    public static Specification<CompanyEntity> nomeLike(String nome){
-        return (root, query, cb) -> nome == null || nome.isBlank() ? null
-        : cb.like(cb.lower(root.get("nome")), "%" + nome.toLowerCase() + "%");
+    public static Specification<CompanyEntity> nameLike(String name){
+        return (root, query, cb) -> name == null || name.isBlank() ? null
+        : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
-    public static Specification<CompanyEntity> cnpjEquals(String cnpj){
-        return (root, query, cb) -> cnpj == null || cnpj.isBlank() ? null
-        : cb.equal(root.get("cnpj"), cnpj);
+    public static Specification<CompanyEntity> taxIdEquals(String taxId){
+        return (root, query, cb) -> taxId == null || taxId.isBlank() ? null
+        : cb.equal(root.get("taxId"), taxId);
     }
 
     public static Specification<CompanyEntity> planoEquals(String plano){

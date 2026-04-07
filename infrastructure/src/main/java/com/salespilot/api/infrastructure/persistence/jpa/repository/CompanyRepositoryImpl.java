@@ -24,10 +24,10 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Page<Company> getAllCompanies(String nome, String cnpj, String plano, Boolean isActive, Pageable pageable) {
+    public Page<Company> getAllCompanies(String name, String taxId, String plano, boolean isActive, Pageable pageable) {
         Specification<CompanyEntity> spec = Specification
-        .where(CompanySpecification.nomeLike(nome))
-        .and(CompanySpecification.cnpjEquals(cnpj))
+        .where(CompanySpecification.nameLike(name))
+        .and(CompanySpecification.taxIdEquals(taxId))
         .and(CompanySpecification.planoEquals(plano))
         .and(CompanySpecification.isActiveEquals(isActive));
 

@@ -12,7 +12,7 @@ public class CompanyMapper {
         if (companyEntity == null) {
             return null;
         }
-        Company company = new Company(companyEntity.getId(), companyEntity.getNome(), companyEntity.getCnpj(), companyEntity.getPlano(), companyEntity.getIsActive(), companyEntity.getCreated_at());
+        Company company = new Company(companyEntity.getId(), companyEntity.getName(), companyEntity.getTaxId(), companyEntity.getPlano(), companyEntity.isActive(), companyEntity.getCreatedAt());
         return company;
     }
 }

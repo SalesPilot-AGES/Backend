@@ -17,7 +17,7 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetAllCompaniesUseCase GetAllCompaniesUseCase(CompanyRepository repository){
+    public GetAllCompaniesUseCase getAllCompaniesUseCase(CompanyRepository repository){
         return new GetAllCompaniesUseCase(repository);
     }
 }

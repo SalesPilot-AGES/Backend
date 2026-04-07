@@ -23,12 +23,12 @@ public class CompanyController {
 
     @GetMapping
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
-        @RequestParam(required = false) String nome,
-        @RequestParam(required = false) String cnpj,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String taxId,
         @RequestParam(required = false) String plano,
-        @RequestParam(required = false) Boolean isActive,
+        @RequestParam(required = false) boolean isActive,
         Pageable pageable)
         {
-        return ResponseEntity.ok(getCompanyUseCase.execute(nome, cnpj, plano, isActive, pageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plano, isActive, pageable));
     }
 }
