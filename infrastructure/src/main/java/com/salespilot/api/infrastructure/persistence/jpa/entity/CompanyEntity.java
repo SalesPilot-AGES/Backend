@@ -1,30 +1,42 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.sql.Timestamp;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+// import java.sql.Timestamp;
 import java.util.UUID;
 
-@Getter
 @Entity
 @Table(name = "companies")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CompanyEntity {
+
     @Id
-    @Column(name = "uuid")
     private UUID id;
-    private String nome;
+
+    @Column(name = "cnpj", unique = true, nullable = false)
     private String cnpj;
-    private String plano;
-    @Column(name = "is_active")
-    private boolean isActive;
-    @Column(name = "created_at")
-    private Timestamp createdAt;
 
-    public CompanyEntity() {
+    // @Column(name = "created_at", updatable = false)
+    // private Timestamp createdAt;
 
-    }
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    // @Column(name = "phone", nullable = false)
+    // private String phone;
+
+    // @Column(name = "address", nullable = false)
+    // private String address;
+
+    // @Column(name = "plans", nullable = false)
+    // private String plans;
+
+    // @Column(name = "isActive", nullable = false)
+    // private boolean active;
 }

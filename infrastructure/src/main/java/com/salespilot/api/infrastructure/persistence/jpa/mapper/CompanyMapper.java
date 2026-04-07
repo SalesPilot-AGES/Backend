@@ -6,7 +6,34 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CompanyMapper {
-    public Company toCompany(CompanyEntity companyEntity) {
-        return new Company(companyEntity.getId(), companyEntity.getNome(), companyEntity.getCnpj(), companyEntity.getPlano(), companyEntity.isActive(), companyEntity.getCreatedAt());
+
+    public Company toDomain(CompanyEntity entity) {
+        if (entity == null) return null;
+        
+        return new Company(
+            entity.getId(),
+            entity.getCnpj(),
+            // entity.getCreatedAt(),
+            entity.getName() //,
+            // entity.getPhone(),
+            // entity.getAddress(),
+            // entity.getPlans(),
+            // entity.isActive()
+        );
+    }
+
+    public CompanyEntity toEntity(Company domain) {
+        if (domain == null) return null;
+
+        return new CompanyEntity(
+            domain.getId(),
+            domain.getCnpj(),
+            // domain.getCreatedAt(),
+            domain.getName() //,
+            // domain.getPhone(),
+            // domain.getAddress(),
+            // domain.getPlans(),
+            // domain.isActive()
+        );
     }
 }
