@@ -12,7 +12,7 @@ import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 
 @RestController
-@RequestMapping("/api/empresas")
+@RequestMapping("/api/companies")
 public class CompanyController {
 
     private final GetAllCompaniesUseCase getCompanyUseCase;
