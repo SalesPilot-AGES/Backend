@@ -22,19 +22,17 @@ public class EditCompanyUseCase {
     Company company = repository.findById(id)
             .orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
 
-    company.updateInfo(data.name()/*, data.phone(), data.address(), data.plans(), data.isActive()*/);
+    company.updateInfo(data.name(), data.plans(), data.isActive());
 
     Company updatedCompany = repository.save(company);
 
         return new CompanyResponseDTO(
                 updatedCompany.getId(),
                 updatedCompany.getCnpj(),
-                // updatedCompany.getCreatedAt(),
-                updatedCompany.getName() //,
-                // updatedCompany.getPhone(),
-                // updatedCompany.getAddress(),
-                // updatedCompany.getPlans(),
-                // updatedCompany.isActive()
+                updatedCompany.getCreatedAt(),
+                updatedCompany.getName(),
+                updatedCompany.getPlans(),
+                updatedCompany.isActive()
         );
     }
 }

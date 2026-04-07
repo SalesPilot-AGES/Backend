@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-// import java.sql.Timestamp;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -22,21 +22,15 @@ public class CompanyEntity {
     @Column(name = "cnpj", unique = true, nullable = false)
     private String cnpj;
 
-    // @Column(name = "created_at", updatable = false)
-    // private Timestamp createdAt;
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    // @Column(name = "phone", nullable = false)
-    // private String phone;
+    @Column(name = "plans", nullable = false)
+    private String plans;
 
-    // @Column(name = "address", nullable = false)
-    // private String address;
-
-    // @Column(name = "plans", nullable = false)
-    // private String plans;
-
-    // @Column(name = "isActive", nullable = false)
-    // private boolean active;
+    @Column(name = "isActive", nullable = false)
+    private boolean active;
 }
