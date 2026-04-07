@@ -23,6 +23,8 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<GetCompanyByIdResponseDTO> getCompanyById(@PathVariable UUID id) {
-        return ResponseEntity.ok(getCompanyByIdUseCase.execute(id));
+        return getCompanyByIdUseCase.execute(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
