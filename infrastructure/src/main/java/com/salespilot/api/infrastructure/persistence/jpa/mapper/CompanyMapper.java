@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompanyMapper {
     public Company toCompany(CompanyEntity companyEntity) {
-        return new Company(companyEntity.getId(), companyEntity.getNome(), companyEntity.getCnpj(), companyEntity.getPlano(), companyEntity.isActive(), companyEntity.getCreatedAt());
+        return new Company(companyEntity.getId(), companyEntity.getName(), companyEntity.getTaxId(), companyEntity.getPlan(), companyEntity.isActive(), companyEntity.getCreatedAt());
     }
 }

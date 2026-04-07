@@ -16,11 +16,13 @@ public class CompanyEntity {
     @Id
     @Column(name = "uuid")
     private UUID id;
-    private String nome;
-    private String cnpj;
-    private String plano;
+    private String name;
+    @Column(name = "tax_id")
+    private String taxId;
+    //precisa ver como vai pegar esse dado do plano
+    private String plan;
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
     @Column(name = "created_at")
     private Timestamp createdAt;
 

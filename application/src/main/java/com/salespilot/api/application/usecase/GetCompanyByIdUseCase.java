@@ -21,6 +21,6 @@ public class GetCompanyByIdUseCase {
             throw new CompanyNotFoundException(id);
         }
 
-        return new GetCompanyByIdResponseDTO(company.getId(), company.getNome(), company.getCnpj(), company.getPlano(), company.isActive(), company.getCreatedAt());
+        return new GetCompanyByIdResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlan(), company.isActive(), company.getCreatedAt());
     }
 }
