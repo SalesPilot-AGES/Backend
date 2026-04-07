@@ -5,10 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
+@NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "companies")
@@ -25,8 +27,4 @@ public class CompanyEntity {
     private boolean active;
     @Column(name = "created_at")
     private Timestamp createdAt;
-
-    public CompanyEntity() {
-
-    }
 }
