@@ -15,8 +15,8 @@ public class GetAllCompaniesUseCase {
         this.repository = repository;
     }
 
-    public Page<CompanyResponseDTO> execute(String name, String taxId, String plano, boolean isActive, Pageable pageable) {
-        return repository.getAllCompanies(name, taxId, plano, isActive, pageable)
+    public Page<CompanyResponseDTO> execute(String name, String taxId, String plano, boolean active, Pageable pageable) {
+        return repository.getAllCompanies(name, taxId, plano, active, pageable)
         .map(e -> new CompanyResponseDTO(
             e.getId(),
             e.getName(),

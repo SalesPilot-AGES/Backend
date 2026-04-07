@@ -21,8 +21,8 @@ public class CompanySpecification {
         : cb.equal(root.get("plano"), plano);
     }
 
-    public static Specification<CompanyEntity> isActiveEquals(Boolean isActive){
-        return (root, query, cb) -> isActive == null ? null
-        : cb.equal(root.get("isActive"), isActive);
+    public static Specification<CompanyEntity> isActiveEquals(Boolean active){
+        return (root, query, cb) -> active == null ? null
+        : cb.equal(root.get("active"), active);
     }
 }

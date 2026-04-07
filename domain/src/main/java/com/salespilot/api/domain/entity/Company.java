@@ -13,6 +13,6 @@ public class Company {
     private final String name;
     private final String taxId;
     private final String plano;
-    private final boolean isActive;
+    private final boolean active;
     private final Timestamp createdAt;
 }

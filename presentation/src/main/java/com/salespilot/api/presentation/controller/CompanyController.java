@@ -26,9 +26,9 @@ public class CompanyController {
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String taxId,
         @RequestParam(required = false) String plano,
-        @RequestParam(required = false) boolean isActive,
+        @RequestParam(required = false) boolean active,
         Pageable pageable)
         {
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plano, isActive, pageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plano, active, pageable));
     }
 }
