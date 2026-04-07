@@ -6,19 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidateBranchName {
-    private static final List<String> VALID_TYPES = List.of(
-            "feat",
-            "fix",
-            "refactor",
-            "style",
-            "test",
-            "build",
-            "perf",
-            "ci",
-            "revert",
-            "hotfix"
-    );
-
     private static final List<String> SPECIAL_BRANCHES = List.of("main", "development", "staging");
     private static final List<String> PROTECTED_PATTERNS = List.of("release/", "hotfix/");
 
@@ -46,7 +33,7 @@ public class ValidateBranchName {
                 }
             }
 
-            String regex = "^(" + String.join("|", VALID_TYPES) + ")/(\\d+|no-ref)/.+$";
+            String regex = "^(" + String.join("|", CommitConventions.VALID_TYPES) + ")/(\\d+|no-ref)/.+$";
             if (!branchName.matches(regex)) {
                 if (shouldFail) {
                     printInvalidMessage(branchName, true);
@@ -98,7 +85,7 @@ public class ValidateBranchName {
         printLine("\nInvalid branch name format\n", strict);
         printLine("Expected format: <type>/<issue-number>/<short-description>", strict);
         printLine("Use \"no-ref\" for issue-number if no issue is applicable\n", strict);
-        printLine("Valid types: " + String.join(", ", VALID_TYPES) + "\n", strict);
+        printLine("Valid types: " + String.join(", ", CommitConventions.VALID_TYPES) + "\n", strict);
         printLine("Examples:", strict);
         printLine("  feat/1234/add-user-authentication", strict);
         printLine("  fix/5678/sidebar-alignment-issue", strict);

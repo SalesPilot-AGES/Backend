@@ -2,23 +2,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ValidateCommitMsg {
-    private static final List<String> VALID_TYPES = List.of(
-            "feat",
-            "fix",
-            "refactor",
-            "style",
-            "test",
-            "build",
-            "perf",
-            "ci",
-            "revert",
-            "hotfix"
-    );
-
     public static void main(String[] args) {
         String commitMsgFile = args.length > 0 ? args[0] : ".git/COMMIT_EDITMSG";
 
@@ -30,12 +16,12 @@ public class ValidateCommitMsg {
             }
 
             String firstLine = commitMsg.split("\\R", 2)[0];
-            String regex = "^(" + String.join("|", VALID_TYPES) + "):\\s+.+";
+            String regex = "^(" + String.join("|", CommitConventions.VALID_TYPES) + "):\\s+.+";
 
             if (!firstLine.matches(regex)) {
                 System.err.println("Invalid commit message format\n");
                 System.err.println("Expected format: <type>: <description>");
-                System.err.println("Valid types: " + String.join(", ", VALID_TYPES) + "\n");
+                System.err.println("Valid types: " + String.join(", ", CommitConventions.VALID_TYPES) + "\n");
                 System.err.println("Example: \"feat: add user authentication modal\"\n");
                 System.err.println("Your message: \"" + firstLine + "\"\n");
                 System.exit(1);
