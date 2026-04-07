@@ -16,7 +16,6 @@ import java.util.UUID;
 @Table(name = "companies")
 public class CompanyEntity {
     @Id
-    @Column(name = "uuid")
     private UUID id;
     private String name;
     @Column(name = "tax_id")
