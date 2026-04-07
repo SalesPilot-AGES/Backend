@@ -3,7 +3,6 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 import org.springframework.stereotype.Repository;
 
@@ -21,15 +20,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         this.companyMapper = companyMapper;
     }
 
-
     @Override
-    public Company getCompanyById(UUID id) {
-        Optional<CompanyEntity> companyEntity = companyJpaRepository.findById(id);
-
-        if(companyEntity.isPresent()){
-            return companyMapper.toCompany(companyEntity.get());
-        }
-
-        return null;
+    public Optional<Company> getCompanyById(UUID id) {
+        return companyJpaRepository.findById(id)
+                .map(companyMapper::toCompany);
     }
 }
