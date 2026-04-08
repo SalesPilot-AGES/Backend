@@ -2,14 +2,11 @@ package com.salespilot.api.application.usecase;
 
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
-
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.dto.EditCompanyRequestDTO;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
-@Service
 public class EditCompanyUseCase {
 
     private final CompanyRepository repository;
@@ -19,19 +16,19 @@ public class EditCompanyUseCase {
     }
 
     public CompanyResponseDTO execute(UUID id, EditCompanyRequestDTO data) {
-    Company company = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
+    Company possibleCompany = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Company not found"));
 
-    company.updateInfo(data.name(), data.plans(), data.isActive());
+    possibleCompany.updateInfo(data.name(), data.plan(), data.active());
 
-    Company updatedCompany = repository.save(company);
+    Company updatedCompany = repository.save(possibleCompany);
 
         return new CompanyResponseDTO(
                 updatedCompany.getId(),
-                updatedCompany.getCnpj(),
+                updatedCompany.getTaxId(),
                 updatedCompany.getCreatedAt(),
                 updatedCompany.getName(),
-                updatedCompany.getPlans(),
+                updatedCompany.getPlan(),
                 updatedCompany.isActive()
         );
     }

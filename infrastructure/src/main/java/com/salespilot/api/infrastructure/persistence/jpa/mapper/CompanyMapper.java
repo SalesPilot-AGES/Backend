@@ -12,10 +12,10 @@ public class CompanyMapper {
         
         return new Company(
             entity.getId(),
-            entity.getCnpj(),
+            entity.getTaxId(),
             entity.getCreatedAt(),
             entity.getName(),
-            entity.getPlans(),
+            entity.getPlan(),
             entity.isActive()
         );
     }
@@ -25,10 +25,10 @@ public class CompanyMapper {
 
         return new CompanyEntity(
             domain.getId(),
-            domain.getCnpj(),
+            domain.getTaxId(),
             domain.getCreatedAt(),
             domain.getName(),
-            domain.getPlans(),
+            domain.getPlan(),
             domain.isActive()
         );
     }

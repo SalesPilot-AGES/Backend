@@ -7,9 +7,9 @@ services:
     ports:
       - 8081:8080
     depends_on:
-      - db # Mude de salespilot-db para db aqui
+      - db
 
-  db: # Este é o nome que o Docker usa internamente
+  db:
     image: postgres:16-alpine
     container_name: salespilot-db
     restart: always

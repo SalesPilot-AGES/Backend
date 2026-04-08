@@ -2,7 +2,11 @@ package com.salespilot.api.presentation.controller;
 
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import com.salespilot.api.application.usecase.EditCompanyUseCase;
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.dto.EditCompanyRequestDTO;

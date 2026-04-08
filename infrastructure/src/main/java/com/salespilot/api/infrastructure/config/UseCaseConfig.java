@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
+import com.salespilot.api.application.usecase.EditCompanyUseCase;
+import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 
 @Configuration
@@ -12,5 +14,10 @@ public class UseCaseConfig {
     @Bean
     public GetSystemStatusUseCase getSystemStatusUseCase(SystemStatusRepository repository) {
         return new GetSystemStatusUseCase(repository);
+    }
+
+    @Bean
+    public EditCompanyUseCase editCompanyUseCase(CompanyRepository repository) {
+        return new EditCompanyUseCase(repository);
     }
 }

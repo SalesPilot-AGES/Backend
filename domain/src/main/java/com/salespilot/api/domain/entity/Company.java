@@ -10,15 +10,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Company {
     private final UUID id;
-    private final String cnpj;
+    private final String taxId;
     private final Timestamp createdAt;
     private String name;
-    private String plans;
+    private String plan;
     private boolean active;
 
-    public void updateInfo(String name, String plans, boolean active) {
+    public void updateInfo(String name, String plan, boolean active) {
         this.name = name;
-        this.plans = plans;
+        this.plan = plan;
         this.active = active;
     }
 }
