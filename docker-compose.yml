@@ -1,7 +1,15 @@
 version: '3.8'
 
 services:
-  db:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    depends_on:
+      - db # Mude de salespilot-db para db aqui
+
+  db: # Este é o nome que o Docker usa internamente
     image: postgres:16-alpine
     container_name: salespilot-db
     restart: always
