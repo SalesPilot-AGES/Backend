@@ -16,9 +16,9 @@ public class CompanySpecification {
         : cb.equal(root.get("taxId"), taxId);
     }
 
-    public static Specification<CompanyEntity> planoEquals(String plano){
-        return (root, query, cb) -> plano == null || plano.isBlank() ? null
-        : cb.equal(root.get("plano"), plano);
+    public static Specification<CompanyEntity> planEquals(String plan){
+        return (root, query, cb) -> plan == null || plan.isBlank() ? null
+        : cb.equal(root.get("plan"), plan);
     }
 
     public static Specification<CompanyEntity> isActiveEquals(Boolean active){

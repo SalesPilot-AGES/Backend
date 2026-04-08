@@ -15,13 +15,13 @@ public class GetAllCompaniesUseCase {
         this.repository = repository;
     }
 
-    public Page<CompanyResponseDTO> execute(String name, String taxId, String plano, boolean active, Pageable pageable) {
-        return repository.getAllCompanies(name, taxId, plano, active, pageable)
+    public Page<CompanyResponseDTO> execute(String name, String taxId, String plan, boolean active, Pageable pageable) {
+        return repository.getAllCompanies(name, taxId, plan, active, pageable)
         .map(e -> new CompanyResponseDTO(
             e.getId(),
             e.getName(),
             e.getTaxId(),
-            e.getPlano(),
+            e.getPlan(),
             e.isActive(),
             e.getCreatedAt()
         ));

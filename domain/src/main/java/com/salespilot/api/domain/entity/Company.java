@@ -12,7 +12,7 @@ public class Company {
     private final UUID id;
     private final String name;
     private final String taxId;
-    private final String plano;
+    private final String plan;
     private final boolean active;
     private final Timestamp createdAt;
 }

@@ -25,10 +25,10 @@ public class CompanyController {
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String taxId,
-        @RequestParam(required = false) String plano,
+        @RequestParam(required = false) String plan,
         @RequestParam(required = false) boolean active,
         Pageable pageable)
         {
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plano, active, pageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, pageable));
     }
 }

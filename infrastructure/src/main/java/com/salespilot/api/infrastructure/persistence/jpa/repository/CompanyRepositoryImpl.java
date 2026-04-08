@@ -24,11 +24,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Page<Company> getAllCompanies(String name, String taxId, String plano, boolean active, Pageable pageable) {
+    public Page<Company> getAllCompanies(String name, String taxId, String plan, boolean active, Pageable pageable) {
         Specification<CompanyEntity> spec = Specification
         .where(CompanySpecification.nameLike(name))
         .and(CompanySpecification.taxIdEquals(taxId))
-        .and(CompanySpecification.planoEquals(plano))
+        .and(CompanySpecification.planEquals(plan))
         .and(CompanySpecification.isActiveEquals(active));
 
         return companyJpaRepository.findAll(spec, pageable).map(mapper::toDomain);

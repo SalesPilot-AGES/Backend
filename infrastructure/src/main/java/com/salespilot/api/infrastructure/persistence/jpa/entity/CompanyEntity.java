@@ -23,7 +23,7 @@ public class CompanyEntity {
 
     private String name;
     private String taxId;
-    private String plano;
+    private String plan;
     private boolean isActive;
 
     @Column(name = "created_at")
