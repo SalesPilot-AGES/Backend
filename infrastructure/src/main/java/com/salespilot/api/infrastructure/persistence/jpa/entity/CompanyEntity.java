@@ -1,16 +1,20 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -19,7 +23,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "companies")
 public class CompanyEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -34,6 +37,21 @@ public class CompanyEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = true, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CollaboratorEntity> collaborators = new ArrayList<>();
+
+    public CompanyEntity(UUID id, String name, String taxId, boolean active, LocalDateTime createdAt) {
+        this.id = id;
+        this.name = name;
+        this.taxId = taxId;
+        this.active = active;
+        this.createdAt = createdAt;
+    }
+
+//    @OneToOne
+//    @JoinColumn(name = "plan")
+//    private Plan plan;
 }
