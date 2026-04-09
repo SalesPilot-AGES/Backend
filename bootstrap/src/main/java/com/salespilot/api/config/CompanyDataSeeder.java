@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.repository.CompanyJpaRepository;
 
 @Component
+@Order(1)
 @ConditionalOnProperty(name = "app.seed.company.enabled", havingValue = "true", matchIfMissing = true)
 public class CompanyDataSeeder implements CommandLineRunner {
 
