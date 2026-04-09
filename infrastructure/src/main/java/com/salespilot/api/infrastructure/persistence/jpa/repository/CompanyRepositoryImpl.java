@@ -1,6 +1,5 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -15,9 +14,11 @@ import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 public class CompanyRepositoryImpl implements CompanyRepository {
 
     private final CompanyJpaRepository companyJpaRepository;
+    private final CompanyMapper companyMapper;
 
-    public CompanyRepositoryImpl(CompanyJpaRepository companyJpaRepository) {
+    public CompanyRepositoryImpl(CompanyJpaRepository companyJpaRepository, CompanyMapper companyMapper) {
         this.companyJpaRepository = companyJpaRepository;
+        this.companyMapper = companyMapper;
     }
 
     @Override
@@ -32,12 +33,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
             nome,
             cnpj,
             plano,
-            is_active,
-            new Timestamp(System.currentTimeMillis())
+            is_active
         );
         
         CompanyEntity savedEntity = companyJpaRepository.save(entity);
-        return CompanyMapper.toDomainEntity(savedEntity);
+        return companyMapper.toDomainEntity(savedEntity);
     }
     
 }

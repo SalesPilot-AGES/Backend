@@ -1,13 +1,14 @@
 package com.salespilot.api.infrastructure.persistence.jpa.mapper;
 
-import java.sql.Timestamp;
+import org.springframework.stereotype.Component;
 
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 
+@Component
 public class CompanyMapper {
     
-    public static Company toDomainEntity(CompanyEntity entity) {
+    public Company toDomainEntity(CompanyEntity entity) {
         return new Company (
             entity.getId(),
             entity.getNome(),
