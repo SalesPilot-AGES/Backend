@@ -1,6 +1,8 @@
 package com.salespilot.api.presentation.controller;
 
 import java.util.UUID;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,8 +28,8 @@ public class CompanyController {
             @PathVariable UUID id, 
             @RequestBody EditCompanyRequestDTO request
     ) {
-        CompanyResponseDTO response = editCompanyUseCase.execute(id, request);
-        return ResponseEntity.ok(response)
-        .orElse(ResponseEntity.notFound().build());
+        return editCompanyUseCase.execute(id, request)
+          .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 }
