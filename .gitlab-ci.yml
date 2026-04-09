@@ -60,6 +60,7 @@ deploy:
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   script:
     - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "
+      cd salespilot &&
       aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $ECR_REGISTRY &&
       export IMAGE_TAG=$IMAGE_TAG &&
       docker compose -f docker-compose.prod.yml pull &&
