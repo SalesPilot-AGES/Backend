@@ -10,9 +10,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Company {
     private final UUID id;
-    private final String nome;
-    private final String cnpj;
+    private final String name;
+    private final String taxId;
     private final String plano;
-    private final boolean isActive;
-    private final Timestamp created_at;
+    private final boolean active;
+    private final Timestamp createdAt;
 }
