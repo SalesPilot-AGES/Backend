@@ -50,3 +50,43 @@ INSERT INTO companies (id, name, tax_id, is_active, created_at) VALUES
     '2024-02-20T13:00:00Z'
 )
 ON CONFLICT (id) DO NOTHING;
+
+-- Seed aligned with current JPA entity CollaboratorEntity -> table collaborators
+INSERT INTO collaborators (id, company_id, name, email, is_active, preferences, created_at) VALUES
+(
+    'b2c3d4e5-f6a7-8901-2345-67890abcdef1',
+    'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
+    'Ana Costa',
+    'ana@digitalsales.com',
+    TRUE,
+    '{"theme":"dark","defaultModel":"gpt-4o"}'::jsonb,
+    '2024-04-02T10:00:00Z'
+),
+(
+    'c3d4e5f6-a7b8-9012-3456-7890abcdef12',
+    'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
+    'Gabriel Ribeiro',
+    'gabriel@digitalsales.com',
+    TRUE,
+    '{"theme":"light","defaultModel":"gpt-4o"}'::jsonb,
+    '2024-04-02T10:01:00Z'
+),
+(
+    'd4e5f6a7-b8c9-0123-4567-890abcdef123',
+    'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
+    'Laura Silva',
+    'laura@digitalsales.com',
+    FALSE,
+    '{}'::jsonb,
+    '2024-04-02T10:02:00Z'
+),
+(
+    'e5f6a7b8-c9d0-1234-5678-90abcdef1234',
+    'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
+    'Saulo Souza',
+    'saulo@digitalsales.com',
+    TRUE,
+    '{"theme":"dark","defaultModel":"gpt-3.5"}'::jsonb,
+    '2024-04-02T10:03:00Z'
+)
+ON CONFLICT (id) DO NOTHING;
