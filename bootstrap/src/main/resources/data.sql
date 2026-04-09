@@ -1,11 +1,3 @@
-CREATE TABLE IF NOT EXISTS companies (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    tax_id VARCHAR(32) NOT NULL,
-    is_active BOOLEAN NOT NULL,
-    created_at TIMESTAMP
-);
-
 -- Seed aligned with current JPA entity CompanyEntity -> table companies
 INSERT INTO companies (id, name, tax_id, is_active, created_at) VALUES
 (
