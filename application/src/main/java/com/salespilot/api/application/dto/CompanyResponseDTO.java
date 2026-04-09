@@ -1,4 +1,6 @@
 package com.salespilot.api.application.dto;
 
-public record CompanyResponseDTO(String uuid, String nome, String cnpj, String plano, boolean is_active, String created_at) {}
+import java.util.UUID;
+
+public record CompanyResponseDTO(UUID uuid, String nome, String cnpj, String plano, boolean isActive, String createdAt) {}
 

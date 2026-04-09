@@ -13,6 +13,6 @@ public class PostCompanyUseCase {
 
     public CompanyResponseDTO create(String nome, String cnpj, String plano, boolean is_active) {
         Company company = repository.createCompany(nome, cnpj, plano, is_active);
-        return new CompanyResponseDTO(company.getId().toString(), company.getNome(), company.getCnpj(), company.getPlano(), company.isActive(), company.getCreated_at().toInstant().toString());
+        return new CompanyResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlano(), company.isActive(), company.getCreatedAt().toInstant().toString());
     }
 }

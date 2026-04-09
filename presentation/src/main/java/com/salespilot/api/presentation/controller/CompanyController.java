@@ -14,7 +14,7 @@ import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/empresas")
+@RequestMapping("/api/companies")
 public class CompanyController {
 
     private final PostCompanyUseCase postCompanyUseCase;
@@ -25,7 +25,7 @@ public class CompanyController {
     
     @PostMapping
     public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
-        CompanyResponseDTO response = postCompanyUseCase.create(request.nome(), request.cnpj(), request.plano(), request.is_active());
+        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plano(), request.isActive());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
