@@ -27,6 +27,7 @@ public class CompanyController {
             @RequestBody EditCompanyRequestDTO request
     ) {
         CompanyResponseDTO response = editCompanyUseCase.execute(id, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response)
+        .orElse(ResponseEntity.notFound().build());
     }
 }

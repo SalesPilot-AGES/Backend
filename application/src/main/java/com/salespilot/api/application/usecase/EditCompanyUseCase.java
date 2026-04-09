@@ -1,5 +1,6 @@
 package com.salespilot.api.application.usecase;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.salespilot.api.application.dto.CompanyResponseDTO;
@@ -15,21 +16,21 @@ public class EditCompanyUseCase {
         this.repository = repository;
     }
 
-    public CompanyResponseDTO execute(UUID id, EditCompanyRequestDTO data) {
-    Company possibleCompany = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Company not found"));
+    public Optional<CompanyResponseDTO> execute(UUID id, EditCompanyRequestDTO data) {
+    return repository.findById(id)
+      .map(company -> {
+        company.updateInfo(data.name(), data.plan(), data.active());
 
-    possibleCompany.updateInfo(data.name(), data.plan(), data.active());
+        Company updatedCompany = repository.save(company);
 
-    Company updatedCompany = repository.save(possibleCompany);
-
-        return new CompanyResponseDTO(
-                updatedCompany.getId(),
-                updatedCompany.getTaxId(),
-                updatedCompany.getCreatedAt(),
-                updatedCompany.getName(),
-                updatedCompany.getPlan(),
-                updatedCompany.isActive()
-        );
+          return new CompanyResponseDTO(
+                  updatedCompany.getId(),
+                  updatedCompany.getTaxId(),
+                  updatedCompany.getCreatedAt(),
+                  updatedCompany.getName(),
+                  updatedCompany.getPlan(),
+                  updatedCompany.isActive()
+          );
+      });
     }
 }
