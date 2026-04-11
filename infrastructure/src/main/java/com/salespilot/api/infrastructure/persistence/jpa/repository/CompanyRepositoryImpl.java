@@ -22,7 +22,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Override
     public Optional<Company> getCompanyById(UUID id) {
-        return companyJpaRepository.findById(id)
-                .map(companyMapper::toCompany);
+        return companyJpaRepository.findByIdWithCollaborators(id)
+                .map(companyMapper::toDomain);
     }
 }

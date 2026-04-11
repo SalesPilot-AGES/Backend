@@ -15,7 +15,13 @@ public class GetCompanyByIdUseCase {
 
     public Optional<GetCompanyByIdResponseDTO> execute(UUID id) {
         return companyRepository.getCompanyById(id)
-                .map(c -> new GetCompanyByIdResponseDTO(c.getId(), c.getName(), c.getTaxId(), c.getPlan(), c.isActive(), c.getCreatedAt()));
+                .map(c -> new GetCompanyByIdResponseDTO(c.getId(),
+                        c.getName(),
+                        c.getTaxId(),
+                        c.getPlan(),
+                        c.isActive(),
+                        c.getCreatedAt(),
+                        c.getCollaborators()));
 
     }
 }
