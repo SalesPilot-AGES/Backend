@@ -1,4 +1,4 @@
-package com.salespilot.api.infrastructure.config;
+package com.salespilot.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
