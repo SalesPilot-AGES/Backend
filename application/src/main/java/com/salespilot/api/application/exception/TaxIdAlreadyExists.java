@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class CnpjAlreadyExists extends RuntimeException {
+public class TaxIdAlreadyExists extends RuntimeException {
 
-    public CnpjAlreadyExists() {
-        super("Cnpj already exists");
+    public TaxIdAlreadyExists() {
+        super("Tax id already exists");
     }
 }

@@ -25,7 +25,7 @@ public class CompanyController {
     
     @PostMapping
     public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
-        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plano(), request.isActive());
+        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plan(), request.active());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -11,9 +11,9 @@ public class CompanyMapper {
     public Company toDomainEntity(CompanyEntity entity) {
         return new Company (
             entity.getId(),
-            entity.getNome(),
-            entity.getCnpj(),
-            entity.getPlano(),
+            entity.getName(),
+            entity.getTaxId(),
+            entity.getPlan(),
             entity.isActive(),
             entity.getCreatedAt()
         );

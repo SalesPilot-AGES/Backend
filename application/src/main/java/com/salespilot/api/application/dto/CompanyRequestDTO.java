@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotNull;
 public record CompanyRequestDTO(
     @NotBlank String name, 
     @NotBlank String taxId, 
-    @NotBlank String plano, 
-    @NotNull Boolean isActive
+    @NotBlank String plan, 
+    @NotNull Boolean active
 ) {}

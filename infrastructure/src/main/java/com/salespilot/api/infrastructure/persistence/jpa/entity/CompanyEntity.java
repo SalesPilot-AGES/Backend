@@ -18,23 +18,23 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "companies")
 public class CompanyEntity {
     @Id
-    @Column(name = "uuid")
+    @Column(name = "id")
     private UUID id;
-    private String nome;
-    @Column(name = "cnpj", unique = true)
-    private String cnpj;
-    private String plano;
+    private String name;
+    @Column(name = "tax_id", unique = true)
+    private String taxId;
+    private String plan;
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
 
-    public CompanyEntity(UUID id, String nome, String cnpj, String plano, boolean isActive) {
+    public CompanyEntity(UUID id, String name, String taxId, String plan, boolean active) {
         this.id = id;
-        this.nome = nome;
-        this.cnpj = cnpj;
-        this.plano = plano;
-        this.isActive = isActive;
+        this.name = name;
+        this.taxId = taxId;
+        this.plan = plan;
+        this.active = active;
     }
 }
