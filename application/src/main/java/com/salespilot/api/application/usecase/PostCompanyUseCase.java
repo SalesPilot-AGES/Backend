@@ -1,6 +1,7 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.dto.CompanyResponseDTO;
+import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
@@ -11,8 +12,12 @@ public class PostCompanyUseCase {
         this.repository = repository;
     }
 
-    public CompanyResponseDTO create(String nome, String cnpj, String plano, boolean is_active) {
-        Company company = repository.createCompany(nome, cnpj, plano, is_active);
-        return new CompanyResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlano(), company.isActive(), company.getCreatedAt().toInstant().toString());
+    public CompanyResponseDTO create(String name, String taxId, String plan, boolean active) {
+        if (repository.existsByTaxId(taxId)) {
+            throw new TaxIdAlreadyExists();
+        }
+
+        Company company = repository.createCompany(name, taxId, plan, active);
+        return new CompanyResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlan(), company.isActive(), company.getCreatedAt().toInstant().toString());
     }
 }

@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
-import com.salespilot.api.application.exception.CnpjAlreadyExists;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
@@ -22,22 +21,21 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Company createCompany(String nome, String cnpj, String plano, boolean is_active) {
-        
-        if(companyJpaRepository.findByCnpj(cnpj).isPresent()) {
-            throw new CnpjAlreadyExists();
-        }
-        
+    public boolean existsByTaxId(String taxId) {
+        return companyJpaRepository.findByTaxId(taxId).isPresent();
+    }
+
+    @Override
+    public Company createCompany(String name, String taxId, String plan, boolean active) {
         CompanyEntity entity = new CompanyEntity(
             UUID.randomUUID(),
-            nome,
-            cnpj,
-            plano,
-            is_active
+            name,
+            taxId,
+            plan,
+            active
         );
-        
+
         CompanyEntity savedEntity = companyJpaRepository.save(entity);
         return companyMapper.toDomainEntity(savedEntity);
     }
-    
 }

@@ -3,5 +3,7 @@ package com.salespilot.api.domain.repository;
 import com.salespilot.api.domain.entity.Company;
 
 public interface CompanyRepository {
-    Company createCompany(String nome, String cnpj, String plano, boolean is_active);
+    boolean existsByTaxId(String taxId);
+
+    Company createCompany(String name, String taxId, String plan, boolean active);
 }
