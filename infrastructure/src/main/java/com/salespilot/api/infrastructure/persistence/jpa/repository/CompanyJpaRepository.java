@@ -8,12 +8,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
-  
+
 public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>, JpaSpecificationExecutor<CompanyEntity>  {
 
-    @EntityGraph(attributePaths = {"collaborators"})
     Page<CompanyEntity> findAll(Specification<CompanyEntity> spec, Pageable pageable);
     
     boolean existsByTaxId(String taxId);

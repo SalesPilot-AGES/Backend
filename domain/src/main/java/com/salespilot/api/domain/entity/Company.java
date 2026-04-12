@@ -11,11 +11,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Company {
-    private final UUID id;
-    private final String name;
-    private final String taxId;
-    private final CompanyPlan plan;
-    private final boolean active;
-    private final LocalDateTime createdAt;
-    private final List<Collaborator> collaborators;
+    private UUID id;
+    private String name;
+    private String taxId;
+    private CompanyPlan plan;
+    private boolean active;
+    private LocalDateTime createdAt;
+    private List<Collaborator> collaborators;
 } 
