@@ -18,4 +18,4 @@ public class Company {
     private boolean active;
     private LocalDateTime createdAt;
     private List<Collaborator> collaborators;
-}
+} 

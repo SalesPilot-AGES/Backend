@@ -24,4 +24,4 @@ public class CollaboratorMapper {
                 .map(this::toDomain)
                 .toList();
     }
-}
+} 
