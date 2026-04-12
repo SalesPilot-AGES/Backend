@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
+import com.salespilot.api.domain.enums.CompanyPlan;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -25,8 +26,8 @@ public class CompanyController {
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String taxId,
-        @RequestParam(required = false) String plan,
-        @RequestParam(required = false) boolean active,
+        @RequestParam(required = false) CompanyPlan plan,
+        @RequestParam(required = false) Boolean active,
         Pageable pageable)
         {
         return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, pageable));
