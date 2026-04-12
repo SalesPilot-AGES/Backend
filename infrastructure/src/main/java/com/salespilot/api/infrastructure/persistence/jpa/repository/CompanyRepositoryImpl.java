@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CompanyRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
@@ -20,6 +21,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         this.companyMapper = companyMapper;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Company> getCompanyById(UUID id) {
         return companyJpaRepository.findById(id)
