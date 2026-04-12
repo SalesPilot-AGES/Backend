@@ -12,5 +12,10 @@
     <name>domain</name>
     <description>Domain layer - entities, repository interfaces, domain services</description>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+        </dependency>
+    </dependencies>
 </project>
