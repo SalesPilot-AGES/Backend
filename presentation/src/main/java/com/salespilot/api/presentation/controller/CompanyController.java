@@ -1,7 +1,9 @@
 package com.salespilot.api.presentation.controller;
     
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,8 @@ import com.salespilot.api.domain.enums.CompanyPlan;
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController {
+
+    private static final int MAX_PAGE_SIZE = 100;
 
     private final GetAllCompaniesUseCase getCompanyUseCase;
 
@@ -30,6 +34,14 @@ public class CompanyController {
         @RequestParam(required = false) Boolean active,
         Pageable pageable)
         {
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, pageable));
+        Pageable safePageable = normalizePageable(pageable);
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, safePageable));
+    }
+
+    private Pageable normalizePageable(Pageable pageable) {
+        int safePage = Math.max(pageable.getPageNumber(), 0);
+        int safeSize = Math.min(Math.max(pageable.getPageSize(), 1), MAX_PAGE_SIZE);
+        Sort safeSort = pageable.getSort().isSorted() ? pageable.getSort() : Sort.unsorted();
+        return PageRequest.of(safePage, safeSize, safeSort);
     }
 }
