@@ -14,12 +14,12 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
     boolean existsByTaxId(String taxId);
 
     Optional<CompanyEntity> findByTaxId(String taxId);
-
+/*
     @Query("""
     SELECT c
     FROM CompanyEntity c
     LEFT JOIN FETCH c.collaborators
     WHERE c.id = :id
 """)
-    Optional<CompanyEntity> findByIdWithCollaborators(@Param("id") UUID id);
+    Optional<CompanyEntity> findByIdWithCollaborators(@Param("id") UUID id);*/
 }

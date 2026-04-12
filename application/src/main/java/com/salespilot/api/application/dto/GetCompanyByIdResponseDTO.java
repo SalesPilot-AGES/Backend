@@ -13,6 +13,5 @@ public record GetCompanyByIdResponseDTO(@JsonProperty("id") UUID id,
                                         @JsonProperty("tax_id") String taxId,
                                         @JsonProperty("plan") CompanyPlan plan,
                                         @JsonProperty("is_active") boolean active,
-                                        @JsonProperty("created_at") LocalDateTime createdAt,
-                                        @JsonProperty("collaborators") List<Collaborator> collaborators) {
+                                        @JsonProperty("created_at") LocalDateTime createdAt) {
 }

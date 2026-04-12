@@ -20,8 +20,7 @@ public class GetCompanyByIdUseCase {
                         c.getTaxId(),
                         c.getPlan(),
                         c.isActive(),
-                        c.getCreatedAt(),
-                        c.getCollaborators()));
-
+                        c.getCreatedAt()
+                ));
     }
 }
