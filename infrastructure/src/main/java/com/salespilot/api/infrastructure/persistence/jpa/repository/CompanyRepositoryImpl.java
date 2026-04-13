@@ -45,4 +45,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         return companyJpaRepository.findById(id)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return companyJpaRepository.existsById(id);
+    }
 }

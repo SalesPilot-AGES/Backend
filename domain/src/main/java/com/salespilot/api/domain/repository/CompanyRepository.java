@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface CompanyRepository {
     Page<Company> getAllCompanies(String name, String taxId, CompanyPlan plan, Boolean active, Pageable pageable);
     Optional<Company> getCompanyById(UUID id);
+    boolean existsById(UUID id);
 }

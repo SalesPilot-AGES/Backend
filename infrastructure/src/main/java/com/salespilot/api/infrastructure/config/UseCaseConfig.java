@@ -1,5 +1,7 @@
 package com.salespilot.api.infrastructure.config;
 
+import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
+import com.salespilot.api.domain.repository.CollaboratorRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,5 +27,10 @@ public class UseCaseConfig {
     @Bean
     public GetCompanyByIdUseCase getCompanyByIdUseCase(CompanyRepository repository){
         return new GetCompanyByIdUseCase(repository);
+    }
+
+    @Bean
+    public PostCollaboratorUseCase postCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository){
+        return new PostCollaboratorUseCase(collaboratorRepository, companyRepository);
     }
 }

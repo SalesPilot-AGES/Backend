@@ -3,6 +3,7 @@ package com.salespilot.api.infrastructure.persistence.jpa.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,6 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import com.salespilot.api.domain.enums.CollaboratorRole;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -52,8 +55,9 @@ public class CollaboratorEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "preferences", columnDefinition = "jsonb")
-    private String preferences;
+    private CollaboratorPreferences preferences;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
