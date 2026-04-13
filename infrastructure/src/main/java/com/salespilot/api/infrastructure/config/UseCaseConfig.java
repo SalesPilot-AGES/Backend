@@ -3,6 +3,7 @@ package com.salespilot.api.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -19,5 +20,10 @@ public class UseCaseConfig {
     @Bean
     public GetAllCompaniesUseCase getAllCompaniesUseCase(CompanyRepository repository){
         return new GetAllCompaniesUseCase(repository);
+    }
+
+    @Bean
+    public GetCompanyByIdUseCase getCompanyByIdUseCase(CompanyRepository repository){
+        return new GetCompanyByIdUseCase(repository);
     }
 }

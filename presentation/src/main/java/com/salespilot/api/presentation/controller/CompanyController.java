@@ -1,11 +1,18 @@
 package com.salespilot.api.presentation.controller;
-    
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
+
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +25,22 @@ import com.salespilot.api.domain.enums.CompanyPlan;
 @RequestMapping("/api/companies")
 public class CompanyController {
 
-    private static final int MAX_PAGE_SIZE = 100;
-
+    private final GetCompanyByIdUseCase getCompanyByIdUseCase;
     private final GetAllCompaniesUseCase getCompanyUseCase;
 
-    public CompanyController(GetAllCompaniesUseCase getCompanyUseCase) {
+    private static final int MAX_PAGE_SIZE = 100;
+
+    public CompanyController(GetCompanyByIdUseCase getCompanyByIdUseCase, GetAllCompaniesUseCase getCompanyUseCase) {
+        this.getCompanyByIdUseCase = getCompanyByIdUseCase;
         this.getCompanyUseCase = getCompanyUseCase;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetCompanyByIdResponseDTO> getCompanyById(@PathVariable UUID id) {
+        return getCompanyByIdUseCase.execute(id)
+                .map(GetCompanyByIdResponseDTO::from)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
