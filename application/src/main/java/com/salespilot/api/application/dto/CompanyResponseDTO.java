@@ -1,6 +1,8 @@
 package com.salespilot.api.application.dto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record CompanyResponseDTO(UUID id, String name, String taxId, String plan, boolean active, String createdAt) {}
+import com.salespilot.api.domain.enums.CompanyPlan;
 
+public record CompanyResponseDTO(UUID uuid, String name, String taxId, CompanyPlan plan, boolean active, LocalDateTime createdAt) {}

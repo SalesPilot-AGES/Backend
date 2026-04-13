@@ -1,21 +1,20 @@
 package com.salespilot.api.infrastructure.persistence.jpa.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class CompanyMapper {
-    
-    public Company toDomainEntity(CompanyEntity entity) {
-        return new Company (
-            entity.getId(),
-            entity.getName(),
-            entity.getTaxId(),
-            entity.getPlan(),
-            entity.isActive(),
-            entity.getCreatedAt()
-        );
+    public Company toDomain(CompanyEntity companyEntity) {
+        return new Company(companyEntity.getId(),
+                companyEntity.getName(),
+                companyEntity.getTaxId(),
+                companyEntity.getPlan(),
+                companyEntity.isActive(),
+                companyEntity.getCreatedAt(),
+                List.of());
     }
 }
