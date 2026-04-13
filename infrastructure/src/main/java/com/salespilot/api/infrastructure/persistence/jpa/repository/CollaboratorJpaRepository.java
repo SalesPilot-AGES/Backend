@@ -1,5 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -9,5 +10,6 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEnti
 
 public interface CollaboratorJpaRepository extends JpaRepository<CollaboratorEntity, UUID> {
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
+    Optional<CollaboratorEntity> findById(UUID id);
 }
 
