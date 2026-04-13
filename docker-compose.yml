@@ -30,7 +30,7 @@ services:
       - DB_URL=jdbc:postgresql://db:5432/${DB_NAME:-salespilot}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
-      - JPA_DDL_AUTO=${JPA_DDL_AUTO:-update}
+      - JPA_DDL_AUTO=${JPA_DDL_AUTO:-validate}
     depends_on:
       db:
         condition: service_healthy
