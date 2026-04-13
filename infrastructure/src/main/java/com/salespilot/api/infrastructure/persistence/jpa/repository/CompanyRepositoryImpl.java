@@ -1,5 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     private final CompanyMapper mapper;
     private final CompanyJpaRepository companyJpaRepository;
 
-    public CompanyRepositoryImpl(CompanyJpaRepository companyJpaRepository, CompanyMapper mapper){
+    public CompanyRepositoryImpl(CompanyJpaRepository companyJpaRepository, CompanyMapper mapper) {
         this.companyJpaRepository = companyJpaRepository;
         this.mapper = mapper;
     }
@@ -29,11 +31,18 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public Page<Company> getAllCompanies(String name, String taxId, CompanyPlan plan, Boolean active, Pageable pageable) {
         Specification<CompanyEntity> spec = Specification
-        .where(CompanySpecification.nameLike(name))
-        .and(CompanySpecification.taxIdEquals(taxId))
-        .and(CompanySpecification.planEquals(plan))
-        .and(CompanySpecification.isActiveEquals(active));
+                .where(CompanySpecification.nameLike(name))
+                .and(CompanySpecification.taxIdEquals(taxId))
+                .and(CompanySpecification.planEquals(plan))
+                .and(CompanySpecification.isActiveEquals(active));
 
         return companyJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Company> getCompanyById(UUID id) {
+        return companyJpaRepository.findById(id)
+                .map(mapper::toDomain);
     }
 }
