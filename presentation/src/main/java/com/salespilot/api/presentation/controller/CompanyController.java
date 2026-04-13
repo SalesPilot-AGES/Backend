@@ -21,7 +21,6 @@ import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
-import com.salespilot.api.domain.enums.CompanyPlan;
 
 import jakarta.validation.Valid;
 
@@ -61,12 +60,11 @@ public class CompanyController {
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String taxId,
-        @RequestParam(required = false) CompanyPlan plan,
-        @RequestParam(required = false) Boolean active,
+        @RequestParam(required = false) String status,
         Pageable pageable)
         {
         Pageable safePageable = normalizePageable(pageable);
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, safePageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, status, safePageable));
     }
 
     private Pageable normalizePageable(Pageable pageable) {
