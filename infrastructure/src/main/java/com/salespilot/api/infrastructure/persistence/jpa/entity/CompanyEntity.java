@@ -14,16 +14,16 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.salespilot.api.domain.enums.CompanyPlan;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -38,7 +38,7 @@ public class CompanyEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "tax_id", nullable = false)
+    @Column(name = "tax_id", nullable = false, unique = true)
     private String taxId;
 
     @Enumerated(EnumType.STRING)
@@ -47,10 +47,18 @@ public class CompanyEntity {
 
     @Column(name = "is_active", nullable = false)
     private boolean active;
-
-    @Column(name = "created_at", nullable = true, columnDefinition = "TIMESTAMP")
+    
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = true, columnDefinition = "TIMESTAMP", updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CollaboratorEntity> collaborators = new ArrayList<>();
+
+    public CompanyEntity(String name, String taxId, CompanyPlan plan, boolean active) {
+        this.name = name;
+        this.taxId = taxId;
+        this.plan = plan;
+        this.active = active;
+    }
 }

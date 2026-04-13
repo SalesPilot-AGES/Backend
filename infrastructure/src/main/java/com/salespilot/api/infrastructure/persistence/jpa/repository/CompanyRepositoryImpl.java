@@ -18,7 +18,6 @@ import com.salespilot.api.infrastructure.persistence.jpa.specification.CompanySp
 
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
-
     private final CompanyMapper mapper;
     private final CompanyJpaRepository companyJpaRepository;
 
@@ -44,5 +43,23 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public Optional<Company> getCompanyById(UUID id) {
         return companyJpaRepository.findById(id)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByTaxId(String taxId) {
+        return companyJpaRepository.findByTaxId(taxId).isPresent();
+    }
+
+    @Override
+    public Company createCompany(String name, String taxId, CompanyPlan companyPlan, boolean active) {
+        CompanyEntity entity = new CompanyEntity(
+            name,
+            taxId,
+            companyPlan,
+            active
+        );
+
+        CompanyEntity savedEntity = companyJpaRepository.save(entity);
+        return mapper.toDomain(savedEntity);
     }
 }
