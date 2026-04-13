@@ -60,6 +60,6 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         );
 
         CompanyEntity savedEntity = companyJpaRepository.save(entity);
-        return companyMapper.toDomainEntity(savedEntity);
+        return mapper.toDomain(savedEntity);
     }
 }
