@@ -5,8 +5,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.salespilot.api.application.dto.GetCompanyByIdResponseDTO;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
 
 import java.util.UUID;
 
@@ -38,6 +38,7 @@ public class CompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<GetCompanyByIdResponseDTO> getCompanyById(@PathVariable UUID id) {
         return getCompanyByIdUseCase.execute(id)
+                .map(GetCompanyByIdResponseDTO::from)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

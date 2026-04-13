@@ -1,6 +1,6 @@
 package com.salespilot.api.application.usecase;
 
-import com.salespilot.api.application.dto.GetCompanyByIdResponseDTO;
+import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
 import java.util.Optional;
@@ -13,14 +13,7 @@ public class GetCompanyByIdUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public Optional<GetCompanyByIdResponseDTO> execute(UUID id) {
-        return companyRepository.getCompanyById(id)
-                .map(c -> new GetCompanyByIdResponseDTO(c.getId(),
-                        c.getName(),
-                        c.getTaxId(),
-                        c.getPlan(),
-                        c.isActive(),
-                        c.getCreatedAt()
-                ));
+    public Optional<Company> execute(UUID id) {
+        return companyRepository.getCompanyById(id);
     }
 }
