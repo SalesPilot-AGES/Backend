@@ -1,10 +1,9 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 
 import com.salespilot.api.domain.entity.Company;
+import com.salespilot.api.domain.enums.CompanyPlan;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
@@ -26,12 +25,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Company createCompany(String name, String taxId, String plan, boolean active) {
+    public Company createCompany(String name, String taxId, CompanyPlan companyPlan, boolean active) {
         CompanyEntity entity = new CompanyEntity(
-            UUID.randomUUID(),
             name,
             taxId,
-            plan,
+            companyPlan,
             active
         );
 

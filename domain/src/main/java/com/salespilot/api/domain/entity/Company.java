@@ -1,7 +1,9 @@
 package com.salespilot.api.domain.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.salespilot.api.domain.enums.CompanyPlan;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,7 @@ public class Company {
     private final UUID id;
     private final String name;
     private final String taxId;
-    private final String plan;
+    private final CompanyPlan plan;
     private final boolean active;
-    private final Timestamp createdAt;
+    private final LocalDateTime createdAt;
 }
