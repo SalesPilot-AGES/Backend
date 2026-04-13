@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.salespilot.api.domain.entity.Company;
-import com.salespilot.api.domain.enums.CompanyPlan;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
@@ -28,12 +27,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Company> getAllCompanies(String name, String taxId, CompanyPlan plan, Boolean active, Pageable pageable) {
+    public Page<Company> getAllCompanies(String name, String taxId, String status, Pageable pageable) {
         Specification<CompanyEntity> spec = Specification
                 .where(CompanySpecification.nameLike(name))
                 .and(CompanySpecification.taxIdEquals(taxId))
-                .and(CompanySpecification.planEquals(plan))
-                .and(CompanySpecification.isActiveEquals(active));
+                .and(CompanySpecification.statusEquals(status));
 
         return companyJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
@@ -43,23 +41,5 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public Optional<Company> getCompanyById(UUID id) {
         return companyJpaRepository.findById(id)
                 .map(mapper::toDomain);
-    }
-
-    @Override
-    public boolean existsByTaxId(String taxId) {
-        return companyJpaRepository.findByTaxId(taxId).isPresent();
-    }
-
-    @Override
-    public Company createCompany(String name, String taxId, CompanyPlan companyPlan, boolean active) {
-        CompanyEntity entity = new CompanyEntity(
-            name,
-            taxId,
-            companyPlan,
-            active
-        );
-
-        CompanyEntity savedEntity = companyJpaRepository.save(entity);
-        return mapper.toDomain(savedEntity);
     }
 }

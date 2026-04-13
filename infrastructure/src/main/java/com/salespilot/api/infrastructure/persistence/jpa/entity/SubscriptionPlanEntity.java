@@ -19,8 +19,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "companies")
-public class CompanyEntity {
+@Table(name = "subscription_plans")
+public class SubscriptionPlanEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -29,11 +30,11 @@ public class CompanyEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "tax_id")
-    private String taxId;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "price_cents", nullable = false)
+    private Integer priceCents;
 
     @Column(name = "max_sellers", nullable = false)
     private Integer maxSellers;
@@ -41,12 +42,12 @@ public class CompanyEntity {
     @Column(name = "max_managers", nullable = false)
     private Integer maxManagers;
 
-    @Column(name = "notes")
-    private String notes;
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean active;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime updatedAt;
 }

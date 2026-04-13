@@ -5,9 +5,12 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,34 +22,34 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "companies")
-public class CompanyEntity {
+@Table(name = "audit_logs")
+public class AuditLogEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "actor_profile_id")
+    private ProfileEntity actorProfile;
 
-    @Column(name = "tax_id")
-    private String taxId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private CompanyEntity company;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "action", nullable = false)
+    private String action;
 
-    @Column(name = "max_sellers", nullable = false)
-    private Integer maxSellers;
+    @Column(name = "entity_type", nullable = false)
+    private String entityType;
 
-    @Column(name = "max_managers", nullable = false)
-    private Integer maxManagers;
+    @Column(name = "entity_id")
+    private UUID entityId;
 
-    @Column(name = "notes")
-    private String notes;
+    @Column(name = "payload", columnDefinition = "jsonb")
+    private String payload;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime updatedAt;
 }
