@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record CollaboratorRequestDTO(
-        @NotBlank
+        @NotNull
         UUID companyId,
 
         @NotBlank
@@ -18,10 +18,9 @@ public record CollaboratorRequestDTO(
         @NotBlank
         String email,
 
-        @NotNull
         boolean active,
 
         @Valid
-        @NotBlank
-        CollaboratorPreferencesDTO collaboratorPreferencesDTO
+        @NotNull
+        CollaboratorPreferencesDTO preferences
 ) {}

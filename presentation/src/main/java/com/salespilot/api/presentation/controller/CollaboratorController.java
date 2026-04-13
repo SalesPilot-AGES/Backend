@@ -22,8 +22,16 @@ public class CollaboratorController {
     }
 
     @PostMapping("/managers")
-    public ResponseEntity<CollaboratorResponseDTO> createManager (@Valid @RequestBody CollaboratorRequestDTO request){
-        CollaboratorResponseDTO response = postCollaboratorUseCase.create(request.companyId(), request.name(), request.email(), "gestor", request.active(), request.collaboratorPreferencesDTO().toDomain());
+    public ResponseEntity<CollaboratorResponseDTO> createManager(@Valid @RequestBody CollaboratorRequestDTO request) {
+        CollaboratorResponseDTO response = postCollaboratorUseCase.create(
+                request.companyId(),
+                request.name(),
+                request.email(),
+                "gestor",
+                request.active(),
+                request.preferences().toDomain()
+        );
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

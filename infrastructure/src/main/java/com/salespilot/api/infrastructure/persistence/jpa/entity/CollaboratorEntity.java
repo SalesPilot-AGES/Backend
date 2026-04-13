@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import com.salespilot.api.domain.enums.CollaboratorRole;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -59,7 +60,17 @@ public class CollaboratorEntity {
     @Column(name = "preferences", columnDefinition = "jsonb")
     private CollaboratorPreferences preferences;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP", updatable = false)
     private LocalDateTime createdAt;
+
+    public CollaboratorEntity(CompanyEntity company, String name, String email,  CollaboratorRole role, boolean active, CollaboratorPreferences preferences) {
+        this.company = company;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.active = active;
+        this.preferences = preferences;
+    }
 }
 
