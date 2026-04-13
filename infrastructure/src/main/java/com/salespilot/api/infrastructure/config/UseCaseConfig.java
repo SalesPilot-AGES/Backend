@@ -7,7 +7,6 @@ import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.domain.repository.CompanyRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 
 @Configuration

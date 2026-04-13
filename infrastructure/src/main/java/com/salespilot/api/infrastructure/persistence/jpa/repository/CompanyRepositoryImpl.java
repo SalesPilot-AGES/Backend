@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.CompanySpecification;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
