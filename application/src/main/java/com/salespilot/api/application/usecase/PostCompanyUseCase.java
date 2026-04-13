@@ -1,7 +1,5 @@
 package com.salespilot.api.application.usecase;
 
-import java.time.ZoneOffset;
-
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 import com.salespilot.api.domain.entity.Company;
@@ -22,6 +20,6 @@ public class PostCompanyUseCase {
 
         CompanyPlan companyPlan = CompanyPlan.valueOf(plan.toUpperCase());
         Company company = repository.createCompany(name, taxId, companyPlan, active);
-        return new CompanyResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlan(), company.isActive(), company.getCreatedAt().toInstant(ZoneOffset.UTC));
+        return new CompanyResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlan(), company.isActive(), company.getCreatedAt());
     }
 }

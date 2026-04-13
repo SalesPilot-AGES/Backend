@@ -1,7 +1,5 @@
 package com.salespilot.api.application.usecase;
 
-import java.time.ZoneOffset;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
@@ -25,7 +23,7 @@ public class GetAllCompaniesUseCase {
             c.getTaxId(),
             c.getPlan(),
             c.isActive(),
-            c.getCreatedAt().toInstant(ZoneOffset.UTC)
+            c.getCreatedAt()
         ));
     }
 }
