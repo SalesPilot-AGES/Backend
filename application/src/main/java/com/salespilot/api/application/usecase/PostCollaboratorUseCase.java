@@ -8,7 +8,6 @@ import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class PostCollaboratorUseCase {
@@ -21,6 +20,8 @@ public class PostCollaboratorUseCase {
     }
 
     public CollaboratorResponseDTO create(UUID companyId, String name, String email, String role, boolean active, CollaboratorPreferences collaboratorPreferences) {
+        //double verification needs refactoring
+
         if (!companyRepository.existsById(companyId)) {
             //throw new invalidCompanyId
         }
