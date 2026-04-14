@@ -1,6 +1,7 @@
 package com.salespilot.api.domain.entity;
 
 import com.salespilot.api.domain.enums.CollaboratorRole;
+import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,7 +23,7 @@ public class Collaborator {
 
     private boolean active;
 
-    private String preferences;
+    private CollaboratorPreferences preferences;
 
     private LocalDateTime createdAt;
 }
