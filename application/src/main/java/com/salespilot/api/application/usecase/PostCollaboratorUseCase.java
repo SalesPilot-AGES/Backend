@@ -23,7 +23,7 @@ public class PostCollaboratorUseCase {
     public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences collaboratorPreferences) {
         CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
                 .map(CompanyResponseDTO::from)
-                .orElseThrow(() -> new CompanyNotFoundException(companyId));;
+                .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
         Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, collaboratorPreferences);
 

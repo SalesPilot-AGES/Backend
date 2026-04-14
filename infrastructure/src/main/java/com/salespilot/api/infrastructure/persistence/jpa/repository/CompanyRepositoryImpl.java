@@ -51,11 +51,6 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public boolean existsById(UUID id) {
-        return companyJpaRepository.existsById(id);
-    }
-
-    @Override
     public Company createCompany(String name, String taxId, CompanyPlan companyPlan, boolean active) {
         CompanyEntity entity = new CompanyEntity(
             name,

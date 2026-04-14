@@ -1,6 +1,5 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -26,7 +25,7 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
     @Override
     public Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences preferences) {
-        CompanyEntity companyEntity = companyJpaRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId));
+        CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
 
         CollaboratorEntity collaboratorEntity = new CollaboratorEntity(companyEntity, name, email, role, active, preferences);
         CollaboratorEntity savedEntity = collaboratorJpaRepository.save(collaboratorEntity);
