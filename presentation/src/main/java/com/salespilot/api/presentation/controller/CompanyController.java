@@ -1,38 +1,52 @@
 package com.salespilot.api.presentation.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
-import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
-
-import java.util.UUID;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.salespilot.api.application.dto.CompanyResponseDTO;
+import com.salespilot.api.presentation.dto.CompanyRequestDTO;
+import com.salespilot.api.application.usecase.PostCompanyUseCase;
+import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.domain.enums.CompanyPlan;
+
+import jakarta.validation.Valid;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController {
 
+    private final PostCompanyUseCase postCompanyUseCase;
     private final GetCompanyByIdUseCase getCompanyByIdUseCase;
     private final GetAllCompaniesUseCase getCompanyUseCase;
 
     private static final int MAX_PAGE_SIZE = 100;
 
-    public CompanyController(GetCompanyByIdUseCase getCompanyByIdUseCase, GetAllCompaniesUseCase getCompanyUseCase) {
+    public CompanyController(PostCompanyUseCase postCompanyUseCase, GetCompanyByIdUseCase getCompanyByIdUseCase, GetAllCompaniesUseCase getCompanyUseCase) {
+        this.postCompanyUseCase = postCompanyUseCase;
         this.getCompanyByIdUseCase = getCompanyByIdUseCase;
         this.getCompanyUseCase = getCompanyUseCase;
+    }
+    
+    @PostMapping
+    public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
+        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plan(), request.active());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
