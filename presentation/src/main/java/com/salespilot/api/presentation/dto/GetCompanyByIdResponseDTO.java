@@ -3,7 +3,7 @@ package com.salespilot.api.presentation.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.salespilot.api.domain.entity.Company;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record GetCompanyByIdResponseDTO(@JsonProperty("id") UUID id,
@@ -13,8 +13,8 @@ public record GetCompanyByIdResponseDTO(@JsonProperty("id") UUID id,
                                         @JsonProperty("max_sellers") Integer maxSellers,
                                         @JsonProperty("max_managers") Integer maxManagers,
                                         @JsonProperty("notes") String notes,
-                                        @JsonProperty("created_at") LocalDateTime createdAt,
-                                        @JsonProperty("updated_at") LocalDateTime updatedAt) {
+                                        @JsonProperty("created_at") OffsetDateTime createdAt,
+                                        @JsonProperty("updated_at") OffsetDateTime updatedAt) {
 
     public static GetCompanyByIdResponseDTO from(Company company) {
         return new GetCompanyByIdResponseDTO(

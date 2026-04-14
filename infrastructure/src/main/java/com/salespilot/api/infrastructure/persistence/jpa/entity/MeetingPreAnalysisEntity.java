@@ -1,6 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -43,6 +43,6 @@ public class MeetingPreAnalysisEntity {
     @Column(name = "possible_objections", columnDefinition = "jsonb")
     private String possibleObjections;
 
-    @Column(name = "generated_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime generatedAt;
+    @Column(name = "generated_at")
+    private OffsetDateTime generatedAt;
 }

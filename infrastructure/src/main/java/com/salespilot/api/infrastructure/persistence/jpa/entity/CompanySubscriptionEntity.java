@@ -1,6 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -41,18 +41,18 @@ public class CompanySubscriptionEntity {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "starts_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime startsAt;
+    @Column(name = "starts_at")
+    private OffsetDateTime startsAt;
 
-    @Column(name = "ends_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime endsAt;
+    @Column(name = "ends_at")
+    private OffsetDateTime endsAt;
 
-    @Column(name = "renewal_date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime renewalDate;
+    @Column(name = "renewal_date")
+    private OffsetDateTime renewalDate;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
 }

@@ -1,6 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -48,6 +48,6 @@ public class SubscriptionPlanEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
 }

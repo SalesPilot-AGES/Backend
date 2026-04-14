@@ -1,6 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -78,14 +78,14 @@ public class MeetingEntity {
     @Column(name = "audio_storage_path")
     private String audioStoragePath;
 
-    @Column(name = "scheduled_for", columnDefinition = "TIMESTAMP")
-    private LocalDateTime scheduledFor;
+    @Column(name = "scheduled_for")
+    private OffsetDateTime scheduledFor;
 
-    @Column(name = "started_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime startedAt;
+    @Column(name = "started_at")
+    private OffsetDateTime startedAt;
 
-    @Column(name = "ended_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime endedAt;
+    @Column(name = "ended_at")
+    private OffsetDateTime endedAt;
 
     @Column(name = "duration_seconds")
     private Integer durationSeconds;
@@ -96,8 +96,8 @@ public class MeetingEntity {
     @Column(name = "result", nullable = false)
     private String result;
 
-    @Column(name = "processed_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime processedAt;
+    @Column(name = "processed_at")
+    private OffsetDateTime processedAt;
 
     @Column(name = "has_realtime_insights", nullable = false)
     private boolean realtimeInsights;
@@ -105,9 +105,9 @@ public class MeetingEntity {
     @Column(name = "has_post_meeting_summary", nullable = false)
     private boolean postMeetingSummary;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
 }

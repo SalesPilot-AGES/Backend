@@ -1,6 +1,6 @@
 package com.salespilot.api.domain.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +16,6 @@ public class Company {
     private Integer maxSellers;
     private Integer maxManagers;
     private String notes;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 }
