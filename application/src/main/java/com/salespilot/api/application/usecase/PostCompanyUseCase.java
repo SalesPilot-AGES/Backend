@@ -20,6 +20,6 @@ public class PostCompanyUseCase {
 
         CompanyPlan companyPlan = CompanyPlan.valueOf(plan.toUpperCase());
         Company company = repository.createCompany(name, taxId, companyPlan, active);
-        return new CompanyResponseDTO(company.getId(), company.getName(), company.getTaxId(), company.getPlan(), company.isActive(), company.getCreatedAt());
+        return CompanyResponseDTO.from(company);
     }
 }

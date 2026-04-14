@@ -19,7 +19,6 @@ import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.presentation.dto.CompanyRequestDTO;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
-import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.domain.enums.CompanyPlan;
 
@@ -50,9 +49,8 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetCompanyByIdResponseDTO> getCompanyById(@PathVariable UUID id) {
+    public ResponseEntity<CompanyResponseDTO> getCompanyById(@PathVariable UUID id) {
         return getCompanyByIdUseCase.execute(id)
-                .map(GetCompanyByIdResponseDTO::from)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
