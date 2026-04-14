@@ -2,7 +2,6 @@ package com.salespilot.api.infrastructure.persistence.jpa.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.salespilot.api.domain.enums.CompanyPlan;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 
 public class CompanySpecification {
@@ -17,13 +16,8 @@ public class CompanySpecification {
         : cb.equal(root.get("taxId"), taxId);
     }
 
-    public static Specification<CompanyEntity> planEquals(CompanyPlan plan){
-        return (root, query, cb) -> plan == null ? null
-        : cb.equal(root.get("plan"), plan);
-    }
-
-    public static Specification<CompanyEntity> isActiveEquals(Boolean active){
-        return (root, query, cb) -> active == null ? null
-        : cb.equal(root.get("active"), active);
+    public static Specification<CompanyEntity> statusEquals(String status){
+        return (root, query, cb) -> status == null || status.isBlank() ? null
+        : cb.equal(cb.lower(root.get("status")), status.toLowerCase());
     }
 }

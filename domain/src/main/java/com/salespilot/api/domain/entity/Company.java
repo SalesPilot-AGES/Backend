@@ -1,10 +1,8 @@
 package com.salespilot.api.domain.entity;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import com.salespilot.api.domain.enums.CompanyPlan;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,8 +12,10 @@ public class Company {
     private UUID id;
     private String name;
     private String taxId;
-    private CompanyPlan plan;
-    private boolean active;
-    private LocalDateTime createdAt;
-    private List<Collaborator> collaborators;
-} 
+    private String status;
+    private Integer maxSellers;
+    private Integer maxManagers;
+    private String notes;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
+}

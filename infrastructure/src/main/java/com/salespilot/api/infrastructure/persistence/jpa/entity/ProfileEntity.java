@@ -19,30 +19,28 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "companies")
-public class CompanyEntity {
+@Table(name = "profiles")
+public class ProfileEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
-    @Column(name = "tax_id")
-    private String taxId;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
-    @Column(name = "max_sellers", nullable = false)
-    private Integer maxSellers;
+    @Column(name = "role", nullable = false)
+    private String role;
 
-    @Column(name = "max_managers", nullable = false)
-    private Integer maxManagers;
-
-    @Column(name = "notes")
-    private String notes;
+    @Column(name = "is_active", nullable = false)
+    private boolean active;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;

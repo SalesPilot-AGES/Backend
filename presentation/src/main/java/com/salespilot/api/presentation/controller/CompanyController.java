@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.presentation.dto.CompanyRequestDTO;
@@ -21,7 +20,6 @@ import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.presentation.dto.GetCompanyByIdResponseDTO;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
-import com.salespilot.api.domain.enums.CompanyPlan;
 
 import jakarta.validation.Valid;
 
@@ -45,7 +43,13 @@ public class CompanyController {
     
     @PostMapping
     public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
-        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plan(), request.active());
+        CompanyResponseDTO response = postCompanyUseCase.create(
+                request.name(),
+                request.taxId(),
+                request.status(),
+                request.maxSellers(),
+                request.maxManagers(),
+                request.notes());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -61,12 +65,11 @@ public class CompanyController {
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String taxId,
-        @RequestParam(required = false) CompanyPlan plan,
-        @RequestParam(required = false) Boolean active,
+        @RequestParam(required = false) String status,
         Pageable pageable)
         {
         Pageable safePageable = normalizePageable(pageable);
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, safePageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, status, safePageable));
     }
 
     private Pageable normalizePageable(Pageable pageable) {
