@@ -15,5 +15,5 @@ public record CollaboratorResponseDTO(
         boolean active,
         CollaboratorPreferences preferences,
         LocalDateTime createdAt,
-        CompanyResponseDTO companyResponseDTO
+        CompanyResponseDTO company
 ) {}
