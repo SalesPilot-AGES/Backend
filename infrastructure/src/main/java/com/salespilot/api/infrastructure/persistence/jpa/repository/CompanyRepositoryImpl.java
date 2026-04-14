@@ -1,5 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +24,28 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public CompanyRepositoryImpl(CompanyJpaRepository companyJpaRepository, CompanyMapper mapper) {
         this.companyJpaRepository = companyJpaRepository;
         this.mapper = mapper;
+    }
+
+    @Override
+    public boolean existsByTaxId(String taxId) {
+        return companyJpaRepository.existsByTaxId(taxId);
+    }
+
+    @Override
+    public Company createCompany(String name, String taxId, String status, Integer maxSellers, Integer maxManagers, String notes) {
+        CompanyEntity entity = new CompanyEntity();
+        entity.setName(name);
+        entity.setTaxId(taxId);
+        entity.setStatus(status);
+        entity.setMaxSellers(maxSellers);
+        entity.setMaxManagers(maxManagers);
+        entity.setNotes(notes);
+        OffsetDateTime now = OffsetDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
+
+        CompanyEntity savedEntity = companyJpaRepository.save(entity);
+        return mapper.toDomain(savedEntity);
     }
 
     @Transactional(readOnly = true)
