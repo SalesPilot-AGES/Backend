@@ -14,4 +14,5 @@ public interface CompanyRepository {
     Company createCompany(String name, String taxId, CompanyPlan plan, boolean active);
     Page<Company> getAllCompanies(String name, String taxId, CompanyPlan plan, Boolean active, Pageable pageable);
     Optional<Company> getCompanyById(UUID id);
+    Optional<Company> updateCompany(UUID id, String name, CompanyPlan plan, boolean active);
 }
