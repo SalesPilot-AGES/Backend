@@ -40,12 +40,19 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
     @Override
     public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences) {
-        CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
-        CollaboratorEntity collaboratorEntity = collaboratorJpaRepository.getReferenceById(collaboratorId);
+        CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
+            .findByIdAndCompanyId(collaboratorId, companyId)
+        .   orElseThrow(() -> new RuntimeException("Collaborator not found"));
+
+        if (!collaboratorEntity.getEmail().equals(email) &&
+            collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email)) {
+            throw new RuntimeException("Email already in use");
+        }
         
         collaboratorEntity.setName(name);
         collaboratorEntity.setEmail(email);
         collaboratorEntity.setActive(active);
+        collaboratorEntity.setPreferences(preferences);
 
         CollaboratorEntity saved = collaboratorJpaRepository.save(collaboratorEntity);
         return mapper.toDomain(saved);

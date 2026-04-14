@@ -20,7 +20,7 @@ public class EditCollaboratorUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, CollaboratorRole role, String email, boolean active, CollaboratorPreferences collaboratorPreferences){
+    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences collaboratorPreferences){
         CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));

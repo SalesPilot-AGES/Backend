@@ -1,6 +1,7 @@
 package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
+import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/collaborators")
 public class CollaboratorController {
     private final PostCollaboratorUseCase postCollaboratorUseCase;
+    private final EditCollaboratorUseCase editCollaboratorUseCase;
 
-    public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase) {
+    public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase, EditCollaboratorUseCase editCollaboratorUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
+        this.editCollaboratorUseCase = editCollaboratorUseCase;
     }
 
     @PostMapping("/managers")
@@ -41,10 +44,16 @@ public class CollaboratorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // @PutMapping("/{id}")
-    // public ResponseEntity<CollaboratorResponseDTO> editCollaborator(@PathVariable UUID id, @Valid @RequestBody CollaboratorRequestDTO request) {
-    //     //TODO: process PUT request
+    @PutMapping("/{id}")
+    public ResponseEntity<CollaboratorResponseDTO> editCollaborator(@PathVariable UUID id, @Valid @RequestBody CollaboratorRequestDTO request) {
+        CollaboratorResponseDTO response = editCollaboratorUseCase.execute(
+            request.companyId(), 
+            id,
+            request.name(), 
+            request.email(), 
+            request.active(), 
+            request.preferences());
         
-    //     return entity;
-    // }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
