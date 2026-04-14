@@ -1,12 +1,18 @@
 package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
+import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
 import jakarta.validation.Valid;
+
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/collaborators")
 public class CollaboratorController {
     private final PostCollaboratorUseCase postCollaboratorUseCase;
+    private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
 
-    public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase) {
+    public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase, GetCollaboratorByIdUseCase getCollaboratorByIdUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
+        this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
     }
 
     @PostMapping("/managers")
@@ -34,4 +42,11 @@ public class CollaboratorController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/managers/{id}")
+    public ResponseEntity<CollaboratorResponseDTO> getCompanyById(@PathVariable UUID id) {
+        CollaboratorResponseDTO collaboratorResponseDTO =  getCollaboratorByIdUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(collaboratorResponseDTO);
+    } 
 }

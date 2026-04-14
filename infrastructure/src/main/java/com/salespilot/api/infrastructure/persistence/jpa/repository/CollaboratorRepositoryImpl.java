@@ -7,8 +7,12 @@ import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CollaboratorMapper;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -36,5 +40,11 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     @Override
     public boolean existsByCompanyIdAndEmail(UUID companyId, String email) {
         return collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Collaborator> getCollaboratorById(UUID id) {
+        return collaboratorJpaRepository.findById(id).map(mapper::toDomain);
     }
 }
