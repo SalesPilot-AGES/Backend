@@ -27,7 +27,7 @@ public class CollaboratorController {
                 request.companyId(),
                 request.name(),
                 request.email(),
-                CollaboratorRole.GESTOR,
+                CollaboratorRole.MANAGER,
                 request.active(),
                 request.preferences()
         );

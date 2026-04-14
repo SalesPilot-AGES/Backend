@@ -20,7 +20,7 @@ INSERT INTO companies (id, name, tax_id, plan, is_active, created_at) VALUES
     'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
     'Digital Sales',
     '12.345.678/0001-90',
-    'BASICO',
+    'BASIC',
     TRUE,
     '2024-04-01T08:00:00Z'
 ),
@@ -36,7 +36,7 @@ INSERT INTO companies (id, name, tax_id, plan, is_active, created_at) VALUES
     'd3e4f5a6-b7c8-9012-4567-890abcdef123',
     'ProVendas',
     '22.333.444/0001-55',
-    'BASICO',
+    'BASIC',
     FALSE,
     '2024-01-10T09:00:00Z'
 ),
@@ -52,7 +52,7 @@ INSERT INTO companies (id, name, tax_id, plan, is_active, created_at) VALUES
     'f5a6b7c8-d9e0-1234-6789-0abcdef12345',
     'Tech Solutions',
     '44.555.666/0001-77',
-    'BASICO',
+    'BASIC',
     TRUE,
     '2024-02-20T13:00:00Z'
 )
@@ -65,7 +65,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
     'Ana Costa',
     'ana@digitalsales.com',
-    'ADMIN_SISTEMA',
+    'SYSTEM_ADMIN',
     TRUE,
     '{"theme":"dark","defaultModel":"gpt-4o"}'::jsonb,
     '2024-04-02T10:00:00Z'
@@ -75,7 +75,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
     'Gabriel Ribeiro',
     'gabriel@digitalsales.com',
-    'GESTOR',
+    'MANAGER',
     TRUE,
     '{"theme":"light","defaultModel":"gpt-4o"}'::jsonb,
     '2024-04-02T10:01:00Z'
@@ -85,7 +85,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
     'Laura Silva',
     'laura@digitalsales.com',
-    'VENDEDOR',
+    'SELLER',
     FALSE,
     '{}'::jsonb,
     '2024-04-02T10:02:00Z'
@@ -95,7 +95,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'b1c2d3e4-f5a6-7890-2345-67890abcdef1',
     'Saulo Souza',
     'saulo@digitalsales.com',
-    'VENDEDOR',
+    'SELLER',
     TRUE,
     '{"theme":"dark","defaultModel":"gpt-3.5"}'::jsonb,
     '2024-04-02T10:03:00Z'
