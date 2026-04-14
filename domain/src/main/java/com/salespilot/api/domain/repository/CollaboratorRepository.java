@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface CollaboratorRepository {
     Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences preferences);
+    boolean existsByCompanyIdAndEmail(UUID companyId, String email);
 }

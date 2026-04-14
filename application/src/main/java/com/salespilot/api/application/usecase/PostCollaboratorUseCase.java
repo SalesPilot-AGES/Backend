@@ -2,6 +2,7 @@ package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.dto.CompanyResponseDTO;
+import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -21,6 +22,10 @@ public class PostCollaboratorUseCase {
     }
 
     public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences collaboratorPreferences) {
+        if(collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {
+            throw new CollaboratorAlreadyExistsException(companyId, email);
+        }
+
         CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));

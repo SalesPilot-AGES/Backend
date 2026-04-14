@@ -32,4 +32,9 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
         return mapper.toDomain(savedEntity);
     }
+
+    @Override
+    public boolean existsByCompanyIdAndEmail(UUID companyId, String email) {
+        return collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email);
+    }
 }
