@@ -20,16 +20,13 @@ public class PostCollaboratorUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public CollaboratorResponseDTO create(UUID companyId, String name, String email, String role, boolean active, CollaboratorPreferences collaboratorPreferences) {
-        //double verification needs refactoring
+    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences collaboratorPreferences) {
+        CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
+                .map(CompanyResponseDTO::from)
+                .orElseThrow(() -> new CompanyNotFoundException(companyId));;
 
-        if (!companyRepository.existsById(companyId)) {
-            throw new CompanyNotFoundException(companyId);
-        }
+        Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, collaboratorPreferences);
 
-        CollaboratorRole collaboratorRole = CollaboratorRole.valueOf(role.toUpperCase());
-
-        Collaborator collaborator = collaboratorRepository.create(companyId, name, email, collaboratorRole, active, collaboratorPreferences);
         return new CollaboratorResponseDTO(
                 collaborator.getId(),
                 collaborator.getCompanyId(),
@@ -39,7 +36,7 @@ public class PostCollaboratorUseCase {
                 collaborator.isActive(),
                 collaborator.getPreferences(),
                 collaborator.getCreatedAt(),
-                companyRepository.getCompanyById(companyId).map(CompanyResponseDTO::from).orElseThrow(() -> new CompanyNotFoundException(companyId))
+                companyDto
         );
     }
 }

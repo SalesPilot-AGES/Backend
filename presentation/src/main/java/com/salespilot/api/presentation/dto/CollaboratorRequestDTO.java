@@ -1,5 +1,6 @@
 package com.salespilot.api.presentation.dto;
 
+import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,5 +23,5 @@ public record CollaboratorRequestDTO(
 
         @Valid
         @NotNull
-        CollaboratorPreferencesDTO preferences
+        CollaboratorPreferences preferences
 ) {}

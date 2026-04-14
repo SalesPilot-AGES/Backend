@@ -2,6 +2,7 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
+import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,9 @@ public class CollaboratorController {
                 request.companyId(),
                 request.name(),
                 request.email(),
-                "gestor",
+                CollaboratorRole.GESTOR,
                 request.active(),
-                request.preferences().toDomain()
+                request.preferences()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
