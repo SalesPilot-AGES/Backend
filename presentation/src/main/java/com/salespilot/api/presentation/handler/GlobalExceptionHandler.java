@@ -1,5 +1,6 @@
 package com.salespilot.api.presentation.handler;
 
+import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TaxIdAlreadyExists.class)
     public ResponseEntity<Void> handleTaxIdAlreadyExists() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @ExceptionHandler(CollaboratorAlreadyExistsException.class)
+    public ResponseEntity<Void> handleCollaboratorAlreadyExistsException() {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
