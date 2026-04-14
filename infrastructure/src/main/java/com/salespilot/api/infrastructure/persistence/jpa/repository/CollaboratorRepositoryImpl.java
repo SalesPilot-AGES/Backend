@@ -37,4 +37,22 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     public boolean existsByCompanyIdAndEmail(UUID companyId, String email) {
         return collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email);
     }
+
+    @Override
+    public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences) {
+        CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
+        CollaboratorEntity collaboratorEntity = collaboratorJpaRepository.getReferenceById(collaboratorId);
+        
+        collaboratorEntity.setName(name);
+        collaboratorEntity.setEmail(email);
+        collaboratorEntity.setActive(active);
+
+        CollaboratorEntity saved = collaboratorJpaRepository.save(collaboratorEntity);
+        return mapper.toDomain(saved);
+    }
+
+    @Override
+    public boolean existsByCollaboratorId(UUID collaboratorId) {
+        return collaboratorJpaRepository.existsByCollaboratorId(collaboratorId);
+    }
 }
