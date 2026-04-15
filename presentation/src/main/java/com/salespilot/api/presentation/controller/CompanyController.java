@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.presentation.dto.CompanyRequestDTO;
 import com.salespilot.api.presentation.dto.UpdateCompanyRequestDTO;
-import com.salespilot.api.presentation.dto.UpdateCompanyResponseDTO;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
@@ -64,9 +63,10 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UpdateCompanyResponseDTO> updateCompany(
+    public ResponseEntity<CompanyResponseDTO> updateCompany(
             @PathVariable UUID id,
-            @Valid @RequestBody UpdateCompanyRequestDTO request) {
+            @Valid @RequestBody UpdateCompanyRequestDTO request
+    ) {
         CompanyResponseDTO company = updateCompanyUseCase.execute(
                 id,
                 request.name(),
@@ -74,7 +74,7 @@ public class CompanyController {
                 request.active()
         );
 
-        return ResponseEntity.ok(UpdateCompanyResponseDTO.from(company));
+        return ResponseEntity.ok(company);
     }
 
     @GetMapping
