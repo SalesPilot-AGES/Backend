@@ -11,8 +11,8 @@ import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
 public class GetCollaboratorByIdUseCase {
-    private CollaboratorRepository collaboratorRepository;
-    private CompanyRepository companyRepository;
+    private final CollaboratorRepository collaboratorRepository;
+    private final CompanyRepository companyRepository;
 
     public GetCollaboratorByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository) {
         this.collaboratorRepository = collaboratorRepository;
@@ -41,6 +41,5 @@ public class GetCollaboratorByIdUseCase {
                 collaborator.getCreatedAt(),
                 companyDto
         );
-        
     }
 }
