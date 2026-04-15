@@ -41,8 +41,8 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     @Override
     public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences) {
         CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
-            .findByIdAndCompanyId(collaboratorId, companyId)
-        .   orElseThrow(() -> new RuntimeException("Collaborator not found"));
+            .findByIdAndCompany_Id(collaboratorId, companyId)
+            .orElseThrow(() -> new RuntimeException("Collaborator not found"));
 
         if (!collaboratorEntity.getEmail().equals(email) &&
             collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email)) {
@@ -60,6 +60,6 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
     @Override
     public boolean existsByCollaboratorId(UUID collaboratorId) {
-        return collaboratorJpaRepository.existsByCollaboratorId(collaboratorId);
+        return collaboratorJpaRepository.existsById(collaboratorId);
     }
 }

@@ -10,8 +10,8 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEnti
 
 public interface CollaboratorJpaRepository extends JpaRepository<CollaboratorEntity, UUID> {
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
-    boolean existsByCollaboratorId(UUID collaboratorId);
+    boolean existsById(UUID collaboratorId);
     Optional<CollaboratorEntity> findById(UUID id);
-    Optional<CollaboratorEntity> findByIdAndCompanyId(UUID id, UUID companyId);
+    Optional<CollaboratorEntity> findByIdAndCompany_Id(UUID id, UUID companyId);
 }
 

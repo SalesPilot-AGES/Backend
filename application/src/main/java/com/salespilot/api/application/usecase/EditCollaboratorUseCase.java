@@ -6,7 +6,6 @@ import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
-import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
