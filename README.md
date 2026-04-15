@@ -80,11 +80,11 @@ Base URL local: `http://localhost:8080`
 ### Detalhes rápidos
 
 - `POST /api/companies`
-  - Body: `name`, `taxId`, `plan`, `active`
+  - Body: `name`, `tax_id`, `plan`, `active`
   - `plan`: `BASIC`, `PRO`, `ENTERPRISE`
 
 - `GET /api/companies`
-  - Query params opcionais: `name`, `taxId`, `plan`, `active`, `page`, `size`, `sort`
+  - Query params opcionais: `name`, `tax_id`, `plan`, `active`, `page`, `size`, `sort`
   - Limite de paginação: `size` máximo de `100`
 
 - `PUT /api/companies/{id}`
@@ -92,4 +92,4 @@ Base URL local: `http://localhost:8080`
   - `plan` segue enum `CompanyPlan`
 
 - `POST /api/collaborators/managers`
-  - Body: `companyId`, `name`, `email`, `active`, `preferences`
+  - Body: `company_id`, `name`, `email`, `active`, `preferences`
