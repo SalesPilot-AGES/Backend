@@ -66,6 +66,30 @@ Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele su
 
 ## Endpoints Disponíveis
 
-| Método | Caminho                  | Descrição                        |
-|--------|--------------------------|----------------------------------|
-| GET    | `/api/v1/system/ping`    | Verifica o status do sistema     |
+Base URL local: `http://localhost:8080`
+
+| Método | Caminho | Descrição |
+|--------|---------|-----------|
+| GET | `/api/v1/system/ping` | Verifica o status do sistema |
+| POST | `/api/companies` | Cria uma nova empresa |
+| GET | `/api/companies` | Lista empresas com filtros opcionais e paginação |
+| GET | `/api/companies/{id}` | Busca empresa por ID |
+| PUT | `/api/companies/{id}` | Atualiza `name`, `plan` e `active` de uma empresa |
+| POST | `/api/collaborators/managers` | Cria colaborador com role de gestor |
+
+### Detalhes rápidos
+
+- `POST /api/companies`
+  - Body: `name`, `tax_id`, `plan`, `active`
+  - `plan`: `BASIC`, `PRO`, `ENTERPRISE`
+
+- `GET /api/companies`
+  - Query params opcionais: `name`, `tax_id`, `plan`, `active`, `page`, `size`, `sort`
+  - Limite de paginação: `size` máximo de `100`
+
+- `PUT /api/companies/{id}`
+  - Body: `name`, `plan`, `active`
+  - `plan` segue enum `CompanyPlan`
+
+- `POST /api/collaborators/managers`
+  - Body: `company_id`, `name`, `email`, `active`, `preferences`
