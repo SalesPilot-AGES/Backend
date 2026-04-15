@@ -11,6 +11,5 @@ public interface CollaboratorRepository {
     Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences preferences);
     Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences);
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
-    boolean existsByCollaboratorId(UUID collaboratorId);
     Optional<Collaborator> getCollaboratorById(UUID id);
 }

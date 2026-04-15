@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.dto.CompanyResponseDTO;
+import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
+import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -23,6 +25,13 @@ public class EditCollaboratorUseCase {
         CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
+
+        Collaborator existing = repository.getCollaboratorById(collaboratorId)
+                .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
+
+        if (!existing.getEmail().equals(email) && repository.existsByCompanyIdAndEmail(companyId, email)) {
+            throw new CollaboratorAlreadyExistsException(companyId, email);
+        }
 
         Collaborator collaborator = repository.update(companyId, collaboratorId, name, email, active, collaboratorPreferences);
 

@@ -1,5 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -42,17 +43,13 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
         return collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email);
     }
 
+    @Transactional
     @Override
     public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences) {
         CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
-            .findByIdAndCompany_Id(collaboratorId, companyId)
-            .orElseThrow(() -> new RuntimeException("Collaborator not found"));
+            .findByIdAndCompanyId(collaboratorId, companyId)
+            .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
 
-        if (!collaboratorEntity.getEmail().equals(email) &&
-            collaboratorJpaRepository.existsByCompanyIdAndEmail(companyId, email)) {
-            throw new RuntimeException("Email already in use");
-        }
-        
         collaboratorEntity.setName(name);
         collaboratorEntity.setEmail(email);
         collaboratorEntity.setActive(active);
@@ -62,11 +59,6 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
         return mapper.toDomain(saved);
     }
 
-    @Override
-    public boolean existsByCollaboratorId(UUID collaboratorId) {
-        return collaboratorJpaRepository.existsById(collaboratorId);
-    }
-    
     @Transactional(readOnly = true)
     @Override
     public Optional<Collaborator> getCollaboratorById(UUID id) {
