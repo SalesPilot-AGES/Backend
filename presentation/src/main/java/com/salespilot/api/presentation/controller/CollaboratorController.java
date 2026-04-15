@@ -2,6 +2,7 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
+import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
@@ -11,6 +12,8 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +26,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/collaborators")
 public class CollaboratorController {
     private final PostCollaboratorUseCase postCollaboratorUseCase;
+    private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final EditCollaboratorUseCase editCollaboratorUseCase;
 
-    public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase, EditCollaboratorUseCase editCollaboratorUseCase) {
+    public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase, EditCollaboratorUseCase editCollaboratorUseCase, GetCollaboratorByIdUseCase getCollaboratorByIdUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
+        this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
     }
 
     @PostMapping("/managers")
@@ -55,5 +60,12 @@ public class CollaboratorController {
             request.preferences());
         
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/managers/{id}")
+    public ResponseEntity<CollaboratorResponseDTO> getManagerById(@PathVariable UUID id) {
+        CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id);
+
+        return ResponseEntity.ok(collaboratorResponseDTO);
     }
 }

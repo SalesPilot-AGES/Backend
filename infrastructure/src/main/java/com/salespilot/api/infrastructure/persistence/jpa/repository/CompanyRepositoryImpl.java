@@ -45,6 +45,18 @@ public class CompanyRepositoryImpl implements CompanyRepository {
                 .map(mapper::toDomain);
     }
 
+    @Transactional
+    @Override
+    public Optional<Company> updateCompany(UUID id, String name, CompanyPlan plan, boolean active) {
+        return companyJpaRepository.findById(id)
+                .map(entity -> {
+                    entity.setName(name);
+                    entity.setPlan(plan);
+                    entity.setActive(active);
+                    return mapper.toDomain(companyJpaRepository.save(entity));
+                });
+    }
+
     @Override
     public boolean existsByTaxId(String taxId) {
         return companyJpaRepository.findByTaxId(taxId).isPresent();
