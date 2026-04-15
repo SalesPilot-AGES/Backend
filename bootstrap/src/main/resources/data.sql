@@ -67,7 +67,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'ana@digitalsales.com',
     'SYSTEM_ADMIN',
     TRUE,
-    '{"theme":"dark","defaultModel":"gpt-4o"}'::jsonb,
+    '{"theme":"dark","default_model":"gpt-4o"}'::jsonb,
     '2024-04-02T10:00:00Z'
 ),
 (
@@ -77,7 +77,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'gabriel@digitalsales.com',
     'MANAGER',
     TRUE,
-    '{"theme":"light","defaultModel":"gpt-4o"}'::jsonb,
+    '{"theme":"light","default_model":"gpt-4o"}'::jsonb,
     '2024-04-02T10:01:00Z'
 ),
 (
@@ -97,7 +97,7 @@ INSERT INTO collaborators (id, company_id, name, email, role, is_active, prefere
     'saulo@digitalsales.com',
     'SELLER',
     TRUE,
-    '{"theme":"dark","defaultModel":"gpt-3.5"}'::jsonb,
+    '{"theme":"dark","default_model":"gpt-3.5"}'::jsonb,
     '2024-04-02T10:03:00Z'
 )
 ON CONFLICT (id) DO NOTHING;

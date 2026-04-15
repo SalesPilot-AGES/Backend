@@ -1,5 +1,6 @@
 package com.salespilot.api.infrastructure.config;
 
+import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import org.springframework.context.annotation.Bean;
@@ -37,5 +38,10 @@ public class UseCaseConfig {
     @Bean
     public PostCollaboratorUseCase postCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository){
         return new PostCollaboratorUseCase(collaboratorRepository, companyRepository);
+    }
+
+    @Bean
+    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository) {
+        return new GetAllManagersUseCase(repository);
     }
 }
