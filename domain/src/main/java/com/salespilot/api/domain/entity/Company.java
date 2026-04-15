@@ -18,4 +18,10 @@ public class Company {
     private boolean active;
     private LocalDateTime createdAt;
     private List<Collaborator> collaborators;
-} 
+
+    public void updateInfo(String name, CompanyPlan plan, boolean active) {
+        this.name = name;
+        this.plan = plan;
+        this.active = active;
+    }
+}

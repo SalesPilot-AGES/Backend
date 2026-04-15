@@ -20,8 +20,6 @@ public class GetCollaboratorByIdUseCase {
     }
 
     public CollaboratorResponseDTO execute(UUID id) {
-        /* Collaborator collaborator = collaboratorRepository.getCollaboratorById(id).map(CollaboratorResponseDTO::from); */
-
         Collaborator collaborator = collaboratorRepository.getCollaboratorById(id).orElseThrow(
             () -> new CollaboratorNotFoundException(id)
         );

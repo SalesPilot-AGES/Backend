@@ -44,9 +44,9 @@ public class CollaboratorController {
     }
 
     @GetMapping("/managers/{id}")
-    public ResponseEntity<CollaboratorResponseDTO> getCompanyById(@PathVariable UUID id) {
-        CollaboratorResponseDTO collaboratorResponseDTO =  getCollaboratorByIdUseCase.execute(id);
+    public ResponseEntity<CollaboratorResponseDTO> getManagerById(@PathVariable UUID id) {
+        CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(collaboratorResponseDTO);
-    } 
+        return ResponseEntity.ok(collaboratorResponseDTO);
+    }
 }

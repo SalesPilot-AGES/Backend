@@ -13,12 +13,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.presentation.dto.CompanyRequestDTO;
+import com.salespilot.api.presentation.dto.UpdateCompanyRequestDTO;
+import com.salespilot.api.presentation.dto.UpdateCompanyResponseDTO;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
+import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.domain.enums.CompanyPlan;
 
 import jakarta.validation.Valid;
@@ -32,13 +36,18 @@ public class CompanyController {
     private final PostCompanyUseCase postCompanyUseCase;
     private final GetCompanyByIdUseCase getCompanyByIdUseCase;
     private final GetAllCompaniesUseCase getCompanyUseCase;
+    private final UpdateCompanyUseCase updateCompanyUseCase;
 
     private static final int MAX_PAGE_SIZE = 100;
 
-    public CompanyController(PostCompanyUseCase postCompanyUseCase, GetCompanyByIdUseCase getCompanyByIdUseCase, GetAllCompaniesUseCase getCompanyUseCase) {
+    public CompanyController(PostCompanyUseCase postCompanyUseCase,
+                             GetCompanyByIdUseCase getCompanyByIdUseCase,
+                             GetAllCompaniesUseCase getCompanyUseCase,
+                             UpdateCompanyUseCase updateCompanyUseCase) {
         this.postCompanyUseCase = postCompanyUseCase;
         this.getCompanyByIdUseCase = getCompanyByIdUseCase;
         this.getCompanyUseCase = getCompanyUseCase;
+        this.updateCompanyUseCase = updateCompanyUseCase;
     }
     
     @PostMapping
@@ -52,6 +61,20 @@ public class CompanyController {
         return getCompanyByIdUseCase.execute(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UpdateCompanyResponseDTO> updateCompany(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateCompanyRequestDTO request) {
+        CompanyResponseDTO company = updateCompanyUseCase.execute(
+                id,
+                request.name(),
+                request.plan(),
+                request.active()
+        );
+
+        return ResponseEntity.ok(UpdateCompanyResponseDTO.from(company));
     }
 
     @GetMapping

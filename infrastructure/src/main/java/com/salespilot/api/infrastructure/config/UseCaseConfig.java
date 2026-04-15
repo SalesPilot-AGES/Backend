@@ -10,6 +10,7 @@ import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
+import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 
@@ -33,6 +34,11 @@ public class UseCaseConfig {
     @Bean
     public GetCompanyByIdUseCase getCompanyByIdUseCase(CompanyRepository repository){
         return new GetCompanyByIdUseCase(repository);
+    }
+
+    @Bean
+    public UpdateCompanyUseCase updateCompanyUseCase(CompanyRepository repository) {
+        return new UpdateCompanyUseCase(repository);
     }
 
     @Bean
