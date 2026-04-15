@@ -9,6 +9,7 @@ import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,6 +36,43 @@ public class CollaboratorController {
     private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final EditCollaboratorUseCase editCollaboratorUseCase;
 
+    private static final String COLLABORATOR_REQUEST_EXAMPLE = """
+            {
+              "company_id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
+              "name": "Gabriel Ribeiro",
+              "email": "gabriel@digitalsales.com",
+              "active": true,
+              "preferences": {
+                "theme": "light",
+                "default_model": "gpt-4o"
+              }
+            }
+            """;
+
+    private static final String COLLABORATOR_RESPONSE_EXAMPLE = """
+            {
+              "id": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
+              "company_id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
+              "name": "Gabriel Ribeiro",
+              "role": "MANAGER",
+              "email": "gabriel@digitalsales.com",
+              "active": true,
+              "preferences": {
+                "theme": "light",
+                "default_model": "gpt-4o"
+              },
+              "created_at": "2024-04-02T10:01:00",
+              "company": {
+                "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
+                "name": "Digital Sales",
+                "tax_id": "12.345.678/0001-90",
+                "plan": "BASIC",
+                "active": true,
+                "created_at": "2024-04-01T08:00:00"
+              }
+            }
+            """;
+
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
                                   EditCollaboratorUseCase editCollaboratorUseCase,
                                   GetCollaboratorByIdUseCase getCollaboratorByIdUseCase) {
@@ -44,15 +82,22 @@ public class CollaboratorController {
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = CollaboratorRequestDTO.class),
+            examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Manager criado com sucesso",
-                    content = @Content(schema = @Schema(implementation = CollaboratorResponseDTO.class))),
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CollaboratorResponseDTO.class),
+                            examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
             @ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
     @PostMapping("/managers")
-    public ResponseEntity<CollaboratorResponseDTO> createManager(@Valid @RequestBody CollaboratorRequestDTO request) {
+    public ResponseEntity<CollaboratorResponseDTO> createManager(
+            @Valid @RequestBody CollaboratorRequestDTO request) {
         CollaboratorResponseDTO response = postCollaboratorUseCase.create(
                 request.companyId(),
                 request.name(),
@@ -65,9 +110,15 @@ public class CollaboratorController {
     }
 
     @Operation(summary = "Editar manager", description = "Atualiza os dados de um colaborador com papel de MANAGER.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = CollaboratorRequestDTO.class),
+            examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Manager atualizado com sucesso",
-                    content = @Content(schema = @Schema(implementation = CollaboratorResponseDTO.class))),
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CollaboratorResponseDTO.class),
+                            examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
@@ -88,7 +139,9 @@ public class CollaboratorController {
     @Operation(summary = "Buscar manager por ID", description = "Retorna os dados de um manager pelo seu UUID.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Manager encontrado",
-                    content = @Content(schema = @Schema(implementation = CollaboratorResponseDTO.class))),
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CollaboratorResponseDTO.class),
+                            examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content)
     })
     @GetMapping("/managers/{id}")

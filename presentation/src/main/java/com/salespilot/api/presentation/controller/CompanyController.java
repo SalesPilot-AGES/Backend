@@ -11,6 +11,7 @@ import com.salespilot.api.presentation.dto.UpdateCompanyRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,6 +46,17 @@ public class CompanyController {
 
     private static final int MAX_PAGE_SIZE = 100;
 
+    private static final String COMPANY_RESPONSE_EXAMPLE = """
+            {
+              "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+              "name": "Digital Sales Ltda",
+              "tax_id": "12.345.678/0001-90",
+              "plan": "BASIC",
+              "active": true,
+              "created_at": "2024-04-01T08:00:00"
+            }
+            """;
+
     public CompanyController(PostCompanyUseCase postCompanyUseCase,
                              GetCompanyByIdUseCase getCompanyByIdUseCase,
                              GetAllCompaniesUseCase getCompanyUseCase,
@@ -56,14 +68,28 @@ public class CompanyController {
     }
 
     @Operation(summary = "Cadastrar empresa", description = "Cria uma nova empresa na plataforma.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = CompanyRequestDTO.class),
+            examples = @ExampleObject(value = """
+                    {
+                      "name": "Digital Sales Ltda",
+                      "tax_id": "12.345.678/0001-90",
+                      "plan": "BASIC",
+                      "active": true
+                    }
+                    """)))
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Empresa criada com sucesso",
-                    content = @Content(schema = @Schema(implementation = CompanyResponseDTO.class))),
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CompanyResponseDTO.class),
+                            examples = @ExampleObject(value = COMPANY_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "409", description = "CNPJ já cadastrado", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
+    public ResponseEntity<CompanyResponseDTO> create(
+            @Valid @RequestBody CompanyRequestDTO request) {
         CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plan(), request.active());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -71,7 +97,9 @@ public class CompanyController {
     @Operation(summary = "Buscar empresa por ID", description = "Retorna os dados de uma empresa pelo seu UUID.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Empresa encontrada",
-                    content = @Content(schema = @Schema(implementation = CompanyResponseDTO.class))),
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CompanyResponseDTO.class),
+                            examples = @ExampleObject(value = COMPANY_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content)
     })
     @GetMapping("/{id}")
@@ -83,9 +111,21 @@ public class CompanyController {
     }
 
     @Operation(summary = "Atualizar empresa", description = "Atualiza nome, plano e status de ativação de uma empresa.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = UpdateCompanyRequestDTO.class),
+            examples = @ExampleObject(value = """
+                    {
+                      "name": "Digital Sales Ltda",
+                      "plan": "PRO",
+                      "active": true
+                    }
+                    """)))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Empresa atualizada",
-                    content = @Content(schema = @Schema(implementation = CompanyResponseDTO.class))),
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CompanyResponseDTO.class),
+                            examples = @ExampleObject(value = COMPANY_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
@@ -98,7 +138,29 @@ public class CompanyController {
     }
 
     @Operation(summary = "Listar empresas", description = "Retorna uma página de empresas com filtros opcionais.")
-    @ApiResponse(responseCode = "200", description = "Lista paginada de empresas")
+    @ApiResponse(responseCode = "200", description = "Lista paginada de empresas",
+            content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                              "content": [
+                                {
+                                  "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                                  "name": "Digital Sales Ltda",
+                                  "tax_id": "12.345.678/0001-90",
+                                  "plan": "BASIC",
+                                  "active": true,
+                                  "created_at": "2024-04-01T08:00:00"
+                                }
+                              ],
+                              "total_elements": 1,
+                              "total_pages": 1,
+                              "number": 0,
+                              "size": 20,
+                              "first": true,
+                              "last": true,
+                              "empty": false
+                            }
+                            """)))
     @GetMapping
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
             @Parameter(description = "Filtro por nome (parcial)") @RequestParam(required = false) String name,
