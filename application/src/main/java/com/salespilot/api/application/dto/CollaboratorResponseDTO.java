@@ -1,5 +1,6 @@
 package com.salespilot.api.application.dto;
 
+import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 
@@ -16,4 +17,18 @@ public record CollaboratorResponseDTO(
         CollaboratorPreferences preferences,
         LocalDateTime createdAt,
         CompanyResponseDTO company
-) {}
+) {
+    public static CollaboratorResponseDTO from(Collaborator collaborator) {
+        return new CollaboratorResponseDTO(
+                collaborator.getId(),
+                collaborator.getCompany().getId(),
+                collaborator.getName(),
+                collaborator.getRole(),
+                collaborator.getEmail(),
+                collaborator.isActive(),
+                collaborator.getPreferences(),
+                collaborator.getCreatedAt(),
+                CompanyResponseDTO.from(collaborator.getCompany())
+        );
+    }
+}

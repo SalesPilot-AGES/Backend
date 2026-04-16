@@ -13,7 +13,7 @@ import java.util.UUID;
 public class Collaborator {
     private UUID id;
 
-    private UUID companyId;
+    private Company company;
 
     private String name;
 
