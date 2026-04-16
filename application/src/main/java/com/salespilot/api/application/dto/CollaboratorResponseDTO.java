@@ -1,6 +1,5 @@
 package com.salespilot.api.application.dto;
 
-import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 
