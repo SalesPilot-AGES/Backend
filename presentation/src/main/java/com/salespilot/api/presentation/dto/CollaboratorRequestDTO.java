@@ -1,6 +1,7 @@
 package com.salespilot.api.presentation.dto;
 
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,20 +9,20 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
+@Schema(description = "Dados para cadastro de um colaborador")
 public record CollaboratorRequestDTO(
-        @NotNull
-        UUID companyId,
+        @Schema(description = "UUID da empresa à qual o colaborador pertence", example = "b1c2d3e4-f5a6-7890-2345-67890abcdef1")
+        @NotNull UUID companyId,
 
-        @NotBlank
-        String name,
+        @Schema(description = "Nome completo do colaborador", example = "Gabriel Ribeiro")
+        @NotBlank String name,
 
-        @Email
-        @NotBlank
-        String email,
+        @Schema(description = "E-mail do colaborador", example = "gabriel@digitalsales.com")
+        @Email @NotBlank String email,
 
+        @Schema(description = "Se o colaborador está ativo", example = "true")
         boolean active,
 
-        @Valid
-        @NotNull
-        CollaboratorPreferences preferences
+        @Schema(description = "Preferências de interface do colaborador")
+        @Valid @NotNull CollaboratorPreferences preferences
 ) {}
