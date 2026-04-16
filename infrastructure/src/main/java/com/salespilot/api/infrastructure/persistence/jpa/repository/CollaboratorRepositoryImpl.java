@@ -8,10 +8,12 @@ import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CollaboratorMapper;
-
-import org.springframework.transaction.annotation.Transactional;
-
+import com.salespilot.api.infrastructure.persistence.jpa.specification.CollaboratorSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -63,5 +65,18 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     @Override
     public Optional<Collaborator> getCollaboratorById(UUID id) {
         return collaboratorJpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Collaborator> getManagers(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
+        Specification<CollaboratorEntity> spec = Specification
+                .where(CollaboratorSpecification.roleEquals(CollaboratorRole.MANAGER))
+                .and(CollaboratorSpecification.nameLike(name))
+                .and(CollaboratorSpecification.emailEquals(email))
+                .and(CollaboratorSpecification.companyIdEquals(companyId))
+                .and(CollaboratorSpecification.isActiveEquals(active));
+
+        return collaboratorJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
 }
