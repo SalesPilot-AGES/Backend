@@ -8,16 +8,9 @@ import java.util.List;
 
 @Component
 public class CollaboratorMapper {
-
-    private final CompanyMapper companyMapper;
-
-    public CollaboratorMapper(CompanyMapper companyMapper) {
-        this.companyMapper = companyMapper;
-    }
-
     public Collaborator toDomain(CollaboratorEntity collaboratorEntity) {
         return new Collaborator(collaboratorEntity.getId(),
-                companyMapper.toDomain(collaboratorEntity.getCompany()),
+                collaboratorEntity.getCompany().getId(),
                 collaboratorEntity.getName(),
                 collaboratorEntity.getEmail(),
                 collaboratorEntity.getRole(),

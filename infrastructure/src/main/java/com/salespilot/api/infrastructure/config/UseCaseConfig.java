@@ -60,7 +60,7 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository) {
-        return new GetAllManagersUseCase(repository);
+    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository) {
+        return new GetAllManagersUseCase(repository, companyRepository);
     }
 }

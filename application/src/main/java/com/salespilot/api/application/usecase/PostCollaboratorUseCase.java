@@ -34,7 +34,7 @@ public class PostCollaboratorUseCase {
 
         return new CollaboratorResponseDTO(
                 collaborator.getId(),
-                collaborator.getCompany().getId(),
+                collaborator.getCompanyId(),
                 collaborator.getName(),
                 collaborator.getRole(),
                 collaborator.getEmail(),

@@ -24,7 +24,7 @@ public class GetCollaboratorByIdUseCase {
             () -> new CollaboratorNotFoundException(id)
         );
 
-        UUID companyId = collaborator.getCompany().getId();
+        UUID companyId = collaborator.getCompanyId();
 
         CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
                 .map(CompanyResponseDTO::from)
@@ -32,7 +32,7 @@ public class GetCollaboratorByIdUseCase {
 
         return new CollaboratorResponseDTO(
                 collaborator.getId(),
-                collaborator.getCompany().getId(),
+                collaborator.getCompanyId(),
                 collaborator.getName(),
                 collaborator.getRole(),
                 collaborator.getEmail(),
