@@ -16,4 +16,4 @@ public record CollaboratorResponseDTO(
         CollaboratorPreferences preferences,
         LocalDateTime createdAt,
         CompanyResponseDTO company
-) {}
+) { }
