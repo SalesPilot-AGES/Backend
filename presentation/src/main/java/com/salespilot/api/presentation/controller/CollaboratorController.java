@@ -2,6 +2,7 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
+import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -15,6 +16,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import com.salespilot.api.presentation.utils.PageableUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -33,8 +38,9 @@ import java.util.UUID;
 public class CollaboratorController {
 
     private final PostCollaboratorUseCase postCollaboratorUseCase;
-    private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final EditCollaboratorUseCase editCollaboratorUseCase;
+    private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
+    private final GetAllManagersUseCase getAllManagersUseCase;
 
     private static final String COLLABORATOR_REQUEST_EXAMPLE = """
             {
@@ -74,23 +80,19 @@ public class CollaboratorController {
             """;
 
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
-                                  EditCollaboratorUseCase editCollaboratorUseCase,
-                                  GetCollaboratorByIdUseCase getCollaboratorByIdUseCase) {
+            EditCollaboratorUseCase editCollaboratorUseCase,
+            GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
+            GetAllManagersUseCase getAllManagersUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
         this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
+        this.getAllManagersUseCase = getAllManagersUseCase;
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = CollaboratorRequestDTO.class),
-            examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Manager criado com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CollaboratorResponseDTO.class),
-                            examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "201", description = "Manager criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
             @ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
@@ -104,21 +106,14 @@ public class CollaboratorController {
                 request.email(),
                 CollaboratorRole.MANAGER,
                 request.active(),
-                request.preferences()
-        );
+                request.preferences());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(summary = "Editar manager", description = "Atualiza os dados de um colaborador com papel de MANAGER.")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = CollaboratorRequestDTO.class),
-            examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Manager atualizado com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CollaboratorResponseDTO.class),
-                            examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "200", description = "Manager atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
@@ -133,15 +128,13 @@ public class CollaboratorController {
                 request.email(),
                 request.active(),
                 request.preferences());
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "Buscar manager por ID", description = "Retorna os dados de um manager pelo seu UUID.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Manager encontrado",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CollaboratorResponseDTO.class),
-                            examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "200", description = "Manager encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content)
     })
     @GetMapping("/managers/{id}")
@@ -149,5 +142,16 @@ public class CollaboratorController {
             @Parameter(description = "UUID do manager") @PathVariable UUID id) {
         CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id);
         return ResponseEntity.ok(collaboratorResponseDTO);
+    }
+
+    @GetMapping("/managers")
+    public ResponseEntity<Page<CollaboratorResponseDTO>> getManagers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) UUID companyId,
+            @RequestParam(required = false) Boolean active,
+            Pageable pageable) {
+        return ResponseEntity
+                .ok(getAllManagersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
     }
 }
