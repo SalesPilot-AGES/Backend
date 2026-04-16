@@ -49,9 +49,12 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     @Override
     public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences) {
         CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
-            .findByIdAndCompanyId(collaboratorId, companyId)
+            .findById(collaboratorId)
             .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
 
+        CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
+
+        collaboratorEntity.setCompany(companyEntity);
         collaboratorEntity.setName(name);
         collaboratorEntity.setEmail(email);
         collaboratorEntity.setActive(active);
