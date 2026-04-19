@@ -20,6 +20,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       - name: Compile
         run: |
           chmod +x ./mvnw
@@ -62,14 +63,14 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploy via SSH
-        run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > /tmp/deploy_key.pem
-          chmod 400 /tmp/deploy_key.pem
-          ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             cd salespilot &&
             aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }} &&
             export IMAGE_TAG=${{ secrets.ECR_REGISTRY }}/salespilot/api:${{ github.sha }} &&
             docker compose -f docker-compose.prod.yml pull &&
             docker compose -f docker-compose.prod.yml up -d
-          "
-          rm /tmp/deploy_key.pem
