@@ -54,7 +54,7 @@ entity "clients" as clients {
   ' phone : varchar
   client_company_name : varchar
   sector : varchar
-  overall_sentiment : varchar
+  overall_sentiment : int
   created_at : datetime
   updated_at : datetime
 }
