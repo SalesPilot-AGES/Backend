@@ -2,8 +2,6 @@ package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -18,11 +16,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "meeting_realtime_insights", catalog = "salespilot")
+@Table(name = "meeting_pre_analysis", catalog = "salespilot")
 @Getter
 @Setter
 @NoArgsConstructor
-public class MeetingRealtimeInsights implements java.io.Serializable {
+public class MeetingPreAnalysis implements java.io.Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -32,16 +30,17 @@ public class MeetingRealtimeInsights implements java.io.Serializable {
     @JoinColumn(name = "meeting_id", nullable = false)
     private Meetings meetings;
 
-    @Column(name = "content", nullable = false)
-    private String content;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private RealtimeInsightType type;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "recommended_strategy", columnDefinition = "json")
+    private String recommendedStrategy;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "description", columnDefinition = "json")
-    private String description;
+    @Column(name = "key_points", columnDefinition = "json")
+    private String keyPoints;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "possible_objections", columnDefinition = "json")
+    private String possibleObjections;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

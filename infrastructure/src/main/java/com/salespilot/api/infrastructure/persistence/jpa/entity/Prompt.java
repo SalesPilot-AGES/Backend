@@ -2,47 +2,50 @@ package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "meeting_realtime_insights", catalog = "salespilot")
+@Table(name = "prompt", catalog = "salespilot")
 @Getter
 @Setter
 @NoArgsConstructor
-public class MeetingRealtimeInsights implements java.io.Serializable {
+public class Prompt implements java.io.Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id", nullable = false)
-    private Meetings meetings;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Companies companies;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private RealtimeInsightType type;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "description", columnDefinition = "json")
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "instructions", nullable = false)
+    private String instructions;
+
+    @Column(name = "custom", nullable = false)
+    private boolean custom;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "prompt")
+    private Set<PromptAssignments> promptAssignments = new HashSet<>(0);
 }
