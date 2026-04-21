@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "prompt_assignments", catalog = "salespilot")
+@Table(name = "prompt_assignments")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,7 +30,7 @@ public class PromptAssignments implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collaborator_id", nullable = false)
-    private Collaborators collaborators;
+    private CollaboratorEntity collaborator;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

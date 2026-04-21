@@ -1,7 +1,6 @@
 package com.salespilot.api.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -9,18 +8,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Company {
+public class Client {
     private UUID id;
+    private UUID companyId;
+    private UUID collaboratorId;
     private String name;
-    private String taxId;
-    private boolean active;
+    private String clientCompanyName;
+    private String sector;
+    private Integer overallSentiment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String activePlanName;
-    private List<Collaborator> collaborators;
-
-    public void updateInfo(String name, boolean active) {
-        this.name = name;
-        this.active = active;
-    }
 }

@@ -5,7 +5,6 @@ import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
-import com.salespilot.api.domain.enums.CompanyPlan;
 import com.salespilot.api.presentation.dto.CompanyRequestDTO;
 import com.salespilot.api.presentation.dto.UpdateCompanyRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,9 +50,10 @@ public class CompanyController {
               "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
               "name": "Digital Sales Ltda",
               "tax_id": "12.345.678/0001-90",
-              "plan": "BASIC",
               "active": true,
-              "created_at": "2024-04-01T08:00:00"
+              "created_at": "2024-04-01T08:00:00",
+              "updated_at": "2024-04-01T08:00:00",
+              "active_plan": null
             }
             """;
 
@@ -75,7 +75,6 @@ public class CompanyController {
                     {
                       "name": "Digital Sales Ltda",
                       "tax_id": "12.345.678/0001-90",
-                      "plan": "BASIC",
                       "active": true
                     }
                     """)))
@@ -88,9 +87,8 @@ public class CompanyController {
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<CompanyResponseDTO> create(
-            @Valid @RequestBody CompanyRequestDTO request) {
-        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plan(), request.active());
+    public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
+        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.active());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -110,14 +108,13 @@ public class CompanyController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Atualizar empresa", description = "Atualiza nome, plano e status de ativação de uma empresa.")
+    @Operation(summary = "Atualizar empresa", description = "Atualiza nome e status de ativação de uma empresa.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
             mediaType = "application/json",
             schema = @Schema(implementation = UpdateCompanyRequestDTO.class),
             examples = @ExampleObject(value = """
                     {
                       "name": "Digital Sales Ltda",
-                      "plan": "PRO",
                       "active": true
                     }
                     """)))
@@ -133,7 +130,7 @@ public class CompanyController {
     public ResponseEntity<CompanyResponseDTO> updateCompany(
             @Parameter(description = "UUID da empresa") @PathVariable UUID id,
             @Valid @RequestBody UpdateCompanyRequestDTO request) {
-        CompanyResponseDTO company = updateCompanyUseCase.execute(id, request.name(), request.plan(), request.active());
+        CompanyResponseDTO company = updateCompanyUseCase.execute(id, request.name(), request.active());
         return ResponseEntity.ok(company);
     }
 
@@ -147,9 +144,10 @@ public class CompanyController {
                                   "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                                   "name": "Digital Sales Ltda",
                                   "tax_id": "12.345.678/0001-90",
-                                  "plan": "BASIC",
                                   "active": true,
-                                  "created_at": "2024-04-01T08:00:00"
+                                  "created_at": "2024-04-01T08:00:00",
+                                  "updated_at": "2024-04-01T08:00:00",
+                                  "active_plan": null
                                 }
                               ],
                               "total_elements": 1,
@@ -165,11 +163,10 @@ public class CompanyController {
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
             @Parameter(description = "Filtro por nome (parcial)") @RequestParam(required = false) String name,
             @Parameter(description = "Filtro por CNPJ (exato)") @RequestParam(required = false) String taxId,
-            @Parameter(description = "Filtro por plano") @RequestParam(required = false) CompanyPlan plan,
             @Parameter(description = "Filtro por status de ativação") @RequestParam(required = false) Boolean active,
             Pageable pageable) {
         Pageable safePageable = normalizePageable(pageable);
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, safePageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, active, safePageable));
     }
 
     private Pageable normalizePageable(Pageable pageable) {

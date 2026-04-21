@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "company_subscriptions", catalog = "salespilot")
+@Table(name = "company_subscriptions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class CompanySubscriptions implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    private Companies companies;
+    private CompanyEntity company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id", nullable = false)

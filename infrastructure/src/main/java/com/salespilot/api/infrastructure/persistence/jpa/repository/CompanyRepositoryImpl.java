@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.salespilot.api.domain.entity.Company;
-import com.salespilot.api.domain.enums.CompanyPlan;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
@@ -28,11 +27,10 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Company> getAllCompanies(String name, String taxId, CompanyPlan plan, Boolean active, Pageable pageable) {
+    public Page<Company> getAllCompanies(String name, String taxId, Boolean active, Pageable pageable) {
         Specification<CompanyEntity> spec = Specification
                 .where(CompanySpecification.nameLike(name))
                 .and(CompanySpecification.taxIdEquals(taxId))
-                .and(CompanySpecification.planEquals(plan))
                 .and(CompanySpecification.isActiveEquals(active));
 
         return companyJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
@@ -41,17 +39,15 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Transactional(readOnly = true)
     @Override
     public Optional<Company> getCompanyById(UUID id) {
-        return companyJpaRepository.findById(id)
-                .map(mapper::toDomain);
+        return companyJpaRepository.findById(id).map(mapper::toDomain);
     }
 
     @Transactional
     @Override
-    public Optional<Company> updateCompany(UUID id, String name, CompanyPlan plan, boolean active) {
+    public Optional<Company> updateCompany(UUID id, String name, boolean active) {
         return companyJpaRepository.findById(id)
                 .map(entity -> {
                     entity.setName(name);
-                    entity.setPlan(plan);
                     entity.setActive(active);
                     return mapper.toDomain(companyJpaRepository.save(entity));
                 });
@@ -63,15 +59,8 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Company createCompany(String name, String taxId, CompanyPlan companyPlan, boolean active) {
-        CompanyEntity entity = new CompanyEntity(
-            name,
-            taxId,
-            companyPlan,
-            active
-        );
-
-        CompanyEntity savedEntity = companyJpaRepository.save(entity);
-        return mapper.toDomain(savedEntity);
+    public Company createCompany(String name, String taxId, boolean active) {
+        CompanyEntity entity = new CompanyEntity(name, taxId, active);
+        return mapper.toDomain(companyJpaRepository.save(entity));
     }
 }

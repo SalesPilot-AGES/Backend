@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "prompt", catalog = "salespilot")
+@Table(name = "prompt")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class Prompt implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    private Companies companies;
+    private CompanyEntity company;
 
     @Column(name = "name", nullable = false)
     private String name;

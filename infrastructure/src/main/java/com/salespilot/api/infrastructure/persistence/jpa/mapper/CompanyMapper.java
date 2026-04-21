@@ -8,13 +8,16 @@ import java.util.List;
 
 @Component
 public class CompanyMapper {
-    public Company toDomain(CompanyEntity companyEntity) {
-        return new Company(companyEntity.getId(),
-                companyEntity.getName(),
-                companyEntity.getTaxId(),
-                companyEntity.getPlan(),
-                companyEntity.isActive(),
-                companyEntity.getCreatedAt(),
-                List.of());
+    public Company toDomain(CompanyEntity entity) {
+        return new Company(
+                entity.getId(),
+                entity.getName(),
+                entity.getTaxId(),
+                entity.isActive(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                null,
+                List.of()
+        );
     }
 }

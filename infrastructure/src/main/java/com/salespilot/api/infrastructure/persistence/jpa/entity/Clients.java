@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "clients", catalog = "salespilot")
+@Table(name = "clients")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,11 +29,11 @@ public class Clients implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    private Companies companies;
+    private CompanyEntity company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collaborator_id", nullable = false)
-    private Collaborators collaborators;
+    private CollaboratorEntity collaborator;
 
     @Column(name = "name", nullable = false)
     private String name;
