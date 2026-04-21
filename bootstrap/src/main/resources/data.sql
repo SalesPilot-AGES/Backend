@@ -21,7 +21,7 @@ INSERT INTO company_subscriptions (id, company_id, plan_id, active, starts_at) V
 ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'c2d3e4f5-a6b7-8901-3456-7890abcdef12', '22222222-2222-2222-2222-222222222222', TRUE, NOW()),
 ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'd3e4f5a6-b7c8-9012-4567-890abcdef123', '11111111-1111-1111-1111-111111111111', TRUE, NOW()),
 ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'e4f5a6b7-c8d9-0123-5678-90abcdef1234', '33333333-3333-3333-3333-333333333333', TRUE, NOW()),
-('gggggggg-gggg-gggg-gggg-gggggggggggg', 'f5a6b7c8-d9e0-1234-6789-0abcdef12345', '11111111-1111-1111-1111-111111111111', TRUE, NOW())
+('99999999-9999-9999-9999-999999999999', 'f5a6b7c8-d9e0-1234-6789-0abcdef12345', '11111111-1111-1111-1111-111111111111', TRUE, NOW())
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO collaborators (id, company_id, name, email, role, active, preferences) VALUES
