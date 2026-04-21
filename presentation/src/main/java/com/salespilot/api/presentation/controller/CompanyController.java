@@ -53,7 +53,7 @@ public class CompanyController {
               "active": true,
               "created_at": "2024-04-01T08:00:00",
               "updated_at": "2024-04-01T08:00:00",
-              "active_plan": null
+              "active_plan": "PRO"
             }
             """;
 
@@ -147,7 +147,7 @@ public class CompanyController {
                                   "active": true,
                                   "created_at": "2024-04-01T08:00:00",
                                   "updated_at": "2024-04-01T08:00:00",
-                                  "active_plan": null
+                                  "active_plan": "PRO"
                                 }
                               ],
                               "total_elements": 1,
