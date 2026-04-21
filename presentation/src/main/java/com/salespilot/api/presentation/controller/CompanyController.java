@@ -53,7 +53,7 @@ public class CompanyController {
               "active": true,
               "created_at": "2024-04-01T08:00:00",
               "updated_at": "2024-04-01T08:00:00",
-              "active_plan": "PRO"
+              "active_plan": "BASIC"
             }
             """;
 
@@ -75,6 +75,7 @@ public class CompanyController {
                     {
                       "name": "Digital Sales Ltda",
                       "tax_id": "12.345.678/0001-90",
+                      "plan": "BASIC",
                       "active": true
                     }
                     """)))
@@ -88,7 +89,7 @@ public class CompanyController {
     })
     @PostMapping
     public ResponseEntity<CompanyResponseDTO> create(@Valid @RequestBody CompanyRequestDTO request) {
-        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.active());
+        CompanyResponseDTO response = postCompanyUseCase.create(request.name(), request.taxId(), request.plan(), request.active());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -108,13 +109,14 @@ public class CompanyController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Atualizar empresa", description = "Atualiza nome e status de ativação de uma empresa.")
+    @Operation(summary = "Atualizar empresa", description = "Atualiza nome, plano e status de ativação de uma empresa.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(
             mediaType = "application/json",
             schema = @Schema(implementation = UpdateCompanyRequestDTO.class),
             examples = @ExampleObject(value = """
                     {
                       "name": "Digital Sales Ltda",
+                      "plan": "PRO",
                       "active": true
                     }
                     """)))
@@ -130,7 +132,7 @@ public class CompanyController {
     public ResponseEntity<CompanyResponseDTO> updateCompany(
             @Parameter(description = "UUID da empresa") @PathVariable UUID id,
             @Valid @RequestBody UpdateCompanyRequestDTO request) {
-        CompanyResponseDTO company = updateCompanyUseCase.execute(id, request.name(), request.active());
+        CompanyResponseDTO company = updateCompanyUseCase.execute(id, request.name(), request.plan(), request.active());
         return ResponseEntity.ok(company);
     }
 
@@ -147,7 +149,7 @@ public class CompanyController {
                                   "active": true,
                                   "created_at": "2024-04-01T08:00:00",
                                   "updated_at": "2024-04-01T08:00:00",
-                                  "active_plan": "PRO"
+                                  "active_plan": "BASIC"
                                 }
                               ],
                               "total_elements": 1,
@@ -163,10 +165,11 @@ public class CompanyController {
     public ResponseEntity<Page<CompanyResponseDTO>> getAll(
             @Parameter(description = "Filtro por nome (parcial)") @RequestParam(required = false) String name,
             @Parameter(description = "Filtro por CNPJ (exato)") @RequestParam(required = false) String taxId,
+            @Parameter(description = "Filtro por plano", example = "BASIC") @RequestParam(required = false) String plan,
             @Parameter(description = "Filtro por status de ativação") @RequestParam(required = false) Boolean active,
             Pageable pageable) {
         Pageable safePageable = normalizePageable(pageable);
-        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, active, safePageable));
+        return ResponseEntity.ok(getCompanyUseCase.execute(name, taxId, plan, active, safePageable));
     }
 
     private Pageable normalizePageable(Pageable pageable) {

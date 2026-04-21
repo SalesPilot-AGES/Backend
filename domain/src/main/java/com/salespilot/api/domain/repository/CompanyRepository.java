@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public interface CompanyRepository {
     boolean existsByTaxId(String taxId);
-    Company createCompany(String name, String taxId, boolean active);
-    Page<Company> getAllCompanies(String name, String taxId, Boolean active, Pageable pageable);
+    Company createCompany(String name, String taxId, String plan, boolean active);
+    Page<Company> getAllCompanies(String name, String taxId, String plan, Boolean active, Pageable pageable);
     Optional<Company> getCompanyById(UUID id);
-    Optional<Company> updateCompany(UUID id, String name, boolean active);
+    Optional<Company> updateCompany(UUID id, String name, String plan, boolean active);
 }

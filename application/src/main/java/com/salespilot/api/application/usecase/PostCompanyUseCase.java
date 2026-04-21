@@ -12,12 +12,12 @@ public class PostCompanyUseCase {
         this.repository = repository;
     }
 
-    public CompanyResponseDTO create(String name, String taxId, boolean active) {
+    public CompanyResponseDTO create(String name, String taxId, String plan, boolean active) {
         if (repository.existsByTaxId(taxId)) {
             throw new TaxIdAlreadyExists();
         }
 
-        Company company = repository.createCompany(name, taxId, active);
+        Company company = repository.createCompany(name, taxId, plan, active);
         return CompanyResponseDTO.from(company);
     }
 }

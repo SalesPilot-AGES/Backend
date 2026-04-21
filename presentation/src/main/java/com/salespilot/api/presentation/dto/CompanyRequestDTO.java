@@ -12,6 +12,9 @@ public record CompanyRequestDTO(
         @Schema(description = "CNPJ da empresa", example = "12.345.678/0001-90")
         @NotBlank String taxId,
 
+        @Schema(description = "Plano de assinatura", example = "BASIC", allowableValues = {"BASIC", "PRO", "ENTERPRISE"})
+        @NotBlank String plan,
+
         @Schema(description = "Se a empresa está ativa", example = "true")
         @NotNull Boolean active
 ) {}

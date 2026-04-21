@@ -13,8 +13,8 @@ public class UpdateCompanyUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public CompanyResponseDTO execute(UUID id, String name, boolean active) {
-        return companyRepository.updateCompany(id, name, active)
+    public CompanyResponseDTO execute(UUID id, String name, String plan, boolean active) {
+        return companyRepository.updateCompany(id, name, plan, active)
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(id));
     }

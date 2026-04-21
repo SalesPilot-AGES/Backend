@@ -9,6 +9,9 @@ public record UpdateCompanyRequestDTO(
         @Schema(description = "Razão social da empresa", example = "Digital Sales Ltda")
         @NotBlank String name,
 
+        @Schema(description = "Plano de assinatura", example = "PRO", allowableValues = {"BASIC", "PRO", "ENTERPRISE"})
+        @NotBlank String plan,
+
         @Schema(description = "Se a empresa está ativa", example = "true")
         @NotNull Boolean active
 ) {}
