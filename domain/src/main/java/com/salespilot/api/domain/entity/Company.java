@@ -16,11 +16,7 @@ public class Company {
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String activePlanName;
+    private String plan;
     private List<Collaborator> collaborators;
 
-    public void updateInfo(String name, boolean active) {
-        this.name = name;
-        this.active = active;
-    }
 }

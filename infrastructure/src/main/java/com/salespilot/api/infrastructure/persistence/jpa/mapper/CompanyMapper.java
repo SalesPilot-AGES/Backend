@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class CompanyMapper {
     public Company toDomain(CompanyEntity entity) {
-        String activePlanName = entity.getSubscriptions().stream()
+        String plan = entity.getSubscriptions().stream()
                 .filter(CompanySubscriptions::isActive)
                 .findFirst()
                 .map(it -> it.getSubscriptionPlans().getName())
@@ -23,7 +23,7 @@ public class CompanyMapper {
                 entity.isActive(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
-                activePlanName,
+                plan,
                 List.of()
         );
     }

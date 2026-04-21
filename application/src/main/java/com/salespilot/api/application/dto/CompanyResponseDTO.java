@@ -12,7 +12,7 @@ public record CompanyResponseDTO(
         boolean active,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String activePlan
+        String plan
 ) {
     public static CompanyResponseDTO from(Company company) {
         return new CompanyResponseDTO(
@@ -22,7 +22,7 @@ public record CompanyResponseDTO(
                 company.isActive(),
                 company.getCreatedAt(),
                 company.getUpdatedAt(),
-                company.getActivePlanName()
+                company.getPlan()
         );
     }
 }

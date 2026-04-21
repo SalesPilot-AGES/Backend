@@ -75,7 +75,7 @@ public class CollaboratorController {
                 "active": true,
                 "created_at": "2024-04-01T08:00:00",
                 "updated_at": "2024-04-01T08:00:00",
-                "active_plan": "PRO"
+                "plan": "PRO"
               }
             }
             """;
