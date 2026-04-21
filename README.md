@@ -60,26 +60,6 @@ Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele su
    - (Para parar a execução, utilize o comando docker-compose down).
 ---
 
-### Ambiente de desenvolvimento com Docker Compose
-```bash
-docker compose -f docker-compose.dev.yml up -d --build
-```
-
-Servicos disponiveis:
-- API: `http://localhost:8080`
-- Adminer: `http://localhost:8081`
-- Postgres (host): `localhost:5433`
-
-Parar ambiente:
-```bash
-docker compose -f docker-compose.dev.yml down
-```
-
-Parar e remover volume de dados:
-```bash
-docker compose -f docker-compose.dev.yml down -v
-```
-
 ## Endpoints Disponíveis
 
 | Método | Caminho                  | Descrição                        |

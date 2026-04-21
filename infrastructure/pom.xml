@@ -12,10 +12,6 @@
     <name>infrastructure</name>
     <description>Infrastructure layer - JPA implementations, external services, Spring config</description>
 
-    <properties>
-        <hibernate.tools.version>7.2.3.Final</hibernate.tools.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.salespilot</groupId>
@@ -40,38 +36,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.hibernate.tool</groupId>
-                <artifactId>hibernate-tools-maven</artifactId>
-                <version>${hibernate.tools.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.hibernate.tool</groupId>
-                        <artifactId>hibernate-tools-orm</artifactId>
-                        <version>${hibernate.tools.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <propertyFile>${project.basedir}/src/main/hibernate/hibernate.properties</propertyFile>
-                    <revengFile>${project.basedir}/src/main/hibernate/reveng.xml</revengFile>
-                    <packageName>com.salespilot.api.infrastructure.persistence.jpa.entity</packageName>
-                    <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
-                    <ejb3>true</ejb3>
-                    <jdk5>true</jdk5>
-                    <createCollectionForForeignKey>true</createCollectionForForeignKey>
-                    <createManyToOneForForeignKey>true</createManyToOneForForeignKey>
-                    <detectManyToMany>true</detectManyToMany>
-                    <detectOneToOne>true</detectOneToOne>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
