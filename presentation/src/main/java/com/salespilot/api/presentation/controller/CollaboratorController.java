@@ -72,9 +72,10 @@ public class CollaboratorController {
                 "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
                 "name": "Digital Sales",
                 "tax_id": "12.345.678/0001-90",
-                "plan": "BASIC",
                 "active": true,
-                "created_at": "2024-04-01T08:00:00"
+                "created_at": "2024-04-01T08:00:00",
+                "updated_at": "2024-04-01T08:00:00",
+                "plan": "PRO"
               }
             }
             """;
