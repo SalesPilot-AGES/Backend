@@ -76,20 +76,85 @@ Base URL local: `http://localhost:8080`
 | GET | `/api/companies/{id}` | Busca empresa por ID |
 | PUT | `/api/companies/{id}` | Atualiza `name`, `plan` e `active` de uma empresa |
 | POST | `/api/collaborators/managers` | Cria colaborador com role de gestor |
+| PUT | `/api/collaborators/managers/{id}` | Atualiza colaborador com role de gestor |
+| GET | `/api/collaborators/managers/{id}` | Busca gestor por ID |
+| GET | `/api/collaborators/managers` | Lista gestores com filtros opcionais e paginação |
 
-### Detalhes rápidos
+### Corpos de request (Postman)
 
 - `POST /api/companies`
-  - Body: `name`, `tax_id`, `plan`, `active`
+  - Body JSON:
+
+  ```json
+  {
+    "name": "Digital Sales Ltda",
+    "tax_id": "12.345.678/0001-90",
+    "plan": "BASIC",
+    "active": true
+  }
+  ```
+
   - `plan`: `BASIC`, `PRO`, `ENTERPRISE`
 
 - `GET /api/companies`
-  - Query params opcionais: `name`, `tax_id`, `plan`, `active`, `page`, `size`, `sort`
+  - Query params opcionais: `name`, `taxId`, `plan`, `active`, `page`, `size`, `sort`
   - Limite de paginação: `size` máximo de `100`
+  - Body: não possui
+
+- `GET /api/companies/{id}`
+  - Body: não possui
 
 - `PUT /api/companies/{id}`
-  - Body: `name`, `plan`, `active`
-  - `plan` segue enum `CompanyPlan`
+  - Body JSON:
+
+  ```json
+  {
+    "name": "Digital Sales Ltda",
+    "plan": "PRO",
+    "active": true
+  }
+  ```
+
+   - `plan`: `BASIC`, `PRO`, `ENTERPRISE`
 
 - `POST /api/collaborators/managers`
-  - Body: `company_id`, `name`, `email`, `active`, `preferences`
+  - Body JSON:
+
+  ```json
+  {
+    "company_id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
+    "name": "Gabriel Ribeiro",
+    "email": "gabriel@digitalsales.com",
+    "active": true,
+    "preferences": {
+      "theme": "light",
+      "default_model": "gpt-4o"
+    }
+  }
+  ```
+
+- `PUT /api/collaborators/managers/{id}`
+  - Body JSON:
+
+  ```json
+  {
+    "company_id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
+    "name": "Gabriel Ribeiro",
+    "email": "gabriel@digitalsales.com",
+    "active": true,
+    "preferences": {
+      "theme": "light",
+      "default_model": "gpt-4o"
+    }
+  }
+  ```
+
+- `GET /api/collaborators/managers/{id}`
+  - Body: não possui
+
+- `GET /api/collaborators/managers`
+  - Query params opcionais: `name`, `email`, `companyId`, `active`, `page`, `size`, `sort`
+  - Body: não possui
+
+- `GET /api/v1/system/ping`
+  - Body: não possui

@@ -3,8 +3,6 @@ package com.salespilot.api.infrastructure.persistence.jpa.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
@@ -21,8 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-
-import com.salespilot.api.domain.enums.CompanyPlan;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @NoArgsConstructor
 @Getter
@@ -41,24 +38,32 @@ public class CompanyEntity {
     @Column(name = "tax_id", nullable = false, unique = true)
     private String taxId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "plan", nullable = false)
-    private CompanyPlan plan;
+    @Column(name = "phone")
+    private String phone;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "active", nullable = false)
     private boolean active;
-    
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = true, columnDefinition = "TIMESTAMP", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = true, columnDefinition = "TIMESTAMP")
+    private LocalDateTime updatedAt;
+
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CollaboratorEntity> collaborators = new ArrayList<>();
 
-    public CompanyEntity(String name, String taxId, CompanyPlan plan, boolean active) {
+    @OneToMany(mappedBy = "company")
+    private List<CompanySubscriptions> subscriptions = new ArrayList<>();
+
+    public CompanyEntity(String name, String taxId, boolean active) {
         this.name = name;
         this.taxId = taxId;
-        this.plan = plan;
         this.active = active;
     }
 }
