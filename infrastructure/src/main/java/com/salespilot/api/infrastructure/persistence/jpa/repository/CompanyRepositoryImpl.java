@@ -74,12 +74,13 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Transactional
     @Override
     public Company createCompany(String name, String taxId, String plan, boolean active) {
-        CompanyEntity entity = companyJpaRepository.save(new CompanyEntity(name, taxId, active));
-        createSubscription(entity, plan);
+        CompanyEntity entity = companyJpaRepository.saveAndFlush(new CompanyEntity(name, taxId, active));
+        CompanySubscriptions subscription = createSubscription(entity, plan);
+        entity.getSubscriptions().add(subscription);
         return mapper.toDomain(entity);
     }
 
-    private void createSubscription(CompanyEntity company, String planName) {
+    private CompanySubscriptions createSubscription(CompanyEntity company, String planName) {
         SubscriptionPlans plan = subscriptionPlansJpaRepository
                 .findByNameIgnoreCase(planName)
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado: " + planName));
@@ -92,7 +93,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         subscription.setStartsAt(LocalDateTime.now());
         subscription.setCreatedAt(LocalDateTime.now());
         subscription.setUpdatedAt(LocalDateTime.now());
-        companySubscriptionsJpaRepository.save(subscription);
+        return companySubscriptionsJpaRepository.save(subscription);
     }
 
     private void updateSubscription(CompanyEntity company, String planName) {
