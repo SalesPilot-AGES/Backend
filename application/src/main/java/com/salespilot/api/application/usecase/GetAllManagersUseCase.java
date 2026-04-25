@@ -28,9 +28,12 @@ public class GetAllManagersUseCase {
                         c.getName(),
                         c.getRole(),
                         c.getEmail(),
+                        c.getPhone(),
                         c.isActive(),
+                        c.getAverageFeeling(),
                         c.getPreferences(),
                         c.getCreatedAt(),
+                        c.getUpdatedAt(),
                         companyRepository.getCompanyById(c.getCompanyId())
                                 .map(CompanyResponseDTO::from)
                                 .orElseThrow(() -> new CompanyNotFoundException(companyId))

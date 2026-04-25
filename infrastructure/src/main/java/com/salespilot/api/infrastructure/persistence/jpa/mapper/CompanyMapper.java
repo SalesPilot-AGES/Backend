@@ -20,6 +20,8 @@ public class CompanyMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getTaxId(),
+                entity.getPhone(),
+                entity.getAddress(),
                 entity.isActive(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),

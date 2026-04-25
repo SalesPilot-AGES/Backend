@@ -38,9 +38,12 @@ public class PostCollaboratorUseCase {
                 collaborator.getName(),
                 collaborator.getRole(),
                 collaborator.getEmail(),
+                collaborator.getPhone(),
                 collaborator.isActive(),
+                collaborator.getAverageFeeling(),
                 collaborator.getPreferences(),
                 collaborator.getCreatedAt(),
+                collaborator.getUpdatedAt(),
                 companyDto
         );
     }

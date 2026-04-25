@@ -13,6 +13,8 @@ public class Company {
     private UUID id;
     private String name;
     private String taxId;
+    private String phone;
+    private String address;
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
