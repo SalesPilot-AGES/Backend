@@ -12,8 +12,11 @@ public record CollaboratorResponseDTO(
         String name,
         CollaboratorRole role,
         String email,
+        String phone,
         boolean active,
+        Integer averageFeeling,
         CollaboratorPreferences preferences,
         LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         CompanyResponseDTO company
 ) { }
