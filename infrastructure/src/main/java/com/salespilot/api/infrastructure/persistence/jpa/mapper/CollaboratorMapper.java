@@ -13,10 +13,13 @@ public class CollaboratorMapper {
                 collaboratorEntity.getCompany().getId(),
                 collaboratorEntity.getName(),
                 collaboratorEntity.getEmail(),
+                collaboratorEntity.getPhone(),
                 collaboratorEntity.getRole(),
                 collaboratorEntity.isActive(),
+                collaboratorEntity.getAverageFeeling(),
                 collaboratorEntity.getPreferences(),
-                collaboratorEntity.getCreatedAt());
+                collaboratorEntity.getCreatedAt(),
+                collaboratorEntity.getUpdatedAt());
     }
 
     public List<Collaborator> toDomainList(List<CollaboratorEntity> collaboratorEntityList) {
