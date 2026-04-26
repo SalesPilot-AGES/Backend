@@ -107,6 +107,7 @@ public class CollaboratorController {
                 request.email(),
                 CollaboratorRole.MANAGER,
                 request.active(),
+                request.phone(),
                 request.preferences());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -154,5 +155,27 @@ public class CollaboratorController {
             Pageable pageable) {
         return ResponseEntity
                 .ok(getAllManagersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
+    }
+
+    @Operation(summary = "Cadastrar seller", description = "Cria um novo colaborador com o papel de SELLER.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Seller criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = COLLABORATOR_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
+            @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
+    })
+    @PostMapping("/sellers")
+    public ResponseEntity<CollaboratorResponseDTO> createSeller(
+            @Valid @RequestBody CollaboratorRequestDTO request) {
+        CollaboratorResponseDTO response = postCollaboratorUseCase.create(
+                request.companyId(),
+                request.name(),
+                request.email(),
+                CollaboratorRole.SELLER,
+                request.active(),
+                request.phone(),
+                request.preferences());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

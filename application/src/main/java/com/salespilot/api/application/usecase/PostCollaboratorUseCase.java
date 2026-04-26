@@ -21,7 +21,7 @@ public class PostCollaboratorUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences collaboratorPreferences) {
+    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences) {
         if(collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
@@ -30,7 +30,7 @@ public class PostCollaboratorUseCase {
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
-        Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, collaboratorPreferences);
+        Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences);
 
         return new CollaboratorResponseDTO(
                 collaborator.getId(),
