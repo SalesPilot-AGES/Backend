@@ -2,6 +2,7 @@ package com.salespilot.api.infrastructure.config;
 
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
+import com.salespilot.api.application.usecase.GetAllSellersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -62,5 +63,10 @@ public class UseCaseConfig {
     @Bean
     public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository) {
         return new GetAllManagersUseCase(repository, companyRepository);
+    }
+
+    @Bean
+    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository) {
+        return new GetAllSellersUseCase(repository, companyRepository);
     }
 }
