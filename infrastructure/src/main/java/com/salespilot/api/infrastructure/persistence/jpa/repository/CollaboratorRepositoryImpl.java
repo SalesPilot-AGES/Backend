@@ -31,10 +31,10 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     }
 
     @Override
-    public Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences) {
+    public Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences, Integer averageFeeling) {
         CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
 
-        CollaboratorEntity collaboratorEntity = new CollaboratorEntity(companyEntity, name, email, role, active, phone, preferences);
+        CollaboratorEntity collaboratorEntity = new CollaboratorEntity(companyEntity, name, email, role, active, phone, preferences, averageFeeling);
         CollaboratorEntity savedEntity = collaboratorJpaRepository.save(collaboratorEntity);
 
         return mapper.toDomain(savedEntity);

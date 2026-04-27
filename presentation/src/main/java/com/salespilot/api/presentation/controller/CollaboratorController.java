@@ -108,7 +108,8 @@ public class CollaboratorController {
                 CollaboratorRole.MANAGER,
                 request.active(),
                 request.phone(),
-                request.preferences());
+                request.preferences(),
+                null);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -175,7 +176,8 @@ public class CollaboratorController {
                 CollaboratorRole.SELLER,
                 request.active(),
                 request.phone(),
-                request.preferences());
+                request.preferences(),
+                0);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
