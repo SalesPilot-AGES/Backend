@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.OptionalDouble;
 import java.util.UUID;
 
 @Repository
@@ -32,6 +33,25 @@ public class MeetingRepositoryImpl implements MeetingRepository {
                 .and(MeetingSpecification.collaboratorIdEquals(collaboratorID))));
 
         return meetingsJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
+    }
+
+    public long getTotalMeetingsByCollaboratorId(UUID collaboratorId) {
+        Specification<Meetings> spec = Specification
+                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId));
+
+        return meetingsJpaRepository.count(spec);
+    }
+
+    public OptionalDouble getAverageDurationSecondsByCollaboratorId(UUID collaboratorId) {
+        Specification<Meetings> spec = Specification
+                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId));
+
+        return meetingsJpaRepository.findAll(spec)
+                .stream()
+                .map(Meetings::getDurationSeconds)
+                .filter(d -> d != null)
+                .mapToLong(Long::valueOf)
+                .average();
     }
 /*
     @Override
