@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ClientRepository {
     Optional<Client> findById(UUID id);
-    List<Client> findByCompanyId(UUID companyId);
+    /*List<Client> findByCompanyId(UUID companyId);
     List<Client> findByCollaboratorId(UUID collaboratorId);
-    Client save(Client client);
+    Client save(Client client);*/
 }
