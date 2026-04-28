@@ -1,14 +1,10 @@
 package com.salespilot.api.presentation.handler;
 
-import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
-import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +26,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CollaboratorNotFoundException.class)
     public ResponseEntity<Void> handleCollaboratorNotFoundException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(NoMeetingsFoundException.class)
+    public ResponseEntity<Void> handleNoMeetingsFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 

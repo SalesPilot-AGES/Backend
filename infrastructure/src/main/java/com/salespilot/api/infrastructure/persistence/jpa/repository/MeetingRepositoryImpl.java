@@ -35,6 +35,18 @@ public class MeetingRepositoryImpl implements MeetingRepository {
         return meetingsJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
 
+    public long getTotalMeetings() {
+        return meetingsJpaRepository.count();
+    }
+
+    public OptionalDouble getAverageDurationSeconds() {
+        return meetingsJpaRepository.findAll().stream()
+                .map(Meetings::getDurationSeconds)
+                .filter(d -> d != null)
+                .mapToLong(Long::valueOf)
+                .average();
+    }
+
     public long getTotalMeetingsByCollaboratorId(UUID collaboratorId) {
         Specification<Meetings> spec = Specification
                 .where(MeetingSpecification.collaboratorIdEquals(collaboratorId));

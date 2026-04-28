@@ -13,6 +13,5 @@ public record MeetingResponseDTO(
         LocalDateTime startedAt,
         LocalDateTime endedAt,
         Integer durationSeconds,
-        String status,
-        SellerSummaryResponseDTO summary
+        String status
 ) {}

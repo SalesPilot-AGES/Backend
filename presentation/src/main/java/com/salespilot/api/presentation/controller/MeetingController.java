@@ -1,5 +1,6 @@
 package com.salespilot.api.presentation.controller;
 
+import com.salespilot.api.application.dto.MeetingPageResponseDTO;
 import com.salespilot.api.application.dto.MeetingResponseDTO;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.presentation.utils.PageableUtils;
@@ -26,7 +27,7 @@ public class MeetingController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MeetingResponseDTO>> getAllMeetings(
+    public ResponseEntity<MeetingPageResponseDTO> getAllMeetings(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String clientCompanyName,
             @RequestParam(required = false) UUID collaboratorId,

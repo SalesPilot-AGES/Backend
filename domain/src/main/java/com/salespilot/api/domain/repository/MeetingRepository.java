@@ -15,4 +15,6 @@ public interface MeetingRepository {
     Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorID, Pageable pageable);
     long getTotalMeetingsByCollaboratorId(UUID collaboratorId);
     OptionalDouble getAverageDurationSecondsByCollaboratorId(UUID collaboratorId);
+    long getTotalMeetings();
+    OptionalDouble getAverageDurationSeconds();
 }
