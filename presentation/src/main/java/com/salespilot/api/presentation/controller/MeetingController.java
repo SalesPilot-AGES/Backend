@@ -1,6 +1,5 @@
 package com.salespilot.api.presentation.controller;
 
-import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.dto.MeetingResponseDTO;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.presentation.utils.PageableUtils;

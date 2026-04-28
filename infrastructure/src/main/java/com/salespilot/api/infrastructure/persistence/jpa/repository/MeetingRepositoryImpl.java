@@ -1,13 +1,9 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
-import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.MeetingRepository;
-import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.Meetings;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingMapper;
-import com.salespilot.api.infrastructure.persistence.jpa.specification.CollaboratorSpecification;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.MeetingSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
