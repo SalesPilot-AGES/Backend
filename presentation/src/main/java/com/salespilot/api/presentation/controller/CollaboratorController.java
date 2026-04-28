@@ -111,7 +111,9 @@ public class CollaboratorController {
                 request.email(),
                 CollaboratorRole.MANAGER,
                 request.active(),
-                request.preferences());
+                request.phone(),
+                request.preferences(),
+                null);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
