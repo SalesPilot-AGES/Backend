@@ -28,10 +28,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleCollaboratorNotFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
-    @ExceptionHandler(NoMeetingsFoundException.class)
-    public ResponseEntity<Void> handleNoMeetingsFoundException() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
 }

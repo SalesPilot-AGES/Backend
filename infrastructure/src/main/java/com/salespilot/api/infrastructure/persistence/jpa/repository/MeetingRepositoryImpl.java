@@ -30,7 +30,8 @@ public class MeetingRepositoryImpl implements MeetingRepository {
         Specification<Meetings> spec = Specification
                 .where(MeetingSpecification.titleLike(title)
                 .and(MeetingSpecification.clientCompanyNameLike(clientCompanyName)
-                .and(MeetingSpecification.collaboratorIdEquals(collaboratorID))));
+                .and(MeetingSpecification.collaboratorIdEquals(collaboratorID)))
+                .and(MeetingSpecification.collaboratorIsActive(collaboratorID)));
 
         return meetingsJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
@@ -39,12 +40,14 @@ public class MeetingRepositoryImpl implements MeetingRepository {
         return meetingsJpaRepository.count();
     }
 
-    public OptionalDouble getAverageDurationSeconds() {
-        return meetingsJpaRepository.findAll().stream()
+    public double getAverageDurationSeconds() {
+        return meetingsJpaRepository.findAll()
+                .stream()
                 .map(Meetings::getDurationSeconds)
                 .filter(d -> d != null)
                 .mapToLong(Long::valueOf)
-                .average();
+                .average()
+                .orElse(0);
     }
 
     public long getTotalMeetingsByCollaboratorId(UUID collaboratorId) {
@@ -54,7 +57,7 @@ public class MeetingRepositoryImpl implements MeetingRepository {
         return meetingsJpaRepository.count(spec);
     }
 
-    public OptionalDouble getAverageDurationSecondsByCollaboratorId(UUID collaboratorId) {
+    public double getAverageDurationSecondsByCollaboratorId(UUID collaboratorId) {
         Specification<Meetings> spec = Specification
                 .where(MeetingSpecification.collaboratorIdEquals(collaboratorId));
 
@@ -63,7 +66,8 @@ public class MeetingRepositoryImpl implements MeetingRepository {
                 .map(Meetings::getDurationSeconds)
                 .filter(d -> d != null)
                 .mapToLong(Long::valueOf)
-                .average();
+                .average()
+                .orElse(0);
     }
 /*
     @Override

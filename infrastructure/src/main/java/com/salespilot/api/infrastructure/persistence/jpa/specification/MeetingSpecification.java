@@ -21,4 +21,9 @@ public class MeetingSpecification {
         return (root, query, cb) -> collaboratorId == null ? null
                 : cb.equal(root.get("collaborator").get("id"), collaboratorId);
     }
+
+    public static Specification<Meetings> collaboratorIsActive(UUID collaboratorId) {
+        return (root, query, cb) -> collaboratorId == null ? null
+                : cb.equal(root.get("collaborator").get("active"), true);
+    }
 }
