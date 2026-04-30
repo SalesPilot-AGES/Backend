@@ -40,54 +40,6 @@ public class MeetingRepositoryImpl implements MeetingRepository {
     }
 
     public double getAverageDurationSeconds() {
-        return meetingsJpaRepository.findAll()
-                .stream()
-                .map(Meetings::getDurationSeconds)
-                .filter(d -> d != null)
-                .mapToLong(Long::valueOf)
-                .average()
-                .orElse(0);
+        return meetingsJpaRepository.findAverageDurationSeconds().orElse(0.0);
     }
-
-    public long getTotalMeetingsByCollaboratorId(UUID collaboratorId) {
-        Specification<Meetings> spec = Specification
-                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId));
-
-        return meetingsJpaRepository.count(spec);
-    }
-
-    public double getAverageDurationSecondsByCollaboratorId(UUID collaboratorId) {
-        Specification<Meetings> spec = Specification
-                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId));
-
-        return meetingsJpaRepository.findAll(spec)
-                .stream()
-                .map(Meetings::getDurationSeconds)
-                .filter(d -> d != null)
-                .mapToLong(Long::valueOf)
-                .average()
-                .orElse(0);
-    }
-/*
-    @Override
-    public Optional<Meeting> findById(UUID id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Meeting> findByCollaboratorId(UUID collaboratorId) {
-        return List.of();
-    }
-
-    @Override
-    public List<Meeting> findByClientId(UUID clientId) {
-        return List.of();
-    }
-
-    @Override
-    public Meeting save(Meeting meeting) {
-        return null;
-    }*/
-
-
 }

@@ -23,20 +23,4 @@ public class ClientRepositoryImpl implements ClientRepository {
     public Optional<Client> findById(UUID id) {
         return clientsJpaRepository.findById(id).map(mapper::toDomain);
     }
-
-    /*
-    @Override
-    public List<Client> findByCompanyId(UUID companyId) {
-        return List.of();
-    }
-
-    @Override
-    public List<Client> findByCollaboratorId(UUID collaboratorId) {
-        return List.of();
-    }
-
-    @Override
-    public Client save(Client client) {
-        return null;
-    }*/
 }

@@ -7,13 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface MeetingRepository {
-    /*Optional<Meeting> findById(UUID id);
-    List<Meeting> findByClientId(UUID clientId);
-    List<Meeting> findByCollaboratorId(UUID collaboratorId);
-    Meeting save(Meeting meeting);*/
     Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorID, Pageable pageable);
-    long getTotalMeetingsByCollaboratorId(UUID collaboratorId);
-    double getAverageDurationSecondsByCollaboratorId(UUID collaboratorId);
     long getTotalMeetings();
     double getAverageDurationSeconds();
 }

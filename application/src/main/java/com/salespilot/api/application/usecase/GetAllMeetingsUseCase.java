@@ -30,9 +30,7 @@ public class GetAllMeetingsUseCase {
                     Collaborator sellerObject = collaboratorRepository.getCollaboratorById(m.getCollaboratorId())
                             .orElseThrow(() -> new CollaboratorNotFoundException(m.getCollaboratorId()));
                     
-                    SellerMeetingResponseDTO seller = new SellerMeetingResponseDTO(
-                            sellerObject.getId(),
-                            sellerObject.getName());
+                    SellerMeetingResponseDTO seller = SellerMeetingResponseDTO.from(sellerObject);
 
                     ClientResponseDTO client = clientRepository.findById(m.getClientId())
                             .map(ClientResponseDTO::from)
