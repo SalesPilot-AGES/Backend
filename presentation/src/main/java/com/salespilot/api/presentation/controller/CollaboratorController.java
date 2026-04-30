@@ -138,7 +138,7 @@ public class CollaboratorController {
                 request.active(),
                 request.phone(),
                 request.preferences(),
-                null);
+                0);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
