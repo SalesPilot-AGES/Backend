@@ -11,5 +11,4 @@ public interface MeetingRepository {
     List<Meeting> findByCollaboratorId(UUID collaboratorId);
     List<Meeting> findByClientId(UUID clientId);
     Meeting save(Meeting meeting);
-    Long getTotalMeetingByCollaboratorId(UUID collaboratorId);
 }
