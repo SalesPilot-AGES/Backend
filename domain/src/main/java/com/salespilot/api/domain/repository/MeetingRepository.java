@@ -1,6 +1,8 @@
 package com.salespilot.api.domain.repository;
 
 import com.salespilot.api.domain.entity.Meeting;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,4 +14,7 @@ public interface MeetingRepository {
     List<Meeting> findByClientId(UUID clientId);
     Meeting save(Meeting meeting);
     Long getTotalMeetings(UUID collaboratorId);
+    Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorID, Pageable pageable);
+    long getTotalMeetings();
+    double getAverageDurationSeconds();
 }

@@ -23,8 +23,8 @@ public record CollaboratorRequestDTO(
         @Schema(description = "Se o colaborador está ativo", example = "true")
         boolean active,
 
-        @Schema(description = "Número de telefone do colaborador", example = "+55 (11) 98888-777")
-        String phone,
+        @Schema(description = "Telefone do colaborador", example = "+55 (11) 98888-7777")
+        @NotBlank String phone,
 
         @Schema(description = "Preferências de interface do colaborador")
         @Valid @NotNull CollaboratorPreferences preferences
