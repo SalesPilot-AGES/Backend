@@ -75,12 +75,14 @@ public class CollaboratorEntity {
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
 
-    public CollaboratorEntity(CompanyEntity company, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences preferences) {
+    public CollaboratorEntity(CompanyEntity company, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences, Integer averageFeeling) {
         this.company = company;
         this.name = name;
         this.email = email;
         this.role = role;
         this.active = active;
+        this.phone = phone;
         this.preferences = preferences;
+        this.averageFeeling = averageFeeling;
     }
 }
