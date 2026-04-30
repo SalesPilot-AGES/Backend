@@ -14,7 +14,7 @@ public class MeetingSpecification {
 
     public static Specification<Meetings> clientCompanyNameLike(String clientCompanyName) {
         return (root, query, cb) -> clientCompanyName == null || clientCompanyName.isBlank() ? null
-                : cb.like(cb.lower(root.get("clientCompanyName")), "%" + clientCompanyName.toLowerCase() + "%");
+                : cb.like(cb.lower(root.join("clients").get("clientCompanyName")), "%" + clientCompanyName.toLowerCase() + "%");
     }
 
     public static Specification<Meetings> collaboratorIdEquals(UUID collaboratorId) {
