@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CollaboratorRepository {
-    Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, CollaboratorPreferences preferences);
+    Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences, Integer averageFeeling);
     Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences);
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
     Optional<Collaborator> getCollaboratorById(UUID id);
