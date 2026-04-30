@@ -5,11 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
 
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.Meetings;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.MeetingSpecification;
+
+@Repository
 
 public class MeetingRepositoryImpl implements MeetingRepository{
     private final MeetingsJpaRepository meetingsJpaRepository;

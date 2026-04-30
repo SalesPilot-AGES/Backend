@@ -27,9 +27,9 @@ public class GetAllSellersUseCase {
     public Page<SellerResponseDTO> execute(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
         
         return repository.getSellers(name, email, companyId, active, pageable)
-                .map(c -> 
-                    Long totalMeeting = meetingRepository.getTotalMeetings(c.getId());
-                    new SellerResponseDTO(
+                .map(c -> {
+                    Long totalMeetings = meetingRepository.getTotalMeetings(c.getId());
+                    return new SellerResponseDTO(
                         c.getId(),
                         c.getCompanyId(),
                         c.getName(),
@@ -38,13 +38,14 @@ public class GetAllSellersUseCase {
                         c.getPhone(),
                         c.isActive(),
                         c.getAverageFeeling(),
-                        null,
+                        totalMeetings,
                         c.getPreferences(),
                         c.getUpdatedAt(),
                         c.getCreatedAt(),
                         companyRepository.getCompanyById(c.getCompanyId())
                                 .map(CompanyResponseDTO::from)
                                 .orElseThrow(() -> new CompanyNotFoundException(companyId))
-                ));
+                    );    
+                });
     }
 }
