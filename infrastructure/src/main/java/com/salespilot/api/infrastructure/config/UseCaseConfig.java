@@ -15,6 +15,7 @@ import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.domain.repository.CompanyRepository;
+import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 
 @Configuration
@@ -66,7 +67,7 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository) {
-        return new GetAllSellersUseCase(repository, companyRepository);
+    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository) {
+        return new GetAllSellersUseCase(repository, companyRepository, meetingRepository);
     }
 }

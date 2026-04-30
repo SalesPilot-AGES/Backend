@@ -18,7 +18,7 @@ public class MeetingRepositoryImpl implements MeetingRepository{
         this.meetingsJpaRepository = meetingsJpaRepository;
     }
 
-    public long getTotalMeetings(UUID collaboratorId) {
+    public Long getTotalMeetings(UUID collaboratorId) {
         Specification<Meetings> spec = Specification.where(
             MeetingSpecification.collaboratorIdEquals(collaboratorId)
         );

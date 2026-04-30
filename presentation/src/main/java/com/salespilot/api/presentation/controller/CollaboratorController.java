@@ -1,6 +1,7 @@
 package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
+import com.salespilot.api.application.dto.SellerResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
@@ -163,7 +164,7 @@ public class CollaboratorController {
     }
 
     @GetMapping("/sellers")
-    public ResponseEntity<Page<CollaboratorResponseDTO>> getSellers(
+    public ResponseEntity<Page<SellerResponseDTO>> getSellers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) UUID companyId,
