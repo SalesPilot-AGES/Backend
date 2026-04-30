@@ -1,9 +1,11 @@
 package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
+import com.salespilot.api.application.dto.SellerResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
+import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
@@ -41,6 +43,7 @@ public class CollaboratorController {
     private final EditCollaboratorUseCase editCollaboratorUseCase;
     private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final GetAllManagersUseCase getAllManagersUseCase;
+    private final GetSellerByIdUseCase getSellerByIdUseCase;
 
     private static final String COLLABORATOR_REQUEST_EXAMPLE = """
             {
@@ -83,11 +86,13 @@ public class CollaboratorController {
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
             EditCollaboratorUseCase editCollaboratorUseCase,
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
-            GetAllManagersUseCase getAllManagersUseCase) {
+            GetAllManagersUseCase getAllManagersUseCase,
+            GetSellerByIdUseCase getSellerByIdUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
         this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
         this.getAllManagersUseCase = getAllManagersUseCase;
+        this.getSellerByIdUseCase = getSellerByIdUseCase;
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
@@ -154,5 +159,12 @@ public class CollaboratorController {
             Pageable pageable) {
         return ResponseEntity
                 .ok(getAllManagersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
+    }
+
+    @GetMapping("/sellers/{id}")
+    public ResponseEntity<SellerResponseDTO> getSellerById(
+                @Parameter(description = "UUID do vendedor") @PathVariable UUID id) {
+        SellerResponseDTO collaboratorWithMeetingsResponseDTO = getSellerByIdUseCase.execute(id);
+        return ResponseEntity.ok(collaboratorWithMeetingsResponseDTO);
     }
 }

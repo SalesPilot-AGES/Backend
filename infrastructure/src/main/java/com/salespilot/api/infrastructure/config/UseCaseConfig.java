@@ -4,11 +4,13 @@ import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
+import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
@@ -62,5 +64,10 @@ public class UseCaseConfig {
     @Bean
     public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository) {
         return new GetAllManagersUseCase(repository, companyRepository);
+    }
+
+    @Bean
+    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository) {
+        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository);
     }
 }
