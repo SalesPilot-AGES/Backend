@@ -7,7 +7,7 @@ public record MeetingResponseDTO(
         UUID id,
         String title,
         SellerMeetingResponseDTO seller,
-        ClientResponseDTO client,
+        ClientMeetingResponseDTO client,
         String meetingType,
         LocalDateTime scheduledFor,
         LocalDateTime startedAt,

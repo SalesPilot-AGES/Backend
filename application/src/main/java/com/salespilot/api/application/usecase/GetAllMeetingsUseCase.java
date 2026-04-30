@@ -32,8 +32,8 @@ public class GetAllMeetingsUseCase {
                     
                     SellerMeetingResponseDTO seller = SellerMeetingResponseDTO.from(sellerObject);
 
-                    ClientResponseDTO client = clientRepository.findById(m.getClientId())
-                            .map(ClientResponseDTO::from)
+                    ClientMeetingResponseDTO client = clientRepository.findById(m.getClientId())
+                            .map(ClientMeetingResponseDTO::from)
                             .orElseThrow(() -> new ClientNotFoundException(m.getClientId()));
 
                     return new MeetingResponseDTO(

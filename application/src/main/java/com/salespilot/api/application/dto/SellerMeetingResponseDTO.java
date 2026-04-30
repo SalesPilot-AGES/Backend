@@ -6,12 +6,15 @@ import java.util.UUID;
 
 public record SellerMeetingResponseDTO(
         UUID id,
-        String name
+        String name,
+        String email
 ) {
     public static SellerMeetingResponseDTO from(Collaborator seller) {
         return new SellerMeetingResponseDTO(
                 seller.getId(),
-                seller.getName());
+                seller.getName(),
+                seller.getEmail()
+        );
     }
 }
 
