@@ -16,7 +16,7 @@ public class GetAllMeetingsUseCase {
     private final MeetingRepository repository;
     private final ClientRepository clientRepository;
     private final CollaboratorRepository collaboratorRepository;
-    private final int TEMP_DEFAULT_SUCCESS_RATE = 0;
+    private final int TEMPORARY_DEFAULT_SUCCESS_RATE = 0;
 
     public GetAllMeetingsUseCase(MeetingRepository meetingRepository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
         this.repository = meetingRepository;
@@ -53,7 +53,7 @@ public class GetAllMeetingsUseCase {
         return MeetingPageResponseDTO.from(page, new SummaryResponseDTO(
                 repository.getTotalMeetings(),
                 repository.getAverageDurationSeconds(),
-                TEMP_DEFAULT_SUCCESS_RATE
+                TEMPORARY_DEFAULT_SUCCESS_RATE
         ));
     }
 }

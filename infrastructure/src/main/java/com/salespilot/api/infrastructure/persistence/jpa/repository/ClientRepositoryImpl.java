@@ -5,7 +5,6 @@ import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.ClientMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
