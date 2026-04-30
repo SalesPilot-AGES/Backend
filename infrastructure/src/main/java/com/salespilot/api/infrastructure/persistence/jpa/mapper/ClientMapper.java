@@ -2,18 +2,21 @@ package com.salespilot.api.infrastructure.persistence.jpa.mapper;
 
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.Clients;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ClientMapper {
-    public Client toDomain(Clients entity) {
+    public Client toDomain(Clients clients) {
         return new Client(
-            entity.getId(), 
-            entity.getCompany().getId(), 
-            entity.getCollaborator().getId(), 
-            entity.getName(), 
-            entity.getClientCompanyName(), 
-            entity.getSector(), 
-            entity.getOverallSentiment(), 
-            entity.getCreatedAt(), entity.getUpdatedAt()
+                clients.getId(),
+                clients.getCompany().getId(),
+                clients.getCollaborator().getId(),
+                clients.getName(),
+                clients.getClientCompanyName(),
+                clients.getSector(),
+                clients.getOverallSentiment(),
+                clients.getCreatedAt(),
+                clients.getUpdatedAt()
         );
-    } 
+    }
 }

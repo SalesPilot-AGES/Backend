@@ -2,6 +2,7 @@ package com.salespilot.api.application.usecase;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import com.salespilot.api.application.dto.ClientResponseDTO;
@@ -38,7 +39,7 @@ public class GetSellerByIdUseCase {
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
-        List<LatestMeetingsResponseDTO> latestMeetings = collaborator.getMeetings().stream()
+        List<LatestMeetingsResponseDTO> latestMeetings = (collaborator.getMeetings() == null ? Collections.<com.salespilot.api.domain.entity.Meeting>emptyList() : collaborator.getMeetings()).stream()
             .map(m -> new LatestMeetingsResponseDTO(
                 m.getId(),
                 m.getTitle(),
