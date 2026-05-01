@@ -1,6 +1,5 @@
 package com.salespilot.api.application.queryservice;
 
-import com.salespilot.api.application.dto.ClientMeetingResponseDTO;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.repository.ClientRepository;

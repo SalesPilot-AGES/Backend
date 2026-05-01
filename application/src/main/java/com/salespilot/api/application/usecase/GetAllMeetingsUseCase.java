@@ -1,16 +1,13 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.MeetingAssembler;
-import com.salespilot.api.application.dto.*;
-import com.salespilot.api.application.exception.ClientNotFoundException;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.dto.MeetingPageResponseDTO;
+import com.salespilot.api.application.dto.MeetingResponseDTO;
+import com.salespilot.api.application.dto.SummaryResponseDTO;
 import com.salespilot.api.application.queryservice.ClientQueryService;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
-import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
-import com.salespilot.api.domain.repository.ClientRepository;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

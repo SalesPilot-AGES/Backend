@@ -1,17 +1,13 @@
 package com.salespilot.api.application.usecase;
 
-import java.util.UUID;
-
 import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
-import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
+
+import java.util.UUID;
 
 public class GetCollaboratorByIdUseCase {
     private final CollaboratorQueryService collaboratorQueryService;
