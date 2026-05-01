@@ -49,28 +49,28 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public CollaboratorAssembler collaboratorAssembler(CompanyRepository companyRepository) {
-        return new CollaboratorAssembler(companyRepository);
+    public CollaboratorAssembler collaboratorAssembler() {
+        return new CollaboratorAssembler();
     }
 
     @Bean
-    public PostCollaboratorUseCase postCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CollaboratorAssembler assembler) {
-        return new PostCollaboratorUseCase(collaboratorRepository, assembler);
+    public PostCollaboratorUseCase postCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
+        return new PostCollaboratorUseCase(collaboratorRepository, companyRepository, assembler);
     }
 
     @Bean
-    public EditCollaboratorUseCase editCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CollaboratorAssembler assembler) {
-        return new EditCollaboratorUseCase(collaboratorRepository, assembler);
+    public EditCollaboratorUseCase editCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
+        return new EditCollaboratorUseCase(collaboratorRepository, companyRepository, assembler);
     }
 
     @Bean
-    public GetCollaboratorByIdUseCase getCollaboratorByIdUseCase(CollaboratorRepository collaboratorRepository, CollaboratorAssembler assembler) {
-        return new GetCollaboratorByIdUseCase(collaboratorRepository, assembler);
+    public GetCollaboratorByIdUseCase getCollaboratorByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
+        return new GetCollaboratorByIdUseCase(collaboratorRepository, companyRepository, assembler);
     }
 
     @Bean
-    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CollaboratorAssembler assembler) {
-        return new GetAllManagersUseCase(repository, assembler);
+    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
+        return new GetAllManagersUseCase(repository, companyRepository, assembler);
     }
 
     @Bean

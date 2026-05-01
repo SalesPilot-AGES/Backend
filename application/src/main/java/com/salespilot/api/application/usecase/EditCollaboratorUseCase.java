@@ -6,20 +6,25 @@ import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
+import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
+import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 
 public class EditCollaboratorUseCase {
     private final CollaboratorRepository repository;
+    private final CompanyRepository companyRepository;
     private final CollaboratorAssembler assembler;
 
-    public EditCollaboratorUseCase(CollaboratorRepository repository, CollaboratorAssembler assembler){
+    public EditCollaboratorUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
         this.repository = repository;
+        this.companyRepository = companyRepository;
         this.assembler = assembler;
     }
 
-    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences collaboratorPreferences){
+    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences collaboratorPreferences) {
         Collaborator existing = repository.getCollaboratorById(collaboratorId)
                 .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
 
@@ -27,8 +32,11 @@ public class EditCollaboratorUseCase {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
+        Company company = companyRepository.getCompanyById(companyId)
+                .orElseThrow(() -> new CompanyNotFoundException(companyId));
+
         Collaborator collaborator = repository.update(companyId, collaboratorId, name, email, active, collaboratorPreferences);
 
-        return assembler.toDTO(collaborator);
+        return assembler.toDTO(collaborator, company);
     }
 }
