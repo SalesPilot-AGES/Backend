@@ -14,19 +14,12 @@ import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
-import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
-import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
-import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
-import com.salespilot.api.application.usecase.GetAllManagersUseCase;
-import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 
-import com.salespilot.api.domain.repository.CollaboratorRepository;
+
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class UseCaseConfig {

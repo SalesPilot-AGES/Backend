@@ -1,7 +1,5 @@
 package com.salespilot.api.presentation.controller;
 
-import com.salespilot.api.application.dto.MeetingPageResponseDTO;
-import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.presentation.utils.PageableUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
