@@ -7,7 +7,6 @@ import com.salespilot.api.application.dto.SellerMeetingResponseDTO;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
-import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;

@@ -10,8 +10,8 @@ import java.util.UUID;
 
 @Repository
 public class MeetingPreAnalysisRepositoryImpl implements MeetingPreAnalysisRepository {
-    private MeetingPreAnalysisJpaRepository meetingPreAnalysisJpaRepository;
-    private MeetingPreAnalysisMapper mapper;
+    private final MeetingPreAnalysisJpaRepository meetingPreAnalysisJpaRepository;
+    private final MeetingPreAnalysisMapper mapper;
 
     public MeetingPreAnalysisRepositoryImpl(MeetingPreAnalysisJpaRepository meetingPreAnalysisJpaRepository, MeetingPreAnalysisMapper mapper) {
         this.meetingPreAnalysisJpaRepository = meetingPreAnalysisJpaRepository;
