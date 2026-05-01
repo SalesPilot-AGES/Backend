@@ -2,6 +2,7 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
+import com.salespilot.api.application.usecase.EditSellerUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
@@ -41,6 +42,7 @@ public class CollaboratorController {
     private final EditCollaboratorUseCase editCollaboratorUseCase;
     private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final GetAllManagersUseCase getAllManagersUseCase;
+    private final EditSellerUseCase editSellerUseCase;
 
     private static final String COLLABORATOR_REQUEST_EXAMPLE = """
             {
@@ -112,11 +114,13 @@ public class CollaboratorController {
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
             EditCollaboratorUseCase editCollaboratorUseCase,
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
-            GetAllManagersUseCase getAllManagersUseCase) {
+            GetAllManagersUseCase getAllManagersUseCase,
+            EditSellerUseCase editSellerUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
         this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
         this.getAllManagersUseCase = getAllManagersUseCase;
+        this.editSellerUseCase = editSellerUseCase;
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
@@ -158,6 +162,7 @@ public class CollaboratorController {
                 id,
                 request.name(),
                 request.email(),
+                request.phone(),
                 request.active(),
                 request.preferences());
 

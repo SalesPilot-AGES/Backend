@@ -21,7 +21,7 @@ public class EditCollaboratorUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences collaboratorPreferences){
+    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, String phone, boolean active, CollaboratorPreferences collaboratorPreferences){
         CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
@@ -33,7 +33,7 @@ public class EditCollaboratorUseCase {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
-        Collaborator collaborator = repository.update(companyId, collaboratorId, name, email, active, collaboratorPreferences);
+        Collaborator collaborator = repository.update(companyId, collaboratorId, name, email, phone, active, collaboratorPreferences);
 
         return new CollaboratorResponseDTO(
                 collaborator.getId(),
