@@ -4,6 +4,8 @@ import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -15,12 +17,12 @@ import java.util.UUID;
 
 public class PostCollaboratorUseCase {
     private final CollaboratorRepository collaboratorRepository;
-    private final CompanyRepository companyRepository;
+    private final CompanyQueryService companyQueryService;
     private final CollaboratorAssembler assembler;
 
-    public PostCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
+    public PostCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyQueryService companyQueryService, CollaboratorAssembler assembler) {
         this.collaboratorRepository = collaboratorRepository;
-        this.companyRepository = companyRepository;
+        this.companyQueryService = companyQueryService;
         this.assembler = assembler;
     }
 
@@ -29,8 +31,7 @@ public class PostCollaboratorUseCase {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
-        Company company = companyRepository.getCompanyById(companyId)
-                .orElseThrow(() -> new CompanyNotFoundException(companyId));
+        Company company = companyQueryService.getCompanyById(companyId);
 
         Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences, averageFeeling);
 

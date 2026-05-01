@@ -6,28 +6,28 @@ import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
 public class GetCollaboratorByIdUseCase {
-    private final CollaboratorRepository collaboratorRepository;
-    private final CompanyRepository companyRepository;
+    private final CollaboratorQueryService collaboratorQueryService;
+    private final CompanyQueryService companyQueryService;
     private final CollaboratorAssembler assembler;
 
-    public GetCollaboratorByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
-        this.collaboratorRepository = collaboratorRepository;
-        this.companyRepository = companyRepository;
+    public GetCollaboratorByIdUseCase(CollaboratorQueryService collaboratorQueryService, CompanyQueryService companyQueryService, CollaboratorAssembler assembler) {
+        this.collaboratorQueryService = collaboratorQueryService;
+        this.companyQueryService = companyQueryService;
         this.assembler = assembler;
     }
 
     public CollaboratorResponseDTO execute(UUID id) {
-        Collaborator collaborator = collaboratorRepository.getCollaboratorById(id)
-                .orElseThrow(() -> new CollaboratorNotFoundException(id));
+        Collaborator collaborator = collaboratorQueryService.getCollaboratorById(id);
 
-        Company company = companyRepository.getCompanyById(collaborator.getCompanyId())
-                .orElseThrow(() -> new CompanyNotFoundException(collaborator.getCompanyId()));
+        Company company = companyQueryService.getCompanyById(collaborator.getCompanyId());
 
         return assembler.toDTO(collaborator, company);
     }

@@ -5,35 +5,34 @@ import java.util.UUID;
 import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
-import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 
 public class EditCollaboratorUseCase {
     private final CollaboratorRepository repository;
-    private final CompanyRepository companyRepository;
+    private final CompanyQueryService companyQueryService;
+    private final CollaboratorQueryService collaboratorQueryService;
     private final CollaboratorAssembler assembler;
 
-    public EditCollaboratorUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, CollaboratorAssembler assembler) {
+    public EditCollaboratorUseCase(CollaboratorRepository repository, CompanyQueryService companyQueryService, CollaboratorQueryService collaboratorQueryService, CollaboratorAssembler assembler) {
         this.repository = repository;
-        this.companyRepository = companyRepository;
+        this.companyQueryService = companyQueryService;
+        this.collaboratorQueryService = collaboratorQueryService;
         this.assembler = assembler;
     }
 
     public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences collaboratorPreferences) {
-        Collaborator existing = repository.getCollaboratorById(collaboratorId)
-                .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
+        Collaborator existing = collaboratorQueryService.getCollaboratorById(collaboratorId);
 
         if (!existing.getEmail().equals(email) && repository.existsByCompanyIdAndEmail(companyId, email)) {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
-        Company company = companyRepository.getCompanyById(companyId)
-                .orElseThrow(() -> new CompanyNotFoundException(companyId));
+        Company company = companyQueryService.getCompanyById(companyId);
 
         Collaborator collaborator = repository.update(companyId, collaboratorId, name, email, active, collaboratorPreferences);
 

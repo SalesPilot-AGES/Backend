@@ -1,8 +1,13 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.MeetingAssembler;
 import com.salespilot.api.application.dto.*;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.queryservice.ClientQueryService;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
+import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -14,40 +19,26 @@ import java.util.UUID;
 
 public class GetAllMeetingsUseCase {
     private final MeetingRepository repository;
-    private final ClientRepository clientRepository;
-    private final CollaboratorRepository collaboratorRepository;
+    private final CollaboratorQueryService collaboratorQueryService;
+    private final ClientQueryService clientQueryService;
+    private final MeetingAssembler assembler;
     private final int TEMPORARY_DEFAULT_SUCCESS_RATE = 0;
 
-    public GetAllMeetingsUseCase(MeetingRepository meetingRepository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
-        this.repository = meetingRepository;
-        this.clientRepository = clientRepository;
-        this.collaboratorRepository = collaboratorRepository;
+    public GetAllMeetingsUseCase(MeetingRepository repository, CollaboratorQueryService collaboratorQueryService, ClientQueryService clientQueryService, MeetingAssembler assembler) {
+        this.repository = repository;
+        this.collaboratorQueryService = collaboratorQueryService;
+        this.clientQueryService = clientQueryService;
+        this.assembler = assembler;
     }
 
     public MeetingPageResponseDTO execute(String title, String clientCompanyName, UUID collaboratorId, Pageable pageable) {
         Page<MeetingResponseDTO> page = repository.getAllMeetings(title, clientCompanyName, collaboratorId, pageable)
                 .map(m -> {
-                    Collaborator sellerObject = collaboratorRepository.getCollaboratorById(m.getCollaboratorId())
-                            .orElseThrow(() -> new CollaboratorNotFoundException(m.getCollaboratorId()));
-                    
-                    SellerMeetingResponseDTO seller = SellerMeetingResponseDTO.from(sellerObject);
+                    Collaborator seller = collaboratorQueryService.getCollaboratorById(m.getCollaboratorId());
 
-                    ClientMeetingResponseDTO client = clientRepository.findById(m.getClientId())
-                            .map(ClientMeetingResponseDTO::from)
-                            .orElseThrow(() -> new ClientNotFoundException(m.getClientId()));
+                    Client client = clientQueryService.getClientById(m.getClientId());
 
-                    return new MeetingResponseDTO(
-                            m.getId(),
-                            m.getTitle(),
-                            seller,
-                            client,
-                            m.getMeetingType(),
-                            m.getScheduledFor(),
-                            m.getStartedAt(),
-                            m.getEndedAt(),
-                            m.getDurationSeconds(),
-                            m.getStatus()
-                    );
+                    return assembler.toDTO(m, seller, client);
                 });
 
         return MeetingPageResponseDTO.from(page, new SummaryResponseDTO(
