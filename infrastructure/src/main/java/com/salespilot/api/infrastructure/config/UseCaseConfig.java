@@ -1,5 +1,6 @@
 package com.salespilot.api.infrastructure.config;
 
+import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
@@ -48,23 +49,28 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public PostCollaboratorUseCase postCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository) {
-        return new PostCollaboratorUseCase(collaboratorRepository, companyRepository);
+    public CollaboratorAssembler collaboratorAssembler(CompanyRepository companyRepository) {
+        return new CollaboratorAssembler(companyRepository);
     }
 
     @Bean
-    public EditCollaboratorUseCase editCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository) {
-        return new EditCollaboratorUseCase(collaboratorRepository, companyRepository);
+    public PostCollaboratorUseCase postCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CollaboratorAssembler assembler) {
+        return new PostCollaboratorUseCase(collaboratorRepository, assembler);
     }
 
     @Bean
-    public GetCollaboratorByIdUseCase getCollaboratorByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository) {
-        return new GetCollaboratorByIdUseCase(collaboratorRepository, companyRepository);
+    public EditCollaboratorUseCase editCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CollaboratorAssembler assembler) {
+        return new EditCollaboratorUseCase(collaboratorRepository, assembler);
     }
 
     @Bean
-    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository) {
-        return new GetAllManagersUseCase(repository, companyRepository);
+    public GetCollaboratorByIdUseCase getCollaboratorByIdUseCase(CollaboratorRepository collaboratorRepository, CollaboratorAssembler assembler) {
+        return new GetCollaboratorByIdUseCase(collaboratorRepository, assembler);
+    }
+
+    @Bean
+    public GetAllManagersUseCase getAllManagersUseCase(CollaboratorRepository repository, CollaboratorAssembler assembler) {
+        return new GetAllManagersUseCase(repository, assembler);
     }
 
     @Bean
