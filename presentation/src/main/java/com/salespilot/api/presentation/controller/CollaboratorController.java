@@ -155,4 +155,20 @@ public class CollaboratorController {
         return ResponseEntity
                 .ok(getAllManagersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
     }
+
+    @PutMapping("/sellers/{id}")
+    public ResponseEntity<CollaboratorResponseDTO> editSeller(
+            @Parameter(description = "UUID do seller") @PathVariable UUID id,
+            @Valid @RequestBody CollaboratorRequestDTO request) {
+        CollaboratorResponseDTO response = editSellerUseCase.execute(
+                request.companyId(),
+                id,
+                request.name(),
+                request.email(),
+                request.phone(),
+                request.active(),
+                request.preferences());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
