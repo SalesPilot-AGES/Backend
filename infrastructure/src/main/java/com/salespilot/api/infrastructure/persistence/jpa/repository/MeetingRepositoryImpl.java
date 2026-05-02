@@ -2,7 +2,7 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.repository.MeetingRepository;
-import com.salespilot.api.infrastructure.persistence.jpa.entity.Meetings;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.MeetingSpecification;
 import org.springframework.data.domain.Page;
@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -26,7 +27,7 @@ public class MeetingRepositoryImpl implements MeetingRepository {
     @Transactional(readOnly = true)
     @Override
     public Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorID, Pageable pageable) {
-        Specification<Meetings> spec = Specification
+        Specification<MeetingEntity> spec = Specification
                 .where(MeetingSpecification.titleLike(title)
                 .and(MeetingSpecification.clientCompanyNameLike(clientCompanyName)
                 .and(MeetingSpecification.collaboratorIdEquals(collaboratorID)))
@@ -41,5 +42,10 @@ public class MeetingRepositoryImpl implements MeetingRepository {
 
     public double getAverageDurationSeconds() {
         return meetingsJpaRepository.findAverageDurationSeconds().orElse(0.0);
+    }
+
+    @Override
+    public Optional<Meeting> getMeetingById(UUID id) {
+        return meetingsJpaRepository.findById(id).map(mapper::toDomain);
     }
 }
