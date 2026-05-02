@@ -30,3 +30,15 @@ INSERT INTO collaborators (id, company_id, name, email, role, active, preference
 ('d4e5f6a7-b8c9-0123-4567-890abcdef123', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Laura Silva',    'laura@digitalsales.com',   'SELLER',       FALSE, '{}'),
 ('e5f6a7b8-c9d0-1234-5678-90abcdef1234', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Saulo Souza',    'saulo@digitalsales.com',   'SELLER',       TRUE, '{"theme":"dark","default_model":"gpt-3.5"}')
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO clients (id, company_id, collaborator_id, name, client_company_name, sector, overall_sentiment, created_at, updated_at) VALUES
+('11111111-2222-3333-4444-555555555555', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'e5f6a7b8-c9d0-1234-5678-90abcdef1234', 'Marina Lima', 'Alfa Industrial', 'Manufacturing', 8, NOW(), NOW())
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO meetings (id, collaborator_id, client_id, title, status, duration_seconds, objective, meeting_type, client_needs, previous_interactions, competitors_involved, scheduled_for, started_at, ended_at, created_at) VALUES
+('99999999-8888-7777-6666-555555555555', 'e5f6a7b8-c9d0-1234-5678-90abcdef1234', '11111111-2222-3333-4444-555555555555', 'Reuniao de descoberta', 'SCHEDULED', 1800, 'Entender dores e objetivos', 'ONLINE', 'Melhorar eficiencia', 'Contato inicial via email', 'Concorrente X', NOW(), NULL, NULL, NOW())
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO meeting_pre_analysis (id, meeting_id, recommended_strategy, key_points, possible_objections, created_at) VALUES
+('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', '99999999-8888-7777-6666-555555555555', '{"focus":"exploration"}'::jsonb, '["Entender processos atuais","Mapear stakeholders"]'::jsonb, '["Orcamento limitado","Prazo curto"]'::jsonb, NOW())
+ON CONFLICT (id) DO NOTHING;
