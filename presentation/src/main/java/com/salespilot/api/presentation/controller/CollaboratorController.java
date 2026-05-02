@@ -2,7 +2,6 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
-import com.salespilot.api.application.usecase.EditSellerUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
@@ -42,7 +41,6 @@ public class CollaboratorController {
     private final EditCollaboratorUseCase editCollaboratorUseCase;
     private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final GetAllManagersUseCase getAllManagersUseCase;
-    private final EditSellerUseCase editSellerUseCase;
 
     private static final String COLLABORATOR_REQUEST_EXAMPLE = """
             {
@@ -114,13 +112,11 @@ public class CollaboratorController {
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
             EditCollaboratorUseCase editCollaboratorUseCase,
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
-            GetAllManagersUseCase getAllManagersUseCase,
-            EditSellerUseCase editSellerUseCase) {
+            GetAllManagersUseCase getAllManagersUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
         this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
         this.getAllManagersUseCase = getAllManagersUseCase;
-        this.editSellerUseCase = editSellerUseCase;
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
@@ -151,6 +147,9 @@ public class CollaboratorController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Manager atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
     @PutMapping("/managers/{id}")
@@ -164,7 +163,8 @@ public class CollaboratorController {
                 request.email(),
                 request.phone(),
                 request.active(),
-                request.preferences());
+                request.preferences(),
+                CollaboratorRole.MANAGER);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -214,19 +214,30 @@ public class CollaboratorController {
                 0);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
+    
+    @Operation(summary = "Editar seller", description = "Atualiza os dados de um colaborador com papel de SELLER.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Seller atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
+            @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
+    })
     @PutMapping("/sellers/{id}")
     public ResponseEntity<CollaboratorResponseDTO> editSeller(
             @Parameter(description = "UUID do seller") @PathVariable UUID id,
             @Valid @RequestBody CollaboratorRequestDTO request) {
-        CollaboratorResponseDTO response = editSellerUseCase.execute(
+        CollaboratorResponseDTO response = editCollaboratorUseCase.execute(
                 request.companyId(),
                 id,
                 request.name(),
                 request.email(),
                 request.phone(),
                 request.active(),
-                request.preferences());
+                request.preferences(),
+                CollaboratorRole.SELLER);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
