@@ -71,7 +71,7 @@ public class CollaboratorController {
                 "theme": "light",
                 "default_model": "gpt-4o"
               },
-              "average_feeling": null,
+              "average_feeling": 0,
               "created_at": "2024-04-02T10:01:00",
               "company": {
                 "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
@@ -99,6 +99,7 @@ public class CollaboratorController {
                 "default_model": "gpt-4o"
               },
               "average_feeling": 0,
+              "totalMeetings": 0,
               "created_at": "2024-04-02T10:01:00",
               "company": {
                 "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
@@ -192,6 +193,11 @@ public class CollaboratorController {
                 .ok(getAllManagersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
     }
 
+    @Operation(summary = "Buscar sellers", description = "Retorna todos os sellers, a partir de um filtro ou não.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Sellers encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content)
+    })
     @GetMapping("/sellers")
     public ResponseEntity<Page<SellerResponseDTO>> getSellers(
             @RequestParam(required = false) String name,
