@@ -1,6 +1,7 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.dto.MeetingPostAnalysisResponseDTO;
+import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 
 import java.util.UUID;
@@ -16,6 +17,6 @@ public class GetMeetingPostAnalysisUseCase {
         return meetingPostAnalysisRepository
                 .findByMeetingId(meetingId)
                 .map(MeetingPostAnalysisResponseDTO::from)
-                .orElse(null);
+                .orElseThrow(() -> new MeetingPostAnalysisNotFoundException(meetingId));
     }
 }

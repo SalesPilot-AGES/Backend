@@ -1,5 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
+import com.salespilot.api.domain.valueobject.PostAnalysisActionItem;
+import com.salespilot.api.domain.valueobject.PostAnalysisSentimentAnalysis;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,11 +38,11 @@ public class MeetingPostAnalysisEntity implements java.io.Serializable {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "action_items", columnDefinition = "json")
-    private String actionItems;
+    private List<PostAnalysisActionItem> actionItems;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "sentiment_analysis", columnDefinition = "json")
-    private String sentimentAnalysis;
+    private PostAnalysisSentimentAnalysis sentimentAnalysis;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
