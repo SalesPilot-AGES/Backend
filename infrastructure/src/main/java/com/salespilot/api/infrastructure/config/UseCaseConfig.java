@@ -15,12 +15,15 @@ import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
+import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 
 
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
+import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
+
 
 @Configuration
 public class UseCaseConfig {
@@ -78,5 +81,10 @@ public class UseCaseConfig {
     @Bean
     public GetAllMeetingsUseCase getAllMeetingsUseCase(MeetingRepository repository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
         return new GetAllMeetingsUseCase(repository, clientRepository, collaboratorRepository);
+    }
+
+    @Bean
+    public GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase(MeetingRepository repository, CollaboratorRepository collaboratorRepository, ClientRepository clientRepository, MeetingPreAnalysisRepository meetingPreAnalysisRepository) {
+        return new GetMeetingContextAndMetadataUseCase(repository, collaboratorRepository, clientRepository, meetingPreAnalysisRepository);
     }
 }

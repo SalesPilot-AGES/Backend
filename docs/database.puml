@@ -71,7 +71,7 @@ entity "meetings" as meetings {
   meeting_type : varchar
   client_needs : text 
   previous_interactions : text
-  competidors_involved : varchar
+  competitors_involved : varchar
   scheduled_for : datetime
   started_at : datetime
   ended_at : datetime
@@ -82,9 +82,9 @@ entity "meeting_pre_analysis" as pre_analysis {
   * id : uuid <<PK>>
   --
   meeting_id : uuid <<FK>>
-  recommended_strategy : json
-  key_points : json
-  possible_objections : json
+  recommended_strategy : jsonb
+  key_points : jsonb
+  possible_objections : jsonb
   created_at : datetime
 }
 

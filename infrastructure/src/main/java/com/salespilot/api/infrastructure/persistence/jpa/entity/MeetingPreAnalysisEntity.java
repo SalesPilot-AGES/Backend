@@ -1,5 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
+import com.salespilot.api.domain.valueobject.PreAnalysisRecommendedStrategy;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +14,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +22,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MeetingPreAnalysis implements java.io.Serializable {
+public class MeetingPreAnalysisEntity implements java.io.Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -28,19 +30,19 @@ public class MeetingPreAnalysis implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id", nullable = false)
-    private Meetings meetings;
+    private MeetingEntity meeting;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "recommended_strategy", columnDefinition = "json")
-    private String recommendedStrategy;
+    @Column(name = "recommended_strategy", columnDefinition = "jsonb")
+    private PreAnalysisRecommendedStrategy preAnalysisRecommendedStrategy;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "key_points", columnDefinition = "json")
-    private String keyPoints;
+    @Column(name = "key_points", columnDefinition = "jsonb")
+    private List<String> preAnalysisKeyPoints;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "possible_objections", columnDefinition = "json")
-    private String possibleObjections;
+    @Column(name = "possible_objections", columnDefinition = "jsonb")
+    private List<String> preAnalysisPossibleObjections;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
