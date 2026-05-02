@@ -28,7 +28,7 @@ public class GetAllSellersUseCase {
         
         return repository.getSellers(name, email, companyId, active, pageable)
                 .map(c -> {
-                    Long totalMeetings = meetingRepository.getTotalMeetings(c.getId());
+                    Long totalMeetings = meetingRepository.getTotalMeetingsByCollaborator(c.getId());
                     return new SellerResponseDTO(
                         c.getId(),
                         c.getCompanyId(),
@@ -40,11 +40,11 @@ public class GetAllSellersUseCase {
                         c.getAverageFeeling(),
                         totalMeetings,
                         c.getPreferences(),
-                        c.getUpdatedAt(),
                         c.getCreatedAt(),
+                        c.getUpdatedAt(),
                         companyRepository.getCompanyById(c.getCompanyId())
                                 .map(CompanyResponseDTO::from)
-                                .orElseThrow(() -> new CompanyNotFoundException(companyId))
+                                .orElseThrow(() -> new CompanyNotFoundException(c.getCompanyId()))
                     );    
                 });
     }
