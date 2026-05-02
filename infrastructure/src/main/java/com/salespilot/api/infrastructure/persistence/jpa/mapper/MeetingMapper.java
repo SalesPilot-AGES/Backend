@@ -1,28 +1,28 @@
 package com.salespilot.api.infrastructure.persistence.jpa.mapper;
 
 import com.salespilot.api.domain.entity.Meeting;
-import com.salespilot.api.infrastructure.persistence.jpa.entity.Meetings;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MeetingMapper {
-    public Meeting toDomain(Meetings meetings) {
+    public Meeting toDomain(MeetingEntity meetingEntity) {
         return new Meeting(
-                meetings.getId(),
-                meetings.getCollaborator().getId(),
-                meetings.getClients().getId(),
-                meetings.getTitle(),
-                meetings.getStatus(),
-                meetings.getDurationSeconds(),
-                meetings.getObjective(),
-                meetings.getMeetingType(),
-                meetings.getClientNeeds(),
-                meetings.getPreviousInteractions(),
-                meetings.getCompetitorsInvolved(),
-                meetings.getScheduledFor(),
-                meetings.getStartedAt(),
-                meetings.getEndedAt(),
-                meetings.getCreatedAt()
+                meetingEntity.getId(),
+                meetingEntity.getCollaborator().getId(),
+                meetingEntity.getClient().getId(),
+                meetingEntity.getTitle(),
+                meetingEntity.getStatus(),
+                meetingEntity.getDurationSeconds(),
+                meetingEntity.getObjective(),
+                meetingEntity.getMeetingType(),
+                meetingEntity.getClientNeeds(),
+                meetingEntity.getPreviousInteractions(),
+                meetingEntity.getCompetitorsInvolved(),
+                meetingEntity.getScheduledFor(),
+                meetingEntity.getStartedAt(),
+                meetingEntity.getEndedAt(),
+                meetingEntity.getCreatedAt()
         );
     }
 }

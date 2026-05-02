@@ -21,7 +21,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Clients implements java.io.Serializable {
+public class ClientEntity implements java.io.Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -53,6 +53,6 @@ public class Clients implements java.io.Serializable {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "clients")
-    private Set<Meetings> meetings = new HashSet<>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
+    private Set<MeetingEntity> meetings = new HashSet<>(0);
 }
