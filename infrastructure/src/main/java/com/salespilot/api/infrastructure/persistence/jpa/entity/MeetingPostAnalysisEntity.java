@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MeetingPostAnalysis implements java.io.Serializable {
+public class MeetingPostAnalysisEntity implements java.io.Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -28,7 +28,7 @@ public class MeetingPostAnalysis implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id", nullable = false)
-    private Meetings meetings;
+    private MeetingEntity meeting;
 
     @Column(name = "summary")
     private String summary;

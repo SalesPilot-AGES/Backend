@@ -21,7 +21,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Meetings implements java.io.Serializable {
+public class MeetingEntity implements java.io.Serializable {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -33,7 +33,7 @@ public class Meetings implements java.io.Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
-    private Clients clients;
+    private ClientEntity client;
 
     @Column(name = "title")
     private String title;
@@ -71,12 +71,12 @@ public class Meetings implements java.io.Serializable {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meetings")
-    private Set<MeetingPreAnalysis> meetingPreAnalyses = new HashSet<>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
+    private Set<MeetingPreAnalysisEntity> meetingPreAnalyses = new HashSet<>(0);
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meetings")
-    private Set<MeetingRealtimeInsights> meetingRealtimeInsights = new HashSet<>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
+    private Set<MeetingRealtimeInsightsEntity> meetingRealtimeInsights = new HashSet<>(0);
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meetings")
-    private Set<MeetingPostAnalysis> meetingPostAnalyses = new HashSet<>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
+    private Set<MeetingPostAnalysisEntity> meetingPostAnalyses = new HashSet<>(0);
 }
