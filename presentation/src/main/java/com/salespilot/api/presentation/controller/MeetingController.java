@@ -2,8 +2,10 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.MeetingContextMetadataResponseDTO;
 import com.salespilot.api.application.dto.MeetingPageResponseDTO;
+import com.salespilot.api.application.dto.MeetingPostAnalysisResponseDTO;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
+import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 import com.salespilot.api.presentation.utils.PageableUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +24,12 @@ import java.util.UUID;
 public class MeetingController {
     private final GetAllMeetingsUseCase getAllMeetingsUseCase;
     private final GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase;
+    private final GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase;
 
-    public MeetingController(GetAllMeetingsUseCase getAllMeetingsUseCase, GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase) {
+    public MeetingController(GetAllMeetingsUseCase getAllMeetingsUseCase, GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase, GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase) {
         this.getAllMeetingsUseCase = getAllMeetingsUseCase;
         this.getMeetingContextAndMetadataUseCase = getMeetingContextAndMetadataUseCase;
+        this.getMeetingPostAnalysisUseCase = getMeetingPostAnalysisUseCase;
     }
 
     @GetMapping
@@ -41,5 +45,10 @@ public class MeetingController {
     @GetMapping("/{id}")
     public ResponseEntity<MeetingContextMetadataResponseDTO> getMeetingContextAndMetadata(@PathVariable UUID id) {
         return ResponseEntity.ok(getMeetingContextAndMetadataUseCase.execute(id));
+    }
+
+    @GetMapping("/{id}/action-plan")
+    public ResponseEntity<MeetingPostAnalysisResponseDTO> getMeetingPostAnalysis(@PathVariable UUID id) {
+        return ResponseEntity.ok(getMeetingPostAnalysisUseCase.execute(id));
     }
 }
