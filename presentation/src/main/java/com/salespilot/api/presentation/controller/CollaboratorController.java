@@ -200,11 +200,11 @@ public class CollaboratorController {
     })
     @GetMapping("/sellers")
     public ResponseEntity<Page<SellerResponseDTO>> getSellers(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) UUID companyId,
-            @RequestParam(required = false) Boolean active,
-            Pageable pageable) {
+            @Parameter(description = "Filtro por nome (contendo)") @RequestParam(required = false) String name,
+            @Parameter(description = "Filtro por email (exato)") @RequestParam(required = false) String email,
+            @Parameter(description = "Filtro por companyId") @RequestParam(required = false) UUID companyId,
+            @Parameter(description = "Filtro por status (ativo ou inativo") @RequestParam(required = false) Boolean active,
+            @Parameter(description = "Paginação e ordenação") Pageable pageable) {
         return ResponseEntity
                 .ok(getAllSellersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
         }
