@@ -3,6 +3,7 @@ package com.salespilot.api.presentation.handler;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CollaboratorNotFoundException.class)
     public ResponseEntity<Void> handleCollaboratorNotFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(InvalidCollaboratorRoleException.class)
+    public ResponseEntity<Void> handleInvalidCollaboratorRoleException() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }
