@@ -83,4 +83,17 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
         return collaboratorJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Collaborator> getSellers(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
+        Specification<CollaboratorEntity> spec = Specification
+                .where(CollaboratorSpecification.roleEquals(CollaboratorRole.SELLER))
+                .and(CollaboratorSpecification.nameLike(name))
+                .and(CollaboratorSpecification.emailEquals(email))
+                .and(CollaboratorSpecification.companyIdEquals(companyId))
+                .and(CollaboratorSpecification.isActiveEquals(active));
+
+        return collaboratorJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
+    }
 }

@@ -1,8 +1,10 @@
 package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
+import com.salespilot.api.application.dto.SellerResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
+import com.salespilot.api.application.usecase.GetAllSellersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -41,6 +43,7 @@ public class CollaboratorController {
     private final EditCollaboratorUseCase editCollaboratorUseCase;
     private final GetCollaboratorByIdUseCase getCollaboratorByIdUseCase;
     private final GetAllManagersUseCase getAllManagersUseCase;
+    private final GetAllSellersUseCase getAllSellersUseCase;
 
     private static final String COLLABORATOR_REQUEST_EXAMPLE = """
             {
@@ -68,7 +71,7 @@ public class CollaboratorController {
                 "theme": "light",
                 "default_model": "gpt-4o"
               },
-              "average_feeling": null,
+              "average_feeling": 0,
               "created_at": "2024-04-02T10:01:00",
               "company": {
                 "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
@@ -96,6 +99,7 @@ public class CollaboratorController {
                 "default_model": "gpt-4o"
               },
               "average_feeling": 0,
+              "totalMeetings": 0,
               "created_at": "2024-04-02T10:01:00",
               "company": {
                 "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
@@ -112,11 +116,13 @@ public class CollaboratorController {
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
             EditCollaboratorUseCase editCollaboratorUseCase,
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
-            GetAllManagersUseCase getAllManagersUseCase) {
+            GetAllManagersUseCase getAllManagersUseCase,
+            GetAllSellersUseCase getAllSellersUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
         this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
         this.getAllManagersUseCase = getAllManagersUseCase;
+        this.getAllSellersUseCase = getAllSellersUseCase;
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
@@ -192,6 +198,23 @@ public class CollaboratorController {
                 .ok(getAllManagersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
     }
 
+    @Operation(summary = "Buscar sellers", description = "Retorna todos os sellers, a partir de um filtro ou não.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Sellers encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content)
+    })
+    @GetMapping("/sellers")
+    public ResponseEntity<Page<SellerResponseDTO>> getSellers(
+            @Parameter(description = "Filtro por nome (contendo)") @RequestParam(required = false) String name,
+            @Parameter(description = "Filtro por email (exato)") @RequestParam(required = false) String email,
+            @Parameter(description = "Filtro por companyId") @RequestParam(required = false) UUID companyId,
+            @Parameter(description = "Filtro por status (ativo ou inativo") @RequestParam(required = false) Boolean active,
+            @Parameter(description = "Paginação e ordenação") Pageable pageable) {
+        return ResponseEntity
+                .ok(getAllSellersUseCase.execute(name, email, companyId, active, PageableUtils.normalize(pageable)));
+        }
+        
+        
     @Operation(summary = "Cadastrar seller", description = "Cria um novo colaborador com o papel de SELLER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({

@@ -15,4 +15,5 @@ public interface CollaboratorRepository {
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
     Optional<Collaborator> getCollaboratorById(UUID id);
     Page<Collaborator> getManagers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
+    Page<Collaborator> getSellers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
 }
