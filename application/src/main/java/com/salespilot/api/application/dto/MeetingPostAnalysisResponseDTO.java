@@ -21,7 +21,7 @@ public record MeetingPostAnalysisResponseDTO(
                 meetingPostAnalysis.getId(),
                 meetingPostAnalysis.getMeetingId(),
                 meetingPostAnalysis.getSummary(),
-                meetingPostAnalysis.getActionItems().actionItems(),
+                meetingPostAnalysis.getActionItems(),
                 meetingPostAnalysis.getSentimentAnalysis(),
                 meetingPostAnalysis.getCreatedAt()
         );
