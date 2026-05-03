@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface MeetingRepository {
+    Long getTotalMeetingsByCollaborator(UUID collaboratorId);
     Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorID, Pageable pageable);
     long getTotalMeetings();
     double getAverageDurationSeconds();

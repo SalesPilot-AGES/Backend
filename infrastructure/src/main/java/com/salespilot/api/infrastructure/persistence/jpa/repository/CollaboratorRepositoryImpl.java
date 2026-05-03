@@ -47,7 +47,7 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
     @Transactional
     @Override
-    public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, boolean active, CollaboratorPreferences preferences) {
+    public Collaborator update(UUID companyId, UUID collaboratorId, String name, String email, String phone, boolean active, CollaboratorPreferences preferences) {
         CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
             .findById(collaboratorId)
             .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
@@ -57,6 +57,7 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
         collaboratorEntity.setCompany(companyEntity);
         collaboratorEntity.setName(name);
         collaboratorEntity.setEmail(email);
+        collaboratorEntity.setPhone(phone);
         collaboratorEntity.setActive(active);
         collaboratorEntity.setPreferences(preferences);
 
@@ -75,6 +76,19 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     public Page<Collaborator> getManagers(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
         Specification<CollaboratorEntity> spec = Specification
                 .where(CollaboratorSpecification.roleEquals(CollaboratorRole.MANAGER))
+                .and(CollaboratorSpecification.nameLike(name))
+                .and(CollaboratorSpecification.emailEquals(email))
+                .and(CollaboratorSpecification.companyIdEquals(companyId))
+                .and(CollaboratorSpecification.isActiveEquals(active));
+
+        return collaboratorJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Collaborator> getSellers(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
+        Specification<CollaboratorEntity> spec = Specification
+                .where(CollaboratorSpecification.roleEquals(CollaboratorRole.SELLER))
                 .and(CollaboratorSpecification.nameLike(name))
                 .and(CollaboratorSpecification.emailEquals(email))
                 .and(CollaboratorSpecification.companyIdEquals(companyId))

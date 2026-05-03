@@ -1,12 +1,14 @@
 package com.salespilot.api.presentation.handler;
 
-import com.salespilot.api.application.exception.ClientNotFoundException;
+import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
+import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
-import com.salespilot.api.application.exception.TaxIdAlreadyExists;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,5 +50,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MeetingPostAnalysisNotFoundException.class)
     public ResponseEntity<Void> handleMeetingPostAnalysisNotFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      
+    @ExceptionHandler(InvalidCollaboratorRoleException.class)
+    public ResponseEntity<Void> handleInvalidCollaboratorRoleException() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }
