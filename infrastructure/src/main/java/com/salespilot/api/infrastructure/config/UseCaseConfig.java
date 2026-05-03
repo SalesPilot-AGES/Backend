@@ -1,8 +1,24 @@
 package com.salespilot.api.infrastructure.config;
 
-import com.salespilot.api.application.usecase.*;
-
-import com.salespilot.api.domain.repository.*;
+import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
+import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
+import com.salespilot.api.application.usecase.GetAllManagersUseCase;
+import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
+import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
+import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
+import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
+import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
+import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
+import com.salespilot.api.application.usecase.PostCompanyUseCase;
+import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
+import com.salespilot.api.domain.repository.ClientRepository;
+import com.salespilot.api.domain.repository.CollaboratorRepository;
+import com.salespilot.api.domain.repository.CompanyRepository;
+import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
+import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
+import com.salespilot.api.domain.repository.MeetingRepository;
+import com.salespilot.api.domain.repository.SystemStatusRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
