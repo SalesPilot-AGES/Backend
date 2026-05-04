@@ -71,6 +71,11 @@ public class UseCaseConfig {
     }
 
     @Bean
+    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository) {
+        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository);
+    }
+
+    @Bean
     public GetAllMeetingsUseCase getAllMeetingsUseCase(MeetingRepository repository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
         return new GetAllMeetingsUseCase(repository, clientRepository, collaboratorRepository);
     }
@@ -78,10 +83,5 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase(MeetingRepository repository, CollaboratorRepository collaboratorRepository, ClientRepository clientRepository, MeetingPreAnalysisRepository meetingPreAnalysisRepository) {
         return new GetMeetingContextAndMetadataUseCase(repository, collaboratorRepository, clientRepository, meetingPreAnalysisRepository);
-    }
-
-    @Bean
-    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository) {
-        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository);
     }
 }
