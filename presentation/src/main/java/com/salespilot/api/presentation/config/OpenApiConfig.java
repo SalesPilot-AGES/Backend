@@ -25,7 +25,8 @@ public class OpenApiConfig {
                 .tags(List.of(
                         new Tag().name("System").description("Verificação de status da API"),
                         new Tag().name("Companies").description("Gerenciamento de empresas"),
-                        new Tag().name("Collaborators").description("Gerenciamento de colaboradores")
+                        new Tag().name("Collaborators").description("Gerenciamento de colaboradores"),
+                        new Tag().name("Meetings").description("Gerenciamento de reuniões")
                 ));
     }
 }

@@ -1,5 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.util.UUID;
+
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
@@ -12,16 +14,26 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public class MeetingRepositoryImpl implements MeetingRepository {
+
+public class MeetingRepositoryImpl implements MeetingRepository{
     private final MeetingsJpaRepository meetingsJpaRepository;
     private final MeetingMapper mapper;
+
 
     public MeetingRepositoryImpl(MeetingsJpaRepository meetingsJpaRepository, MeetingMapper mapper) {
         this.meetingsJpaRepository = meetingsJpaRepository;
         this.mapper = mapper;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long getTotalMeetingsByCollaborator(UUID collaboratorId) {
+        Specification<MeetingEntity> spec = Specification.where(
+            MeetingSpecification.collaboratorIdEquals(collaboratorId)
+        );
+        return meetingsJpaRepository.count(spec);
     }
 
     @Transactional(readOnly = true)

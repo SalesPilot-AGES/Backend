@@ -1,26 +1,30 @@
 package com.salespilot.api.infrastructure.config;
 
+import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
+import com.salespilot.api.application.usecase.GetAllManagersUseCase;
+import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
+import com.salespilot.api.application.usecase.GetAllSellersUseCase;
+import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
+import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
+import com.salespilot.api.domain.repository.CollaboratorRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
-import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
-import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
-import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
-import com.salespilot.api.application.usecase.GetAllManagersUseCase;
-import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
+import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 
-import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 
 @Configuration
 public class UseCaseConfig {
@@ -71,6 +75,12 @@ public class UseCaseConfig {
     }
 
     @Bean
+    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository) {
+        return new GetAllSellersUseCase(repository, companyRepository, meetingRepository);
+    }
+    
+
+    @Bean
     public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository) {
         return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository);
     }
@@ -83,5 +93,10 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase(MeetingRepository repository, CollaboratorRepository collaboratorRepository, ClientRepository clientRepository, MeetingPreAnalysisRepository meetingPreAnalysisRepository) {
         return new GetMeetingContextAndMetadataUseCase(repository, collaboratorRepository, clientRepository, meetingPreAnalysisRepository);
+    }
+
+    @Bean
+    public GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase(MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
+        return new GetMeetingPostAnalysisUseCase(meetingPostAnalysisRepository);
     }
 }

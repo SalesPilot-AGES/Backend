@@ -1,10 +1,12 @@
 package com.salespilot.api.presentation.handler;
 
-import com.salespilot.api.application.exception.TaxIdAlreadyExists;
-import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
-import com.salespilot.api.application.exception.CompanyNotFoundException;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.ClientNotFoundException;
+import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
+import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.MeetingNotFoundException;
+import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
+import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ClientNotFoundException.class)
-    public ResponseEntity<Void> handleClientNotFoundExeption() {
+    public ResponseEntity<Void> handleClientNotFoundException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(MeetingNotFoundException.class)
+    public ResponseEntity<Void> handleMeetingNotFoundException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(MeetingPostAnalysisNotFoundException.class)
+    public ResponseEntity<Void> handleMeetingPostAnalysisNotFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

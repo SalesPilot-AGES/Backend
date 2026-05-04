@@ -7,5 +7,4 @@ import java.util.UUID;
 
 public interface MeetingPostAnalysisRepository {
     Optional<MeetingPostAnalysis> findByMeetingId(UUID meetingId);
-    MeetingPostAnalysis save(MeetingPostAnalysis analysis);
 }
