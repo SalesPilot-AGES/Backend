@@ -7,6 +7,7 @@ import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +50,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MeetingPostAnalysisNotFoundException.class)
     public ResponseEntity<Void> handleMeetingPostAnalysisNotFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(InvalidCollaboratorRoleException.class)
+    public ResponseEntity<Void> handleInvalidCollaboratorRoleNotFoundExeption() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

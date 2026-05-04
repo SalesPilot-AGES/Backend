@@ -2,7 +2,7 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.dto.SellerResponseDTO;
-import com.salespilot.api.application.dto.SellerResponseDTO;
+import com.salespilot.api.application.dto.SellerWithMeetingsResponseDTO;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
@@ -120,8 +120,7 @@ public class CollaboratorController {
             EditCollaboratorUseCase editCollaboratorUseCase,
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
             GetAllManagersUseCase getAllManagersUseCase,
-            GetAllSellersUseCase getAllSellersUseCase) {
-            GetAllManagersUseCase getAllManagersUseCase,
+            GetAllSellersUseCase getAllSellersUseCase,
             GetSellerByIdUseCase getSellerByIdUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
@@ -271,10 +270,18 @@ public class CollaboratorController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "Buscar seller por ID", description = "Retorna os dados de um seller pelo seu UUID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Seller encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerWithMeetingsResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Company não encontrada", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Client não encontrado", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
+    })
     @GetMapping("/sellers/{id}")
-    public ResponseEntity<SellerResponseDTO> getSellerById(
+    public ResponseEntity<SellerWithMeetingsResponseDTO> getSellerById(
                 @Parameter(description = "UUID do vendedor") @PathVariable UUID id) {
-        SellerResponseDTO collaboratorWithMeetingsResponseDTO = getSellerByIdUseCase.execute(id);
-        return ResponseEntity.ok(collaboratorWithMeetingsResponseDTO);
+        SellerWithMeetingsResponseDTO sellerWithMeetingsResponseDTO = getSellerByIdUseCase.execute(id);
+        return ResponseEntity.ok(sellerWithMeetingsResponseDTO);
     }
 }

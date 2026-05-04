@@ -81,8 +81,8 @@ public class UseCaseConfig {
     
 
     @Bean
-    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository) {
-        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository);
+    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository, MeetingRepository meetingRepository) {
+        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository, meetingRepository);
     }
 
     @Bean

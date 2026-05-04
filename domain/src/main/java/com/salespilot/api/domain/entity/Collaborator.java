@@ -27,7 +27,7 @@ public class Collaborator {
 
     private Integer averageFeeling;
 
-    private Integer totalMeetings;
+    private Long totalMeetings;
 
     private List<Meeting> meetings;
     
