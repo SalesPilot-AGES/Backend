@@ -103,8 +103,8 @@ entity "meeting_post_analysis" as post_analysis {
   --
   meeting_id : uuid <<FK>>
   summary : text
-  action_items : json
-  sentiment_analysis : json
+  action_items : jsonb
+  sentiment_analysis : jsonb
   created_at : datetime
 }
 
