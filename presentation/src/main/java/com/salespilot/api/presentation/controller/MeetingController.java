@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Meetings")
@@ -95,9 +95,38 @@ public class MeetingController {
         return ResponseEntity.ok(getMeetingPostAnalysisUseCase.execute(id));
     }
 
+
+
+    @Operation(summary = "Buscar insights da reunião", description = "Retorna os insights gerados automaticamente para uma reunião.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Insights encontrados",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = MeetingRealtimeInsightsResponseDTO.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "content": [
+                        {
+                          "id": "i1a2b3c4-d5e6-7890-1234-56789abcdef0",
+                          "type": "KEY_POINT",
+                          "description": "Cliente destacou urgência de integração",
+                          "content": "A equipe precisa conectar CRM e ERP ainda neste trimestre.",
+                          "created_at": "2024-06-10T14:15:00Z"
+                        },
+                        {
+                          "id": "i2b3c4d5-e6f7-8901-2345-6789abcdef01",
+                          "type": "ACTION_ITEM",
+                          "description": "Enviar proposta atualizada",
+                          "content": "Revisar valores e enviar nova proposta até sexta-feira.",
+                          "created_at": "2024-06-10T14:20:00Z"
+                        }
+                      ]
+                    }
+                """))),
+        @ApiResponse(responseCode = "404", description = "Reunião não encontrada", content = @Content)
+    })
     @GetMapping("/{id}/insights")
-    public ResponseEntity<Page<MeetingRealtimeInsightsResponseDTO>> getMeetingRealtimeInsights(
+    public ResponseEntity<List<MeetingRealtimeInsightsResponseDTO>> getMeetingRealtimeInsights(
             @PathVariable UUID id, Pageable pageable){
-        return ResponseEntity.ok(getMeetingInsightUseCase.execute(id, PageableUtils.normalize(pageable)));
+        return ResponseEntity.ok(getMeetingInsightUseCase.execute(id));
     }
 }

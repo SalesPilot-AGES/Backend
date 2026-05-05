@@ -1,14 +1,15 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import com.salespilot.api.domain.entity.MeetingRealtimeInsight;
 import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingRealtimeInsightMapper;
 
+@Repository
 public class MeetingRealtimeInsightsRepositoryImpl implements MeetingRealtimeInsightRepository{
     private MeetingRealtimeInsightsJpaRepository repository;
     private MeetingRealtimeInsightMapper mapper;
@@ -19,8 +20,8 @@ public class MeetingRealtimeInsightsRepositoryImpl implements MeetingRealtimeIns
     }
 
     @Override
-    public Page<MeetingRealtimeInsight> findByMeetingId(UUID meetingId, Pageable pageable) {
-        return repository.findById(meetingId, pageable).map(mapper::toDomain);
+    public List<MeetingRealtimeInsight> findByMeetingId(UUID meetingId) {
+        return repository.findByMeetingIdOrderByCreatedAtDesc(meetingId).stream().map(mapper::toDomain).toList();
     }
     
 }

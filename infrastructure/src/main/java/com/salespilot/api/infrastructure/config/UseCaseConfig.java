@@ -96,7 +96,7 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository) {
-        return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository);
+    public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
+        return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
     }
 }

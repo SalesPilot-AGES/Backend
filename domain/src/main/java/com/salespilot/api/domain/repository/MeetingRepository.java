@@ -13,4 +13,5 @@ public interface MeetingRepository {
     long getTotalMeetings();
     double getAverageDurationSeconds();
     Optional<Meeting> getMeetingById(UUID id);
+    boolean existsById(UUID id);
 }

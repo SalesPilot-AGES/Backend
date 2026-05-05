@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-
 public class MeetingRepositoryImpl implements MeetingRepository{
     private final MeetingsJpaRepository meetingsJpaRepository;
     private final MeetingMapper mapper;
@@ -59,5 +58,10 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     @Override
     public Optional<Meeting> getMeetingById(UUID id) {
         return meetingsJpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public boolean existsById(UUID id){
+        return meetingsJpaRepository.existsById(id);
     }
 }

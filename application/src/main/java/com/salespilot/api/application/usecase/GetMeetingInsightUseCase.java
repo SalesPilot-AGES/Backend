@@ -1,24 +1,31 @@
 package com.salespilot.api.application.usecase;
 
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import com.salespilot.api.application.dto.MeetingRealtimeInsightsResponseDTO;
-import com.salespilot.api.domain.entity.MeetingRealtimeInsight;
+import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
+import com.salespilot.api.domain.repository.MeetingRepository;
 
 public class GetMeetingInsightUseCase {
     private MeetingRealtimeInsightRepository repository;
+    private MeetingRepository meetingRepository;
 
-    public GetMeetingInsightUseCase( MeetingRealtimeInsightRepository repository){
+    public GetMeetingInsightUseCase( MeetingRealtimeInsightRepository repository, MeetingRepository meetingRepository){
         this.repository = repository;
+        this.meetingRepository = meetingRepository;
     }
 
-    public Page<MeetingRealtimeInsightsResponseDTO> execute(UUID meetingId, Pageable pageable){
-        Page<MeetingRealtimeInsight> insights = repository.findByMeetingId(meetingId, pageable);
+    public List<MeetingRealtimeInsightsResponseDTO> execute(UUID meetingId){
+        if (!meetingRepository.existsById(meetingId)) {
+            throw new MeetingNotFoundException(meetingId);
+        }
 
-        return insights.map(MeetingRealtimeInsightsResponseDTO::from);
+        return repository
+            .findByMeetingId(meetingId)
+            .stream()
+            .map(MeetingRealtimeInsightsResponseDTO::from)
+            .toList();
     }
 }
