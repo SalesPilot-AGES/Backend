@@ -13,7 +13,7 @@ public record MeetingRealtimeInsightsResponseDTO(
     String content,
     LocalDateTime createdAt
 ) {
-    public MeetingRealtimeInsightsResponseDTO from(MeetingRealtimeInsight meetingRealtimeInsights){
+    public static MeetingRealtimeInsightsResponseDTO from(MeetingRealtimeInsight meetingRealtimeInsights){
         return new MeetingRealtimeInsightsResponseDTO(
             meetingRealtimeInsights.getId(),
             meetingRealtimeInsights.getType(),

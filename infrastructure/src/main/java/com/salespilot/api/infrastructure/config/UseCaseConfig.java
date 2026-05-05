@@ -16,6 +16,7 @@ import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
+import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -23,6 +24,7 @@ import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
+import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 
 @Configuration
@@ -91,5 +93,10 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase(MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
         return new GetMeetingPostAnalysisUseCase(meetingPostAnalysisRepository);
+    }
+
+    @Bean
+    public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository) {
+        return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository);
     }
 }

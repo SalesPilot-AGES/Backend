@@ -3,8 +3,10 @@ package com.salespilot.api.presentation.controller;
 import com.salespilot.api.application.dto.MeetingContextMetadataResponseDTO;
 import com.salespilot.api.application.dto.MeetingPageResponseDTO;
 import com.salespilot.api.application.dto.MeetingPostAnalysisResponseDTO;
+import com.salespilot.api.application.dto.MeetingRealtimeInsightsResponseDTO;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
+import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 import com.salespilot.api.presentation.utils.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +36,13 @@ public class MeetingController {
     private final GetAllMeetingsUseCase getAllMeetingsUseCase;
     private final GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase;
     private final GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase;
+    private final GetMeetingInsightUseCase getMeetingInsightUseCase;
 
-    public MeetingController(GetAllMeetingsUseCase getAllMeetingsUseCase, GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase, GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase) {
+    public MeetingController(GetAllMeetingsUseCase getAllMeetingsUseCase, GetMeetingContextAndMetadataUseCase getMeetingContextAndMetadataUseCase, GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase, GetMeetingInsightUseCase getMeetingInsightUseCase) {
         this.getAllMeetingsUseCase = getAllMeetingsUseCase;
         this.getMeetingContextAndMetadataUseCase = getMeetingContextAndMetadataUseCase;
         this.getMeetingPostAnalysisUseCase = getMeetingPostAnalysisUseCase;
+        this.getMeetingInsightUseCase = getMeetingInsightUseCase;
     }
 
     @GetMapping
@@ -87,5 +93,11 @@ public class MeetingController {
     public ResponseEntity<MeetingPostAnalysisResponseDTO> getMeetingPostAnalysis(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
         return ResponseEntity.ok(getMeetingPostAnalysisUseCase.execute(id));
+    }
+
+    @GetMapping("/{id}/insights")
+    public ResponseEntity<Page<MeetingRealtimeInsightsResponseDTO>> getMeetingRealtimeInsights(
+            @PathVariable UUID id, Pageable pageable){
+        return ResponseEntity.ok(getMeetingInsightUseCase.execute(id, PageableUtils.normalize(pageable)));
     }
 }
