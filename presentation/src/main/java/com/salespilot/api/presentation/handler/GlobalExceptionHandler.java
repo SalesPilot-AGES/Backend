@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidCollaboratorRoleException.class)
-    public ResponseEntity<Void> handleInvalidCollaboratorRoleNotFoundExeption() {
+    public ResponseEntity<Void> handleInvalidCollaboratorRoleExeption() {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

@@ -183,7 +183,8 @@ public class CollaboratorController {
     @Operation(summary = "Buscar manager por ID", description = "Retorna os dados de um manager pelo seu UUID.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Manager encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
-            @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),                        
+            @ApiResponse(responseCode = "409", description = "Role inválida", content = @Content)
     })
     @GetMapping("/managers/{id}")
     public ResponseEntity<CollaboratorResponseDTO> getManagerById(
@@ -248,8 +249,6 @@ public class CollaboratorController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Seller atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
             @ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
@@ -272,10 +271,8 @@ public class CollaboratorController {
 
     @Operation(summary = "Buscar seller por ID", description = "Retorna os dados de um seller pelo seu UUID.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Seller encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerWithMeetingsResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @ApiResponse(responseCode = "200", description = "Seller encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerWithMeetingsResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Company não encontrada", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Client não encontrado", content = @Content),
             @ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
     })
     @GetMapping("/sellers/{id}")
