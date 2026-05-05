@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import com.salespilot.api.domain.valueobject.InsightDescription;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,11 +40,11 @@ public class MeetingRealtimeInsightsEntity implements java.io.Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private RealtimeInsightType type;
+    private RealtimeInsightTypeEntity type;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "description", columnDefinition = "json")
-    private String description;
+    @Column(name = "description", columnDefinition = "jsonb")
+    private InsightDescription description;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

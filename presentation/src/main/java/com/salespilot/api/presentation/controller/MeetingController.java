@@ -126,7 +126,7 @@ public class MeetingController {
     })
     @GetMapping("/{id}/insights")
     public ResponseEntity<List<MeetingRealtimeInsightsResponseDTO>> getMeetingRealtimeInsights(
-            @PathVariable UUID id, Pageable pageable){
+            @PathVariable UUID id){
         return ResponseEntity.ok(getMeetingInsightUseCase.execute(id));
     }
 }

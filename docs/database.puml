@@ -94,7 +94,7 @@ entity "meeting_realtime_insights" as insights {
   meeting_id : uuid <<FK>>
   content : text
   type : enum('key_point', 'action_item')
-  description : text
+  description : jsonb
   created_at : datetime
 }
 

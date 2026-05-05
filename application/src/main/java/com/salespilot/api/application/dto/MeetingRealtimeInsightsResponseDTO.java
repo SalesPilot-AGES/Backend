@@ -5,11 +5,12 @@ import java.util.UUID;
 
 import com.salespilot.api.domain.entity.MeetingRealtimeInsight;
 import com.salespilot.api.domain.enums.RealtimeInsightType;
+import com.salespilot.api.domain.valueobject.InsightDescription;
 
 public record MeetingRealtimeInsightsResponseDTO(
     UUID id,
     RealtimeInsightType type,
-    String description,
+    InsightDescription description,
     String content,
     LocalDateTime createdAt
 ) {

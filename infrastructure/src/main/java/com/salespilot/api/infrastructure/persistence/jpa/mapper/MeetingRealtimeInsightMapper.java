@@ -6,6 +6,7 @@ import com.salespilot.api.domain.entity.MeetingRealtimeInsight;
 import com.salespilot.api.domain.enums.RealtimeInsightType;
 
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingRealtimeInsightsEntity;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.RealtimeInsightTypeEntity;
 
 @Component
 public class MeetingRealtimeInsightMapper {
@@ -20,7 +21,7 @@ public class MeetingRealtimeInsightMapper {
         );
     }
 
-    private RealtimeInsightType mapType(com.salespilot.api.infrastructure.persistence.jpa.entity.RealtimeInsightType type){
+    private RealtimeInsightType mapType(RealtimeInsightTypeEntity type){
         if (type == null) return null;
         return RealtimeInsightType.valueOf(type.name());
     }
