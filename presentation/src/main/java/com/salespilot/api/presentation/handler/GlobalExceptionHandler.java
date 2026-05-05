@@ -1,6 +1,13 @@
 package com.salespilot.api.presentation.handler;
 
-import com.salespilot.api.application.exception.*;
+import com.salespilot.api.application.exception.ClientNotFoundException;
+import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
+import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.MeetingNotFoundException;
+import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
+import com.salespilot.api.application.exception.MeetingPreAnalysisNotFoundException;
+import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
