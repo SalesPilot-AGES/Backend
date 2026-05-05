@@ -98,8 +98,8 @@ public class MeetingController {
                                     {
                                       "id": "m1a2b3c4-d5e6-7890-1234-56789abcdef0",
                                       "title": "Reuniao de prospeccao",
-                                      "status": "completed",
-                                      "meeting_type": "online",
+                                      "status": "COMPLETED",
+                                      "meeting_type": "ONLINE",
                                       "objective": "Apresentar proposta comercial",
                                       "client_needs": "Integracao com CRM e previsibilidade de pipeline",
                                       "previous_interactions": "Demo realizada em 2024-05-20",
