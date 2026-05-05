@@ -7,7 +7,6 @@ import com.salespilot.api.application.dto.SellerMeetingResponseDTO;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
-import com.salespilot.api.application.exception.MeetingPreAnalysisNotFoundException;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -46,7 +45,7 @@ public class GetMeetingContextAndMetadataUseCase {
         MeetingPreAnalysisResponseDTO preAnalysis = meetingPreAnalysisRepository
                 .findByMeetingId(meeting.getId())
                 .map(MeetingPreAnalysisResponseDTO::from)
-                .orElseThrow(() -> new MeetingPreAnalysisNotFoundException(meeting.getId()));
+                .orElse(null);
 
         return new MeetingContextMetadataResponseDTO(
                 meeting.getId(),
