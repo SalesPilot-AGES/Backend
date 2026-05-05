@@ -1,8 +1,8 @@
 package com.salespilot.api.application.usecase;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 import com.salespilot.api.application.dto.ClientResponseDTO;
@@ -14,6 +14,7 @@ import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.domain.entity.Collaborator;
+import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -48,7 +49,15 @@ public class GetSellerByIdUseCase {
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
-        List<LatestMeetingsResponseDTO> latestMeetings = (collaborator.getMeetings() == null ? Collections.<com.salespilot.api.domain.entity.Meeting>emptyList() : collaborator.getMeetings()).stream()
+        List<Meeting> latestMeetings = meetingRepository.getMeetingsByCollaboratorId(collaborator.getId())
+            .stream()
+            .max(Comparator.comparing(Meeting::getStartedAt))
+            .map(List::of)
+            .orElse(List.of());
+            
+        List<LatestMeetingsResponseDTO> latestMeetingsResponse =
+            latestMeetings
+            .stream()
             .map(m -> new LatestMeetingsResponseDTO(
                 m.getId(),
                 m.getTitle(),
@@ -71,7 +80,7 @@ public class GetSellerByIdUseCase {
                 collaborator.getPreferences(),
                 collaborator.getAverageFeeling(),
                 totalMeetings,
-                latestMeetings,
+                latestMeetingsResponse,
                 collaborator.getCreatedAt(),
                 collaborator.getUpdatedAt(),
                 companyDto

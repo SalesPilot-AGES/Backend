@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -59,5 +60,20 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     @Override
     public Optional<Meeting> getMeetingById(UUID id) {
         return meetingsJpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Meeting> getMeetingsByCollaboratorId(UUID collaboratorId) {
+        Specification<MeetingEntity> spec = Specification
+            .where(MeetingSpecification.collaboratorIdEquals(collaboratorId)
+        );
+
+        List<Meeting> meetings = meetingsJpaRepository
+            .findAll(spec)
+            .stream()
+            .map(mapper::toDomain)
+            .toList();
+
+        return meetings;
     }
 }
