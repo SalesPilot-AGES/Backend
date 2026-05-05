@@ -1,0 +1,206 @@
+@startuml
+!theme plain
+hide circle
+skinparam linetype ortho
+
+entity "companies" as companies {
+  * id : uuid <<PK>>
+  --
+  name : varchar
+  tax_id : varchar
+  phone : varchar
+  address : varchar
+  active : boolean
+  created_at : datetime
+  updated_at : datetime
+}
+
+' TO-DO: needs to discuss authentication strategy before defining this table
+' entity "profiles" as profiles {
+'   * id : uuid <<PK>>
+'   --
+'   full_name : varchar
+'   email : varchar
+'   avatar_url : varchar
+'   role : varchar
+'   is_active : boolean
+'   created_at : datetime
+'   updated_at : datetime
+' }
+
+entity "collaborators" as collaborators {
+  * id : uuid <<PK>>
+  --
+  company_id : uuid <<FK>>
+  name : varchar
+  role : enum('admin', 'manager', 'seller')
+  email : varchar
+  phone : varchar
+  active : boolean
+  preferences : json
+  ' average_feeling is exclusive for sellers, and null for other roles
+  average_feeling : int
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "clients" as clients {
+  * id : uuid <<PK>>
+  --
+  company_id : uuid <<FK>>
+  collaborator_id : uuid <<FK>>
+  name : varchar
+  ' email : varchar
+  ' phone : varchar
+  client_company_name : varchar
+  sector : varchar
+  overall_sentiment : int
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "meetings" as meetings {
+  * id : uuid <<PK>>
+  --
+  collaborator_id : uuid <<FK>>
+  client_id : uuid <<FK>>
+  title : varchar
+  status : varchar
+  duration_seconds : int
+  objective : varchar
+  meeting_type : varchar
+  client_needs : text 
+  previous_interactions : text
+  competitors_involved : varchar
+  scheduled_for : datetime
+  started_at : datetime
+  ended_at : datetime
+  created_at : datetime
+}
+
+entity "meeting_pre_analysis" as pre_analysis {
+  * id : uuid <<PK>>
+  --
+  meeting_id : uuid <<FK>>
+  recommended_strategy : jsonb
+  key_points : jsonb
+  possible_objections : jsonb
+  created_at : datetime
+}
+
+entity "meeting_realtime_insights" as insights {
+  * id : uuid <<PK>>
+  --
+  meeting_id : uuid <<FK>>
+  content : text
+  type : enum('key_point', 'action_item')
+  description : text
+  created_at : datetime
+}
+
+entity "meeting_post_analysis" as post_analysis {
+  * id : uuid <<PK>>
+  --
+  meeting_id : uuid <<FK>>
+  summary : text
+  action_items : jsonb
+  sentiment_analysis : jsonb
+  created_at : datetime
+}
+
+entity "prompt" as prompt {
+  * id : uuid <<PK>>
+  --
+  company_id : uuid <<FK>>
+  name : varchar
+  description : text
+  instructions : text
+  custom : boolean
+  created_at : datetime
+}
+
+entity "prompt_assignments" as assignments {
+  * id : uuid <<PK>>
+  --
+  prompt_id : uuid <<FK>>
+  collaborator_id : uuid <<FK>>
+  created_at : datetime
+}
+
+entity "company_subscriptions" as subs {
+  * id : uuid <<PK>>
+  --
+  company_id : uuid <<FK>>
+  plan_id : uuid <<FK>>
+  active : boolean
+  starts_at : datetime
+  ends_at : datetime
+  renewal_date : date
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "subscription_plans" as plans {
+  * id : uuid <<PK>>
+  --
+  name : varchar
+  description : text
+  price_cents : int
+  status : varchar
+  created_at : datetime
+}
+
+' entity "audit_logs" as logs {
+'   * id : uuid <<PK>>
+'   --
+'   actor_profile_id : uuid <<FK>>
+'   company_id : uuid <<FK>>
+'   action : varchar
+'   entity_type : varchar
+'   entity_id : uuid
+'   payload : json
+'   created_at : datetime
+' }
+
+' entity "flyway_schema_history" as flyway {
+'   * installed_rank : int <<PK>>
+'   --
+'   version : varchar
+'   description : varchar
+'   type : varchar
+'   script : varchar
+'   checksum : int
+'   installed_by : varchar
+'   installed_on : datetime
+'   execution_time : int
+'   success : boolean
+' }
+
+' Companies
+companies ||--o{ collaborators : "has"
+companies ||--o{ prompt : "defines"
+companies ||--o{ clients : "owns"
+
+' Collaborators
+collaborators ||--o{ meetings : "conducts"
+collaborators ||--o{ assignments
+collaborators ||--o{ clients : "manages"
+
+' Clients
+clients ||--o{ meetings : "attends"
+
+' Meetings
+meetings ||--|| post_analysis : "generates"
+meetings ||--|| pre_analysis : "generates"
+meetings ||--o{ insights : "provides"
+
+' ConfigPrompts
+prompt ||--o{ assignments
+
+' Plans
+' 1:N since companies can have multiple subscriptions over time, but only one active at a time
+companies ||--o{ subs
+' 1:N since plans can be subscribed by multiple companies
+plans ||--o{ subs
+
+@enduml

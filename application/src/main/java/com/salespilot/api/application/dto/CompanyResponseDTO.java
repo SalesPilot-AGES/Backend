@@ -4,17 +4,29 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.salespilot.api.domain.entity.Company;
-import com.salespilot.api.domain.enums.CompanyPlan;
 
-public record CompanyResponseDTO(UUID id, String name, String taxId, CompanyPlan plan, boolean active, LocalDateTime createdAt) {
+public record CompanyResponseDTO(
+        UUID id,
+        String name,
+        String taxId,
+        String phone,
+        String address,
+        boolean active,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        String plan
+) {
     public static CompanyResponseDTO from(Company company) {
         return new CompanyResponseDTO(
                 company.getId(),
                 company.getName(),
                 company.getTaxId(),
-                company.getPlan(),
+                company.getPhone(),
+                company.getAddress(),
                 company.isActive(),
-                company.getCreatedAt()
+                company.getCreatedAt(),
+                company.getUpdatedAt(),
+                company.getPlan()
         );
     }
 }

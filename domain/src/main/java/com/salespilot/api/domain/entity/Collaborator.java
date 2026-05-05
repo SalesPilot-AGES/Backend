@@ -19,11 +19,17 @@ public class Collaborator {
 
     private String email;
 
+    private String phone;
+
     private CollaboratorRole role;
 
     private boolean active;
 
+    private Integer averageFeeling;
+
     private CollaboratorPreferences preferences;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

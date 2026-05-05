@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.salespilot.api.domain.enums.CompanyPlan;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,14 +13,12 @@ public class Company {
     private UUID id;
     private String name;
     private String taxId;
-    private CompanyPlan plan;
+    private String phone;
+    private String address;
     private boolean active;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String plan;
     private List<Collaborator> collaborators;
 
-    public void updateInfo(String name, CompanyPlan plan, boolean active) {
-        this.name = name;
-        this.plan = plan;
-        this.active = active;
-    }
 }

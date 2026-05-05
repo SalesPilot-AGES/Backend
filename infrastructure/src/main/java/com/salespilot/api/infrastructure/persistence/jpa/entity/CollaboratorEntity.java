@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -49,12 +50,18 @@ public class CollaboratorEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "phone")
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private CollaboratorRole role;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "active", nullable = false)
     private boolean active;
+
+    @Column(name = "average_feeling")
+    private Integer averageFeeling;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "preferences", columnDefinition = "jsonb")
@@ -64,13 +71,18 @@ public class CollaboratorEntity {
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP", updatable = false)
     private LocalDateTime createdAt;
 
-    public CollaboratorEntity(CompanyEntity company, String name, String email,  CollaboratorRole role, boolean active, CollaboratorPreferences preferences) {
+    @UpdateTimestamp
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
+    private LocalDateTime updatedAt;
+
+    public CollaboratorEntity(CompanyEntity company, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences, Integer averageFeeling) {
         this.company = company;
         this.name = name;
         this.email = email;
         this.role = role;
         this.active = active;
+        this.phone = phone;
         this.preferences = preferences;
+        this.averageFeeling = averageFeeling;
     }
 }
-
