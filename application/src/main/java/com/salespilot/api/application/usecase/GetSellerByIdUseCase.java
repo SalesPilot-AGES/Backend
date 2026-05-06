@@ -1,7 +1,7 @@
 package com.salespilot.api.application.usecase;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -49,11 +49,7 @@ public class GetSellerByIdUseCase {
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
-        List<Meeting> latestMeetings = meetingRepository.getMeetingsByCollaboratorId(collaborator.getId())
-            .stream()
-            .max(Comparator.comparing(Meeting::getStartedAt))
-            .map(List::of)
-            .orElse(List.of());
+        Optional<Meeting> latestMeetings = meetingRepository.getLatestMeetingByCollaborator(collaborator.getId());
             
         List<LatestMeetingsResponseDTO> latestMeetingsResponse =
             latestMeetings
@@ -64,7 +60,9 @@ public class GetSellerByIdUseCase {
                 m.getStatus(),
                 m.getStartedAt(),
                 m.getDurationSeconds(),
-                clientRepository.findById(m.getClientId()).map(ClientResponseDTO::from).orElseThrow(() -> new ClientNotFoundException(m.getClientId()))
+                clientRepository.findById(m.getClientId())
+                    .map(ClientResponseDTO::from)
+                    .orElseThrow(() -> new ClientNotFoundException(m.getClientId()))
         )).collect(Collectors.toList());
 
         Long totalMeetings = meetingRepository.getTotalMeetingsByCollaborator(collaborator.getId());

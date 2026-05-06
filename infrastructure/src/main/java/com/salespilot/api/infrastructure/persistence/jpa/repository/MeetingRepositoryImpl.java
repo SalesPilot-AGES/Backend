@@ -8,12 +8,13 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.MeetingSpecification;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -62,18 +63,13 @@ public class MeetingRepositoryImpl implements MeetingRepository{
         return meetingsJpaRepository.findById(id).map(mapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<Meeting> getMeetingsByCollaboratorId(UUID collaboratorId) {
-        Specification<MeetingEntity> spec = Specification
-            .where(MeetingSpecification.collaboratorIdEquals(collaboratorId)
-        );
-
-        List<Meeting> meetings = meetingsJpaRepository
-            .findAll(spec)
-            .stream()
-            .map(mapper::toDomain)
-            .toList();
-
-        return meetings;
+    public Optional<Meeting> getLatestMeetingByCollaborator(UUID collaboratorId) {
+        Specification<MeetingEntity> spec = MeetingSpecification.collaboratorIdEquals(collaboratorId);
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "startedAt"));
+        return meetingsJpaRepository.findAll(spec, pageable).getContent().stream()
+                .map(mapper::toDomain)
+                .findFirst();
     }
 }
