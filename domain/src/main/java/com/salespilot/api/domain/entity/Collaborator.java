@@ -7,7 +7,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 @Getter
 @AllArgsConstructor
 public class Collaborator {
@@ -26,7 +25,7 @@ public class Collaborator {
     private boolean active;
 
     private Integer averageFeeling;
-
+    
     private CollaboratorPreferences preferences;
 
     private LocalDateTime createdAt;
