@@ -7,5 +7,4 @@ import java.util.UUID;
 
 public interface MeetingRealtimeInsightRepository {
     List<MeetingRealtimeInsight> findByMeetingId(UUID meetingId);
-    MeetingRealtimeInsight save(MeetingRealtimeInsight insight);
 }
