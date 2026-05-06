@@ -34,15 +34,15 @@ public class MeetingPreAnalysisEntity implements java.io.Serializable {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "recommended_strategy", columnDefinition = "jsonb")
-    private PreAnalysisRecommendedStrategy preAnalysisRecommendedStrategy;
+    private PreAnalysisRecommendedStrategy recommendedStrategy;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "key_points", columnDefinition = "jsonb")
-    private List<String> preAnalysisKeyPoints;
+    private List<String> keyPoints;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "possible_objections", columnDefinition = "jsonb")
-    private List<String> preAnalysisPossibleObjections;
+    private List<String> possibleObjections;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
