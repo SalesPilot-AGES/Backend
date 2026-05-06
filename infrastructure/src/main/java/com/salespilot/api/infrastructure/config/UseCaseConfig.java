@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
@@ -78,6 +79,12 @@ public class UseCaseConfig {
         return new GetAllSellersUseCase(repository, companyRepository, meetingRepository);
     }
     
+
+    @Bean
+    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository, MeetingRepository meetingRepository) {
+        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository, meetingRepository);
+    }
+
     @Bean
     public GetAllMeetingsUseCase getAllMeetingsUseCase(MeetingRepository repository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
         return new GetAllMeetingsUseCase(repository, clientRepository, collaboratorRepository);

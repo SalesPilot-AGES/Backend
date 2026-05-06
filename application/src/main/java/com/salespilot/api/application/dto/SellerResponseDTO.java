@@ -20,4 +20,4 @@ public record SellerResponseDTO(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         CompanyResponseDTO company
-) { }
+) {}
