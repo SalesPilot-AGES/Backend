@@ -1,7 +1,6 @@
 package com.salespilot.api.application.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -18,7 +17,7 @@ public record SellerWithMeetingsResponseDTO (
     CollaboratorPreferences preferences,
     Integer averageFeeling,
     Long totalMeetings,
-    List<LatestMeetingsResponseDTO> latestMeetings,
+    LatestMeetingsResponseDTO latestMeeting,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     CompanyResponseDTO company

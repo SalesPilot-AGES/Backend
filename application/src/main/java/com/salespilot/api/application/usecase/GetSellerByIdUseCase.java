@@ -1,9 +1,6 @@
 package com.salespilot.api.application.usecase;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.salespilot.api.application.dto.ClientResponseDTO;
 import com.salespilot.api.application.dto.SellerWithMeetingsResponseDTO;
@@ -14,7 +11,6 @@ import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.domain.entity.Collaborator;
-import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -49,25 +45,23 @@ public class GetSellerByIdUseCase {
                 .map(CompanyResponseDTO::from)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
-        Optional<Meeting> latestMeetings = meetingRepository.getLatestMeetingByCollaborator(collaborator.getId());
-            
-        List<LatestMeetingsResponseDTO> latestMeetingsResponse =
-            latestMeetings
-            .stream()
-            .map(m -> new LatestMeetingsResponseDTO(
-                m.getId(),
-                m.getTitle(),
-                m.getStatus(),
-                m.getStartedAt(),
-                m.getDurationSeconds(),
-                clientRepository.findById(m.getClientId())
-                    .map(ClientResponseDTO::from)
-                    .orElseThrow(() -> new ClientNotFoundException(m.getClientId()))
-        )).collect(Collectors.toList());
+        LatestMeetingsResponseDTO latestMeeting = meetingRepository
+                .getLatestMeetingByCollaborator(collaborator.getId())
+                .map(m -> new LatestMeetingsResponseDTO(
+                        m.getId(),
+                        m.getTitle(),
+                        m.getStatus(),
+                        m.getStartedAt(),
+                        m.getDurationSeconds(),
+                        clientRepository.findById(m.getClientId())
+                                .map(ClientResponseDTO::from)
+                                .orElseThrow(() -> new ClientNotFoundException(m.getClientId()))
+                ))
+                .orElse(null);
 
         Long totalMeetings = meetingRepository.getTotalMeetingsByCollaborator(collaborator.getId());
 
-        return new SellerWithMeetingsResponseDTO (
+        return new SellerWithMeetingsResponseDTO(
                 collaborator.getId(),
                 collaborator.getCompanyId(),
                 collaborator.getName(),
@@ -78,7 +72,7 @@ public class GetSellerByIdUseCase {
                 collaborator.getPreferences(),
                 collaborator.getAverageFeeling(),
                 totalMeetings,
-                latestMeetingsResponse,
+                latestMeeting,
                 collaborator.getCreatedAt(),
                 collaborator.getUpdatedAt(),
                 companyDto
