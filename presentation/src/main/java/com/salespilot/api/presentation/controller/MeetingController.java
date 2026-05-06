@@ -103,30 +103,32 @@ public class MeetingController {
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = MeetingRealtimeInsightsResponseDTO.class),
                 examples = @ExampleObject(value = """
-                    {
-                      "content": [
-                        {
-                          "id": "i1a2b3c4-d5e6-7890-1234-56789abcdef0",
-                          "type": "KEY_POINT",
-                          "description": "Cliente destacou urgência de integração",
-                          "content": "A equipe precisa conectar CRM e ERP ainda neste trimestre.",
-                          "created_at": "2024-06-10T14:15:00Z"
+                    [
+                      {
+                        "id": "i1a2b3c4-d5e6-7890-1234-56789abcdef0",
+                        "type": "KEY_POINT",
+                        "description": {
+                            "text": "Urgência de integração destacada pelo cliente"
                         },
-                        {
-                          "id": "i2b3c4d5-e6f7-8901-2345-6789abcdef01",
-                          "type": "ACTION_ITEM",
-                          "description": "Enviar proposta atualizada",
-                          "content": "Revisar valores e enviar nova proposta até sexta-feira.",
-                          "created_at": "2024-06-10T14:20:00Z"
-                        }
-                      ]
-                    }
+                        "content": "A equipe precisa conectar CRM e ERP ainda neste trimestre.",
+                        "created_at": "2024-06-10T14:15:00Z"
+                      },
+                      {
+                        "id": "i2b3c4d5-e6f7-8901-2345-6789abcdef01",
+                        "type": "ACTION_ITEM",
+                        "description": {
+                            "text": "Revisar valores e entregar proposta até sexta-feira"
+                        },
+                        "content": "Revisar valores e enviar nova proposta até sexta-feira.",
+                        "created_at": "2024-06-10T14:20:00Z"
+                      }
+                    ]
                 """))),
         @ApiResponse(responseCode = "404", description = "Reunião não encontrada", content = @Content)
     })
     @GetMapping("/{id}/insights")
     public ResponseEntity<List<MeetingRealtimeInsightsResponseDTO>> getMeetingRealtimeInsights(
-            @PathVariable UUID id){
+            @Parameter(description = "UUID da reunião") @PathVariable UUID id){
         return ResponseEntity.ok(getMeetingInsightUseCase.execute(id));
     }
 }

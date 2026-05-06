@@ -11,8 +11,8 @@ import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingRealtimeI
 
 @Repository
 public class MeetingRealtimeInsightsRepositoryImpl implements MeetingRealtimeInsightRepository{
-    private MeetingRealtimeInsightsJpaRepository repository;
-    private MeetingRealtimeInsightMapper mapper;
+    private final MeetingRealtimeInsightsJpaRepository repository;
+    private final MeetingRealtimeInsightMapper mapper;
 
     public MeetingRealtimeInsightsRepositoryImpl(MeetingRealtimeInsightsJpaRepository repository, MeetingRealtimeInsightMapper mapper){
         this.repository = repository;

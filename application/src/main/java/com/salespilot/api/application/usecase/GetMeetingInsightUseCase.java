@@ -9,8 +9,8 @@ import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 
 public class GetMeetingInsightUseCase {
-    private MeetingRealtimeInsightRepository repository;
-    private MeetingRepository meetingRepository;
+    private final MeetingRealtimeInsightRepository repository;
+    private final MeetingRepository meetingRepository;
 
     public GetMeetingInsightUseCase( MeetingRealtimeInsightRepository repository, MeetingRepository meetingRepository){
         this.repository = repository;

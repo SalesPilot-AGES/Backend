@@ -22,7 +22,6 @@ public class MeetingRealtimeInsightMapper {
     }
 
     private RealtimeInsightType mapType(RealtimeInsightTypeEntity type){
-        if (type == null) return null;
         return RealtimeInsightType.valueOf(type.name());
     }
 }
