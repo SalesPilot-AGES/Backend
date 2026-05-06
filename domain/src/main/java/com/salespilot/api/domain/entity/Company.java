@@ -20,5 +20,4 @@ public class Company {
     private LocalDateTime updatedAt;
     private String plan;
     private List<Collaborator> collaborators;
-
 }

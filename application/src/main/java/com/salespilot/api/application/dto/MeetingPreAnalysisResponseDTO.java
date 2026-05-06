@@ -18,8 +18,8 @@ public record MeetingPreAnalysisResponseDTO(
         return new MeetingPreAnalysisResponseDTO(
                 meetingPreAnalysis.getId(),
                 meetingPreAnalysis.getRecommendedStrategy(),
-                meetingPreAnalysis.getKeyPoints().keyPoints(),
-                meetingPreAnalysis.getPossibleObjections().possibleObjections(),
+                meetingPreAnalysis.getKeyPoints(),
+                meetingPreAnalysis.getPossibleObjections(),
                 meetingPreAnalysis.getCreatedAt()
         );
     }

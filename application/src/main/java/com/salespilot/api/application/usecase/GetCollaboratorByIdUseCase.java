@@ -6,7 +6,9 @@ import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.domain.entity.Collaborator;
+import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
@@ -23,6 +25,10 @@ public class GetCollaboratorByIdUseCase {
         Collaborator collaborator = collaboratorRepository.getCollaboratorById(id).orElseThrow(
             () -> new CollaboratorNotFoundException(id)
         );
+
+        if(collaborator.getRole() != CollaboratorRole.MANAGER) {
+            throw new InvalidCollaboratorRoleException(collaborator.getRole(), CollaboratorRole.MANAGER);
+        }
 
         UUID companyId = collaborator.getCompanyId();
 
