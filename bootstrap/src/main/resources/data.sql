@@ -43,4 +43,6 @@ INSERT INTO meeting_pre_analysis (id, meeting_id, recommended_strategy, key_poin
 ('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', '99999999-8888-7777-6666-555555555555', '{"focus":"exploration"}'::jsonb, '["Entender processos atuais","Mapear stakeholders"]'::jsonb, '["Orcamento limitado","Prazo curto"]'::jsonb, NOW())
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO meeting_post_analysis (id, meeting_id, summary, action_items, sentiment_analysis, created_at) VALUES ('a1a2b3c4-d5e6-7890-1234-56789abcdef0', '99999999-8888-7777-6666-555555555555', 'Cliente demonstrou interesse na proposta e pediu retorno em 7 dias.', '[{"text": "Enviar proposta revisada", "done": false}, {"text": "Agendar próxima etapa", "done": false}]', '{"overall": "positive", "score": 0.81}', '2024-06-10T16:00:00Z');
+INSERT INTO meeting_post_analysis (id, meeting_id, summary, action_items, sentiment_analysis, created_at) VALUES
+('a1a2b3c4-d5e6-7890-1234-56789abcdef0', '99999999-8888-7777-6666-555555555555', 'Cliente demonstrou interesse na proposta e pediu retorno em 7 dias.', '[{"text": "Enviar proposta revisada", "done": false}, {"text": "Agendar próxima etapa", "done": false}]', '{"overall": "positive", "score": 0.81}', '2024-06-10T16:00:00Z');
+ON CONFLICT (id) DO NOTHING;
