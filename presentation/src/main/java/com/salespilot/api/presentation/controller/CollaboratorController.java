@@ -11,6 +11,7 @@ import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
+import com.salespilot.api.presentation.dto.CollaboratorUpdateRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -154,7 +155,7 @@ public class CollaboratorController {
     }
 
     @Operation(summary = "Editar manager", description = "Atualiza os dados de um colaborador com papel de MANAGER.")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorUpdateRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Manager atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
@@ -166,7 +167,7 @@ public class CollaboratorController {
     @PutMapping("/managers/{id}")
     public ResponseEntity<CollaboratorResponseDTO> editCollaborator(
             @Parameter(description = "UUID do manager") @PathVariable UUID id,
-            @Valid @RequestBody CollaboratorRequestDTO request) {
+            @Valid @RequestBody CollaboratorUpdateRequestDTO request) {
         CollaboratorResponseDTO response = editCollaboratorUseCase.execute(
                 request.companyId(),
                 id,
@@ -245,7 +246,7 @@ public class CollaboratorController {
     }
     
     @Operation(summary = "Editar seller", description = "Atualiza os dados de um colaborador com papel de SELLER.")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorUpdateRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Seller atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
             @ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
@@ -255,7 +256,7 @@ public class CollaboratorController {
     @PutMapping("/sellers/{id}")
     public ResponseEntity<CollaboratorResponseDTO> editSeller(
             @Parameter(description = "UUID do seller") @PathVariable UUID id,
-            @Valid @RequestBody CollaboratorRequestDTO request) {
+            @Valid @RequestBody CollaboratorUpdateRequestDTO request) {
         CollaboratorResponseDTO response = editCollaboratorUseCase.execute(
                 request.companyId(),
                 id,
