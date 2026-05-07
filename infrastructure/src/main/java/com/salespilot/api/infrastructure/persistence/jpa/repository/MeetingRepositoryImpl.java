@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-
 public class MeetingRepositoryImpl implements MeetingRepository{
     private final MeetingsJpaRepository meetingsJpaRepository;
     private final MeetingMapper mapper;
@@ -71,5 +70,10 @@ public class MeetingRepositoryImpl implements MeetingRepository{
         return meetingsJpaRepository.findAll(spec, pageable).getContent().stream()
                 .map(mapper::toDomain)
                 .findFirst();
+    }
+
+    @Override
+    public boolean existsById(UUID id){
+        return meetingsJpaRepository.existsById(id);
     }
 }
