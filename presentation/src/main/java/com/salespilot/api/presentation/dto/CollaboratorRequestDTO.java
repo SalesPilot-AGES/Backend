@@ -2,7 +2,6 @@ package com.salespilot.api.presentation.dto;
 
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,5 +26,5 @@ public record CollaboratorRequestDTO(
         String phone,
 
         @Schema(description = "Preferências de interface do colaborador")
-        @Valid @NotNull CollaboratorPreferences preferences
+        CollaboratorPreferences preferences
 ) {}
