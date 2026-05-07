@@ -5,6 +5,7 @@ import com.salespilot.api.application.dto.SellerResponseDTO;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
+import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 
 import org.springframework.data.domain.Page;
@@ -17,11 +18,13 @@ public class GetAllSellersUseCase {
     private final CollaboratorRepository repository;
     private final CompanyRepository companyRepository;
     private final MeetingRepository meetingRepository;
+    private final MeetingPostAnalysisRepository meetingPostAnalysisRepository;
 
-    public GetAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository) {
+    public GetAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
         this.repository = repository;
         this.companyRepository = companyRepository;
         this.meetingRepository = meetingRepository;
+        this.meetingPostAnalysisRepository = meetingPostAnalysisRepository;
     }
 
     public Page<SellerResponseDTO> execute(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
@@ -29,6 +32,7 @@ public class GetAllSellersUseCase {
         return repository.getSellers(name, email, companyId, active, pageable)
                 .map(c -> {
                     Long totalMeetings = meetingRepository.getTotalMeetingsByCollaborator(c.getId());
+                    Double averageFeeling = meetingPostAnalysisRepository.getAverageFeelingByCollaborator(c.getId());
                     return new SellerResponseDTO(
                         c.getId(),
                         c.getCompanyId(),
@@ -37,7 +41,7 @@ public class GetAllSellersUseCase {
                         c.getEmail(),
                         c.getPhone(),
                         c.isActive(),
-                        c.getAverageFeeling(),
+                        averageFeeling,
                         totalMeetings,
                         c.getPreferences(),
                         c.getCreatedAt(),

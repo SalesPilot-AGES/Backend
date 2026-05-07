@@ -14,7 +14,7 @@ public record SellerResponseDTO(
         String email,
         String phone,
         boolean active,
-        Integer averageFeeling,
+        Double averageFeeling,
         Long totalMeetings,
         CollaboratorPreferences preferences,
         LocalDateTime createdAt,
