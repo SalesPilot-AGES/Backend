@@ -77,8 +77,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository) {
-        return new GetAllSellersUseCase(repository, companyRepository, meetingRepository);
+    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
+        return new GetAllSellersUseCase(repository, companyRepository, meetingRepository, meetingPostAnalysisRepository);
     }
     
 

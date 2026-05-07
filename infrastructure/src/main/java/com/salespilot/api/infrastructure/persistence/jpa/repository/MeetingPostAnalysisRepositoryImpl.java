@@ -25,7 +25,12 @@ public class MeetingPostAnalysisRepositoryImpl implements MeetingPostAnalysisRep
     }
 
     @Override
-    public double getAverageSuccessRate() {
-        return meetingPostAnalysisJpaRepository.findAverageSuccessRate().orElse(0.0);
+    public Double getAverageSuccessRate() {
+        return meetingPostAnalysisJpaRepository.findAverageSuccessRate().orElse(null);
+    }
+
+    @Override
+    public Double getAverageFeelingByCollaborator(UUID collaboratorId) {
+        return meetingPostAnalysisJpaRepository.findAverageScoreByCollaboratorId(collaboratorId).orElse(null);
     }
 }
