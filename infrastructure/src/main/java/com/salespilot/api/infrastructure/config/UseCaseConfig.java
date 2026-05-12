@@ -53,8 +53,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetCompanyByIdUseCase getCompanyByIdUseCase(CompanyRepository repository) {
-        return new GetCompanyByIdUseCase(repository);
+    public GetCompanyByIdUseCase getCompanyByIdUseCase(CompanyQueryService companyQueryService) {
+        return new GetCompanyByIdUseCase(companyQueryService);
     }
 
     @Bean

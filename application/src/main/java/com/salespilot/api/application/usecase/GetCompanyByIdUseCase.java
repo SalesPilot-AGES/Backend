@@ -13,6 +13,6 @@ public class GetCompanyByIdUseCase {
     }
 
     public CompanyResponseDTO execute(UUID id) {
-        return CompanyResponseDTO.from(companyQueryService.getCompanyById(id));
+        return CompanyResponseDTO.from(companyQueryService.getOrThrowCompanyById(id));
     }
 }
