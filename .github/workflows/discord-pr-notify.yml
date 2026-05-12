@@ -1,0 +1,65 @@
+name: Discord PR Notification
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+    branches:
+      - main
+      - development
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Send PR notification to Discord Forum
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          ASSIGNEES=$(echo '${{ toJson(github.event.pull_request.assignees) }}' | jq -r '[.[].login] | if length == 0 then "Nenhum" else join(", ") end')
+          REVIEWERS=$(echo '${{ toJson(github.event.pull_request.requested_reviewers) }}' | jq -r '[.[].login] | if length == 0 then "Nenhum" else join(", ") end')
+
+          BODY="${{ github.event.pull_request.body }}"
+          if [ -z "$BODY" ]; then
+            BODY="Sem descrição."
+          fi
+
+          TRUNCATED_BODY=$(echo "$BODY" | cut -c1-900)
+          if [ $(echo "$BODY" | wc -m) -gt 900 ]; then
+            TRUNCATED_BODY="${TRUNCATED_BODY}..."
+          fi
+
+          THREAD_NAME="PR #${{ github.event.pull_request.number }} — ${{ github.event.pull_request.title }}"
+          THREAD_NAME=$(echo "$THREAD_NAME" | cut -c1-100)
+
+          PAYLOAD=$(jq -n \
+            --arg thread_name "$THREAD_NAME" \
+            --arg pr_url "${{ github.event.pull_request.html_url }}" \
+            --arg author "${{ github.event.pull_request.user.login }}" \
+            --arg base "${{ github.event.pull_request.base.ref }}" \
+            --arg head "${{ github.event.pull_request.head.ref }}" \
+            --arg assignees "$ASSIGNEES" \
+            --arg reviewers "$REVIEWERS" \
+            --arg body "$TRUNCATED_BODY" \
+            '{
+              thread_name: $thread_name,
+              embeds: [{
+                title: $thread_name,
+                url: $pr_url,
+                color: 5814783,
+                fields: [
+                  { name: "Autor", value: $author, inline: true },
+                  { name: "Branch", value: ("`" + $head + "` → `" + $base + "`"), inline: true },
+                  { name: "Assignees", value: $assignees, inline: true },
+                  { name: "Reviewers", value: $reviewers, inline: true },
+                  { name: "Descrição", value: $body, inline: false }
+                ],
+                footer: { text: "SalesPilot Backend" }
+              }]
+            }')
+
+          RESPONSE=$(curl -s -w "\nHTTP_%{http_code}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$DISCORD_WEBHOOK_URL")
+          echo "$RESPONSE"
