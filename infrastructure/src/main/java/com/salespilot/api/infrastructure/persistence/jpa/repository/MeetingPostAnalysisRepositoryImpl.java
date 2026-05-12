@@ -23,4 +23,14 @@ public class MeetingPostAnalysisRepositoryImpl implements MeetingPostAnalysisRep
         return meetingPostAnalysisJpaRepository.findByMeetingId(meetingId)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public Double getAverageSuccessRate() {
+        return meetingPostAnalysisJpaRepository.findAverageSuccessRate().orElse(null);
+    }
+
+    @Override
+    public Double getAverageFeelingByCollaborator(UUID collaboratorId) {
+        return meetingPostAnalysisJpaRepository.findAverageScoreByCollaboratorId(collaboratorId).orElse(null);
+    }
 }
