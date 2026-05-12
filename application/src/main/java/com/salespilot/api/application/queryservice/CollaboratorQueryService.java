@@ -9,14 +9,14 @@ import java.util.UUID;
 
 @Service
 public class CollaboratorQueryService {
-    private final CollaboratorRepository repository;
+    private final CollaboratorRepository collaboratorRepository;
 
-    public CollaboratorQueryService(CollaboratorRepository repository) {
-        this.repository = repository;
+    public CollaboratorQueryService(CollaboratorRepository collaboratorRepository) {
+        this.collaboratorRepository = collaboratorRepository;
     }
 
-    public Collaborator getCollaboratorById(UUID id) {
-        return repository.getCollaboratorById(id)
+    public Collaborator getOrThrowCollaboratorById(UUID id) {
+        return collaboratorRepository.getCollaboratorById(id)
                 .orElseThrow(() -> new CollaboratorNotFoundException(id));
     }
 }

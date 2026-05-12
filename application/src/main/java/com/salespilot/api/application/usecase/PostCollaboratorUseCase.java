@@ -24,11 +24,11 @@ public class PostCollaboratorUseCase {
     }
 
     public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences, Integer averageFeeling) {
-        if (collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {
+        if(collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
-        Company company = companyQueryService.getCompanyById(companyId);
+        Company company = companyQueryService.getOrThrowCompanyById(companyId);
 
         Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences, averageFeeling);
 

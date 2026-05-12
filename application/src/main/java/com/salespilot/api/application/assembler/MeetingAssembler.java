@@ -6,7 +6,9 @@ import com.salespilot.api.application.dto.SellerMeetingResponseDTO;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MeetingAssembler {
     public MeetingResponseDTO toDTO(Meeting meeting, Collaborator seller, Client client) {
         return new MeetingResponseDTO(

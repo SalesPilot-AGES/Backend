@@ -1,11 +1,13 @@
 package com.salespilot.api.application.usecase;
 
-import com.salespilot.api.application.dto.*;
-import com.salespilot.api.application.exception.ClientNotFoundException;
-import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.assembler.MeetingAssembler;
+import com.salespilot.api.application.dto.MeetingPageResponseDTO;
+import com.salespilot.api.application.dto.MeetingResponseDTO;
+import com.salespilot.api.application.dto.SummaryResponseDTO;
+import com.salespilot.api.application.queryservice.ClientQueryService;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
-import com.salespilot.api.domain.repository.ClientRepository;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import org.springframework.data.domain.Page;
@@ -15,40 +17,30 @@ import java.util.UUID;
 
 public class GetAllMeetingsUseCase {
     private final MeetingRepository repository;
+    private final CollaboratorQueryService collaboratorQueryService;
+    private final ClientQueryService clientQueryService;
     private final MeetingPostAnalysisRepository meetingPostAnalysisRepository;
-    private final ClientRepository clientRepository;
-    private final CollaboratorRepository collaboratorRepository;
+    private final MeetingAssembler assembler;
 
-    public GetAllMeetingsUseCase(MeetingRepository meetingRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
-        this.repository = meetingRepository;
+    public GetAllMeetingsUseCase(MeetingRepository repository, CollaboratorQueryService collaboratorQueryService, ClientQueryService clientQueryService, MeetingPostAnalysisRepository meetingPostAnalysisRepository, MeetingAssembler assembler) {
+        this.repository = repository;
+        this.collaboratorQueryService = collaboratorQueryService;
+        this.clientQueryService = clientQueryService;
         this.meetingPostAnalysisRepository = meetingPostAnalysisRepository;
-        this.clientRepository = clientRepository;
-        this.collaboratorRepository = collaboratorRepository;
+        this.assembler = assembler;
     }
 
     public MeetingPageResponseDTO execute(String title, String clientCompanyName, UUID collaboratorId, Pageable pageable) {
         Page<MeetingResponseDTO> page = repository.getAllMeetings(title, clientCompanyName, collaboratorId, pageable)
                 .map(m -> {
-                    Collaborator sellerObject = collaboratorRepository.getCollaboratorById(m.getCollaboratorId())
-                            .orElseThrow(() -> new CollaboratorNotFoundException(m.getCollaboratorId()));
-                    
-                    SellerMeetingResponseDTO seller = SellerMeetingResponseDTO.from(sellerObject);
+                    Collaborator seller = collaboratorQueryService.getOrThrowCollaboratorById(m.getCollaboratorId());
 
-                    ClientMeetingResponseDTO client = clientRepository.findById(m.getClientId())
-                            .map(ClientMeetingResponseDTO::from)
-                            .orElseThrow(() -> new ClientNotFoundException(m.getClientId()));
+                    Client client = clientQueryService.getOrThrowClientById(m.getClientId());
 
-                    return new MeetingResponseDTO(
-                            m.getId(),
-                            m.getTitle(),
+                    return assembler.toDTO(
+                            m,
                             seller,
-                            client,
-                            m.getMeetingType(),
-                            m.getScheduledFor(),
-                            m.getStartedAt(),
-                            m.getEndedAt(),
-                            m.getDurationSeconds(),
-                            m.getStatus()
+                            client
                     );
                 });
 

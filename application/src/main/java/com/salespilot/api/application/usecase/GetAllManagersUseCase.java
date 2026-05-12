@@ -25,7 +25,7 @@ public class GetAllManagersUseCase {
     public Page<CollaboratorResponseDTO> execute(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
         return repository.getManagers(name, email, companyId, active, pageable)
                 .map(c -> {
-                    Company company = companyQueryService.getCompanyById(c.getCompanyId());
+                    Company company = companyQueryService.getOrThrowCompanyById(c.getCompanyId());
 
                     return assembler.toDTO(c, company);
                 });
