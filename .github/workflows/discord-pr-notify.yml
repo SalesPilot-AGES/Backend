@@ -24,13 +24,13 @@ jobs:
             BODY="Sem descrição."
           fi
 
-          TRUNCATED_BODY=$(echo "$BODY" | head -c 900)
-          if [ ${#BODY} -gt 900 ]; then
+          TRUNCATED_BODY=$(echo "$BODY" | cut -c1-900)
+          if [ $(echo "$BODY" | wc -m) -gt 900 ]; then
             TRUNCATED_BODY="${TRUNCATED_BODY}..."
           fi
 
           THREAD_NAME="PR #${{ github.event.pull_request.number }} — ${{ github.event.pull_request.title }}"
-          THREAD_NAME=$(echo "$THREAD_NAME" | head -c 100)
+          THREAD_NAME=$(echo "$THREAD_NAME" | cut -c1-100)
 
           PAYLOAD=$(jq -n \
             --arg thread_name "$THREAD_NAME" \
@@ -58,7 +58,7 @@ jobs:
               }]
             }')
 
-          curl -s -o /dev/null -w "%{http_code}" \
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --fail \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD" \
-            "$DISCORD_WEBHOOK_URL"
+            "$DISCORD_WEBHOOK_URL") || (echo "Discord webhook failed with HTTP $HTTP_CODE"; exit 1)
