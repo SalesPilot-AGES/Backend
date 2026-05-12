@@ -104,9 +104,7 @@ public class CompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<CompanyResponseDTO> getCompanyById(
             @Parameter(description = "UUID da empresa") @PathVariable UUID id) {
-        return getCompanyByIdUseCase.execute(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(getCompanyByIdUseCase.execute(id));
     }
 
     @Operation(summary = "Atualizar empresa", description = "Atualiza nome, plano e status de ativação de uma empresa.")
