@@ -1,24 +1,26 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
-import com.salespilot.api.application.dto.CompanyResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
-import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
+import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 
 import java.util.UUID;
 
 public class PostCollaboratorUseCase {
     private final CollaboratorRepository collaboratorRepository;
-    private final CompanyRepository companyRepository;
+    private final CompanyQueryService companyQueryService;
+    private final CollaboratorAssembler assembler;
 
-    public PostCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository) {
+    public PostCollaboratorUseCase(CollaboratorRepository collaboratorRepository, CompanyQueryService companyQueryService, CollaboratorAssembler assembler) {
         this.collaboratorRepository = collaboratorRepository;
-        this.companyRepository = companyRepository;
+        this.companyQueryService = companyQueryService;
+        this.assembler = assembler;
     }
 
     public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences, Integer averageFeeling) {
@@ -26,25 +28,10 @@ public class PostCollaboratorUseCase {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
-        CompanyResponseDTO companyDto = companyRepository.getCompanyById(companyId)
-                .map(CompanyResponseDTO::from)
-                .orElseThrow(() -> new CompanyNotFoundException(companyId));
+        Company company = companyQueryService.getOrThrowCompanyById(companyId);
 
         Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences, averageFeeling);
 
-        return new CollaboratorResponseDTO(
-                collaborator.getId(),
-                collaborator.getCompanyId(),
-                collaborator.getName(),
-                collaborator.getRole(),
-                collaborator.getEmail(),
-                collaborator.getPhone(),
-                collaborator.isActive(),
-                collaborator.getAverageFeeling(),
-                collaborator.getPreferences(),
-                collaborator.getCreatedAt(),
-                collaborator.getUpdatedAt(),
-                companyDto
-        );
+        return assembler.toDTO(collaborator, company);
     }
 }
