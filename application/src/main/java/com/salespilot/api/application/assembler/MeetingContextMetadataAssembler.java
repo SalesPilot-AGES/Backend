@@ -8,7 +8,9 @@ import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.entity.MeetingPreAnalysis;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MeetingContextMetadataAssembler {
     public MeetingContextMetadataResponseDTO toDTO(Meeting meeting, Collaborator seller, Client client, MeetingPreAnalysis preAnalysis) {
         return new MeetingContextMetadataResponseDTO(
