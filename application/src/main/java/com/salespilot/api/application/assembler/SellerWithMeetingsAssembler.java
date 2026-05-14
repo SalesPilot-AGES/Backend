@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SellerWithMeetingsAssembler {
-    public SellerWithMeetingsResponseDTO toDTO (Collaborator seller, Long totalMeetings, LatestMeetingsResponseDTO latestMeeting, Company company) {
+    public SellerWithMeetingsResponseDTO toDTO(Collaborator seller, Long totalMeetings, LatestMeetingsResponseDTO latestMeeting, Company company) {
         return new SellerWithMeetingsResponseDTO(
                 seller.getId(),
                 seller.getCompanyId(),

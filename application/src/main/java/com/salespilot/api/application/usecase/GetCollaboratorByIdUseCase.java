@@ -12,7 +12,7 @@ import com.salespilot.api.domain.enums.CollaboratorRole;
 import java.util.UUID;
 
 public class GetCollaboratorByIdUseCase {
-    private final CollaboratorQueryService  collaboratorQueryService;
+    private final CollaboratorQueryService collaboratorQueryService;
     private final CompanyQueryService companyQueryService;
     private final CollaboratorAssembler assembler;
 
