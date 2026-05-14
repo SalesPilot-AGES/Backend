@@ -28,7 +28,7 @@ public class MeetingContextMetadataAssembler {
                 meeting.getDurationSeconds(),
                 SellerMeetingResponseDTO.from(seller),
                 ClientMeetingResponseDTO.from(client),
-                MeetingPreAnalysisResponseDTO.from(preAnalysis),
+                preAnalysis == null ? null : MeetingPreAnalysisResponseDTO.from(preAnalysis),
                 meeting.getCreatedAt()
         );
     }
