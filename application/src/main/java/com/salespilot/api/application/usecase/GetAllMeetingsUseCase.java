@@ -33,9 +33,9 @@ public class GetAllMeetingsUseCase {
     public MeetingPageResponseDTO execute(String title, String clientCompanyName, UUID collaboratorId, Pageable pageable) {
         Page<MeetingResponseDTO> page = repository.getAllMeetings(title, clientCompanyName, collaboratorId, pageable)
                 .map(m -> {
-                    Collaborator seller = collaboratorQueryService.getOrThrowCollaboratorById(m.getCollaboratorId());
+                    Collaborator seller = collaboratorQueryService.getOrThrowById(m.getCollaboratorId());
 
-                    Client client = clientQueryService.getOrThrowClientById(m.getClientId());
+                    Client client = clientQueryService.getOrThrowById(m.getClientId());
 
                     return assembler.toDTO(
                             m,

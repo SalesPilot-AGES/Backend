@@ -29,11 +29,11 @@ public class GetMeetingContextAndMetadataUseCase {
     }
 
     public MeetingContextMetadataResponseDTO execute(UUID meetingId) {
-        Meeting meeting = meetingQueryService.getOrThrowMeetingById(meetingId);
+        Meeting meeting = meetingQueryService.getOrThrowById(meetingId);
 
-        Collaborator seller = collaboratorQueryService.getOrThrowCollaboratorById(meeting.getCollaboratorId());
+        Collaborator seller = collaboratorQueryService.getOrThrowById(meeting.getCollaboratorId());
 
-        Client client = clientQueryService.getOrThrowClientById(meeting.getClientId());
+        Client client = clientQueryService.getOrThrowById(meeting.getClientId());
 
         MeetingPreAnalysis preAnalysis = meetingPreAnalysisRepository
                 .findByMeetingId(meeting.getId())

@@ -28,9 +28,9 @@ public class EditCollaboratorUseCase {
     }
 
     public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, String phone, boolean active, CollaboratorPreferences collaboratorPreferences, CollaboratorRole role){
-        Company company = companyQueryService.getOrThrowCompanyById(companyId);
+        Company company = companyQueryService.getOrThrowById(companyId);
 
-        Collaborator existing = collaboratorQueryService.getOrThrowCollaboratorById(collaboratorId);
+        Collaborator existing = collaboratorQueryService.getOrThrowById(collaboratorId);
 
         if(existing.getRole() != role) {
             throw new InvalidCollaboratorRoleException(existing.getRole(), role);

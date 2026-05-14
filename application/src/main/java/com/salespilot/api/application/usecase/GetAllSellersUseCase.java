@@ -34,7 +34,7 @@ public class GetAllSellersUseCase {
                 .map(c -> {
                     Long totalMeetings = meetingRepository.getTotalMeetingsByCollaborator(c.getId());
                     Double averageFeeling = meetingPostAnalysisRepository.getAverageFeelingByCollaborator(c.getId());
-                    Company company = companyQueryService.getOrThrowCompanyById(c.getCompanyId());
+                    Company company = companyQueryService.getOrThrowById(c.getCompanyId());
 
                     return assembler.toDTO(
                             c,

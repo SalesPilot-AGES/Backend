@@ -15,7 +15,7 @@ public class MeetingQueryService {
         this.meetingRepository = meetingRepository;
     }
 
-    public Meeting getOrThrowMeetingById(UUID id) {
+    public Meeting getOrThrowById(UUID id) {
         return meetingRepository.getMeetingById(id)
                 .orElseThrow(() -> new MeetingNotFoundException(id));
     }

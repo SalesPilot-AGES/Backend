@@ -31,13 +31,13 @@ public class GetSellerByIdUseCase {
     }
 
     public SellerWithMeetingsResponseDTO execute(UUID id) {
-        Collaborator collaborator = collaboratorQueryService.getOrThrowCollaboratorById(id);
+        Collaborator collaborator = collaboratorQueryService.getOrThrowById(id);
 
         if(collaborator.getRole() != CollaboratorRole.SELLER) {
             throw new InvalidCollaboratorRoleException(collaborator.getRole(), CollaboratorRole.SELLER);
         }
 
-        Company company = companyQueryService.getOrThrowCompanyById(collaborator.getCompanyId());
+        Company company = companyQueryService.getOrThrowById(collaborator.getCompanyId());
 
         LatestMeetingsResponseDTO latestMeeting = meetingRepository
                 .getLatestMeetingByCollaborator(collaborator.getId())
@@ -47,7 +47,7 @@ public class GetSellerByIdUseCase {
                         m.getStatus(),
                         m.getStartedAt(),
                         m.getDurationSeconds(),
-                        ClientResponseDTO.from(clientQueryService.getOrThrowClientById(m.getClientId()))
+                        ClientResponseDTO.from(clientQueryService.getOrThrowById(m.getClientId()))
                 ))
                 .orElse(null);
 

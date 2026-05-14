@@ -15,7 +15,7 @@ public class ClientQueryService {
         this.clientRepository = clientRepository;
     }
 
-    public Client getOrThrowClientById(UUID id) {
+    public Client getOrThrowById(UUID id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new ClientNotFoundException(id));
     }

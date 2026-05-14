@@ -15,7 +15,7 @@ public class CompanyQueryService {
         this.companyRepository = companyRepository;
     }
 
-    public Company getOrThrowCompanyById(UUID id) {
+    public Company getOrThrowById(UUID id) {
         return companyRepository.getCompanyById(id)
                 .orElseThrow(() -> new CompanyNotFoundException(id));
     }

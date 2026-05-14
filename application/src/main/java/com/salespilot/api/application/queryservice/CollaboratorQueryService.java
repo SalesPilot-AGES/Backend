@@ -15,7 +15,7 @@ public class CollaboratorQueryService {
         this.collaboratorRepository = collaboratorRepository;
     }
 
-    public Collaborator getOrThrowCollaboratorById(UUID id) {
+    public Collaborator getOrThrowById(UUID id) {
         return collaboratorRepository.getCollaboratorById(id)
                 .orElseThrow(() -> new CollaboratorNotFoundException(id));
     }

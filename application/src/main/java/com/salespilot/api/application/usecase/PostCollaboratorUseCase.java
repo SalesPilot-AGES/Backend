@@ -28,7 +28,7 @@ public class PostCollaboratorUseCase {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
-        Company company = companyQueryService.getOrThrowCompanyById(companyId);
+        Company company = companyQueryService.getOrThrowById(companyId);
 
         Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences, averageFeeling);
 

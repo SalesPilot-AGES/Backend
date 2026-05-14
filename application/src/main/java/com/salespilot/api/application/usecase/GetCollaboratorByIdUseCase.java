@@ -23,13 +23,13 @@ public class GetCollaboratorByIdUseCase {
     }
 
     public CollaboratorResponseDTO execute(UUID id) {
-        Collaborator collaborator = collaboratorQueryService.getOrThrowCollaboratorById(id);
+        Collaborator collaborator = collaboratorQueryService.getOrThrowById(id);
 
         if(collaborator.getRole() != CollaboratorRole.MANAGER) {
             throw new InvalidCollaboratorRoleException(collaborator.getRole(), CollaboratorRole.MANAGER);
         }
 
-        Company company = companyQueryService.getOrThrowCompanyById(collaborator.getCompanyId());
+        Company company = companyQueryService.getOrThrowById(collaborator.getCompanyId());
 
         return assembler.toDTO(
                 collaborator,
