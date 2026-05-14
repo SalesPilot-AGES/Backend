@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
@@ -105,5 +106,10 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
         return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
+    }
+
+    @Bean
+    public GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase(CompanyRepository companyRepository) {
+        return new GetGroupedCompaniesCountUseCase(companyRepository);
     }
 }

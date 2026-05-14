@@ -14,4 +14,6 @@ public interface CompanyRepository {
     Page<Company> getAllCompanies(String name, String taxId, String plan, Boolean active, Pageable pageable);
     Optional<Company> getCompanyById(UUID id);
     Optional<Company> updateCompany(UUID id, String name, String plan, boolean active);
+    Long countAll();
+    Long countCompanyActiveGrouped(boolean active);
 }
