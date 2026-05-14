@@ -14,7 +14,6 @@ public record CollaboratorResponseDTO(
         String email,
         String phone,
         boolean active,
-        Integer averageFeeling,
         CollaboratorPreferences preferences,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,

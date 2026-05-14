@@ -17,7 +17,6 @@ public class CollaboratorAssembler {
                 collaborator.getEmail(),
                 collaborator.getPhone(),
                 collaborator.isActive(),
-                collaborator.getAverageFeeling(),
                 collaborator.getPreferences(),
                 collaborator.getCreatedAt(),
                 collaborator.getUpdatedAt(),

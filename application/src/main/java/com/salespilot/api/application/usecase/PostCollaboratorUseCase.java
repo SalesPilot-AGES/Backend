@@ -23,14 +23,14 @@ public class PostCollaboratorUseCase {
         this.assembler = assembler;
     }
 
-    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences, Integer averageFeeling) {
+    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences) {
         if(collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }
 
         Company company = companyQueryService.getOrThrowById(companyId);
 
-        Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences, averageFeeling);
+        Collaborator collaborator = collaboratorRepository.create(companyId, name, email, role, active, phone, collaboratorPreferences);
 
         return assembler.toDTO(collaborator, company);
     }

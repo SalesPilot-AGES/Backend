@@ -19,7 +19,6 @@ public class SellerWithMeetingsAssembler {
                 seller.isActive(),
                 seller.getPhone(),
                 seller.getPreferences(),
-                seller.getAverageFeeling(),
                 totalMeetings,
                 latestMeeting,
                 seller.getCreatedAt(),
