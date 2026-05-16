@@ -1,6 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -128,15 +129,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Long countAll() {
-        return companyJpaRepository.count();
-    }
-
-    @Override
-    public Long countCompanyActiveGrouped(boolean active) {
-        Specification<CompanyEntity> spec = Specification.where(
-            CompanySpecification.isActiveEquals(active)
-        );
-        return companyJpaRepository.count(spec);
+    public List<Object[]> countCompaniesGroupedByStatus() {
+        return companyJpaRepository.countCompaniesGroupedByStatus();
     }    
 }
