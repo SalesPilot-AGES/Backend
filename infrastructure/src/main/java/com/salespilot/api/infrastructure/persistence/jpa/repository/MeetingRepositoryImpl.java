@@ -79,7 +79,7 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     }
 
     @Override
-    public Long getTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd) {
+    public Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd) {
         return meetingsJpaRepository.countByCreatedAtBetween(currentStart, currentEnd);
     }
 }

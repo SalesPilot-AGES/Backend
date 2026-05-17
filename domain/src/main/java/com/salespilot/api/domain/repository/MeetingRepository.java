@@ -16,5 +16,5 @@ public interface MeetingRepository {
     Optional<Meeting> getMeetingById(UUID id);
     boolean existsById(UUID id);
     Optional<Meeting> getLatestMeetingByCollaborator(UUID CollaboratorId);
-    Long getTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd);
+    Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd);
 }

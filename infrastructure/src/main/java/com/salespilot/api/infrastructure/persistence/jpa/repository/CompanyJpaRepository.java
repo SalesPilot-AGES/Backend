@@ -19,5 +19,5 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
     
     Optional<CompanyEntity> findByTaxId(String taxId);
 
-    Long countByActiveAndCreatedAtBefore(boolean active, LocalDateTime period);
+    Long countByActiveAndCreatedAtLessThanEqual(boolean active, LocalDateTime period);
 }

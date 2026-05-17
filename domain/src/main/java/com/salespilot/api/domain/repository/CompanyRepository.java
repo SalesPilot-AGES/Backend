@@ -16,4 +16,5 @@ public interface CompanyRepository {
     Optional<Company> getCompanyById(UUID id);
     Optional<Company> updateCompany(UUID id, String name, String plan, boolean active);
     Long countCompaniesByActiveValueAndPeriod(boolean active, LocalDateTime period);
+    Long countCompaniesByActiveValue(boolean active);
 }

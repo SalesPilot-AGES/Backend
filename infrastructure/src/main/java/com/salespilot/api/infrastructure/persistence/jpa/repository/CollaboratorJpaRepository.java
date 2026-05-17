@@ -11,6 +11,6 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEnti
 
 public interface CollaboratorJpaRepository extends JpaRepository<CollaboratorEntity, UUID>, JpaSpecificationExecutor<CollaboratorEntity> {
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
-    Long countByRoleAndActiveTrueAndCreatedAtGreaterThanEqual(CollaboratorRole role, LocalDateTime period);
+    Long countByRoleAndActiveTrueAndCreatedAtLessThanEqual(CollaboratorRole role, LocalDateTime period);
 }
 

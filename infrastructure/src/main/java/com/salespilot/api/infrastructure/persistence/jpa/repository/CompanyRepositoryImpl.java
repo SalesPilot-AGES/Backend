@@ -129,6 +129,13 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Override
     public Long countCompaniesByActiveValueAndPeriod(boolean active, LocalDateTime period) {
-        return companyJpaRepository.countByActiveAndCreatedAtBefore(active, period);
+        return companyJpaRepository.countByActiveAndCreatedAtLessThanEqual(active, period);
+    }
+
+    @Override
+    public Long countCompaniesByActiveValue(boolean active) {
+        Specification<CompanyEntity> spec = Specification
+            .where(CompanySpecification.isActiveEquals(active));
+        return companyJpaRepository.count(spec);
     }
 }

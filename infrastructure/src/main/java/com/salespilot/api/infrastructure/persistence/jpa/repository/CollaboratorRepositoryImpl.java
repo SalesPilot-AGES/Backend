@@ -100,7 +100,15 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
     @Transactional(readOnly = true)
     @Override
-    public Long getAllActiveSellersByPeriod(LocalDateTime period) {
-        return collaboratorJpaRepository.countByRoleAndActiveTrueAndCreatedAtGreaterThanEqual(CollaboratorRole.SELLER, period);
+    public Long countAllActiveSellersByPeriod(LocalDateTime period) {
+        return collaboratorJpaRepository.countByRoleAndActiveTrueAndCreatedAtLessThanEqual(CollaboratorRole.SELLER, period);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long countAllActiveSellers() {
+        Specification<CollaboratorEntity> spec = Specification
+            .where(CollaboratorSpecification.isActiveEquals(true));
+        return collaboratorJpaRepository.count(spec);
     }
 }

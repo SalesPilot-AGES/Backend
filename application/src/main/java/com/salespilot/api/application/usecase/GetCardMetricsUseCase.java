@@ -92,30 +92,22 @@ public class GetCardMetricsUseCase {
                 throw new InvalidPeriodException(period);
         }
 
-        Long currentActiveCompanies = companyRepository.countCompaniesByActiveValueAndPeriod(true, currentEnd);
+        Long currentActiveCompanies = companyRepository.countCompaniesByActiveValue(true);
         Long previousActiveCompanies = companyRepository.countCompaniesByActiveValueAndPeriod(true, previousEnd);
-        Double activeCompaniesVariationPercent = calculateVariationPercent(previousActiveCompanies, currentActiveCompanies);
-        MetricsTrends activeCompaniesTrend = getTrendFromVariationPercent(activeCompaniesVariationPercent);
 
-        Long currentInactiveCompanies = companyRepository.countCompaniesByActiveValueAndPeriod(false, currentEnd);
+        Long currentInactiveCompanies = companyRepository.countCompaniesByActiveValue(false);
         Long previousInactiveCompanies = companyRepository.countCompaniesByActiveValueAndPeriod(false, previousEnd);
-        Double inactiveCompaniesVariationPercent = calculateVariationPercent(previousInactiveCompanies, currentInactiveCompanies);
-        MetricsTrends inactiveCompaniesTrend = getTrendFromVariationPercent(inactiveCompaniesVariationPercent);
 
-        Long currentMeetings = meetingRepository.getTotalMeetingsByPeriod(currentStart, currentEnd);
-        Long previousMeetings = meetingRepository.getTotalMeetingsByPeriod(previousStart, previousEnd);
-        Double meetingsVariationPercent = calculateVariationPercent(previousMeetings, currentMeetings);
-        MetricsTrends meetingsTrend = getTrendFromVariationPercent(meetingsVariationPercent);
+        Long currentMeetings = meetingRepository.countTotalMeetingsByPeriod(currentStart, currentEnd);
+        Long previousMeetings = meetingRepository.countTotalMeetingsByPeriod(previousStart, previousEnd);
 
-        Long currentActiveSellers = collaboratorRepository.getAllActiveSellersByPeriod(currentEnd);
-        Long previousActiveSellers = collaboratorRepository.getAllActiveSellersByPeriod(previousEnd);
-        Double activeSellersVariationPercent = calculateVariationPercent(previousActiveSellers, currentActiveSellers);
-        MetricsTrends activeSellersTrend = getTrendFromVariationPercent(activeSellersVariationPercent);
+        Long currentActiveSellers = collaboratorRepository.countAllActiveSellers();
+        Long previousActiveSellers = collaboratorRepository.countAllActiveSellersByPeriod(previousEnd);
 
-        CardMetricsResponseDTO activeCompaniesCard = new CardMetricsResponseDTO(currentActiveCompanies, activeCompaniesVariationPercent, activeCompaniesTrend.getValue());
-        CardMetricsResponseDTO inactiveCompaniesCard = new CardMetricsResponseDTO(currentInactiveCompanies, inactiveCompaniesVariationPercent, inactiveCompaniesTrend.getValue());
-        CardMetricsResponseDTO totalMeetingsCard = new CardMetricsResponseDTO(currentMeetings, meetingsVariationPercent, meetingsTrend.getValue());
-        CardMetricsResponseDTO activeSellersCard = new CardMetricsResponseDTO(currentActiveSellers, activeSellersVariationPercent, activeSellersTrend.getValue());
+        CardMetricsResponseDTO activeCompaniesCard = buildMetricCard(currentActiveCompanies, previousActiveCompanies);
+        CardMetricsResponseDTO inactiveCompaniesCard = buildMetricCard(currentInactiveCompanies, previousInactiveCompanies);
+        CardMetricsResponseDTO totalMeetingsCard = buildMetricCard(currentMeetings, previousMeetings);
+        CardMetricsResponseDTO activeSellersCard = buildMetricCard(currentActiveSellers, previousActiveSellers);
         
         return new GroupCardMetricsResponseDTO(activeCompaniesCard, inactiveCompaniesCard, totalMeetingsCard, activeSellersCard);
     }
@@ -134,5 +126,11 @@ public class GetCardMetricsUseCase {
         } else {
             return variationPercent > 0 ? MetricsTrends.UP : MetricsTrends.DOWN;
         }
+    }
+
+    private CardMetricsResponseDTO buildMetricCard(Long current, Long previous) {
+        Double variation = calculateVariationPercent(previous, current);
+        MetricsTrends trend = getTrendFromVariationPercent(variation);
+        return new CardMetricsResponseDTO(current, variation, trend.getValue());
     }
 }
