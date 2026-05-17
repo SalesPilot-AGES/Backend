@@ -108,7 +108,8 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     @Override
     public Long countAllActiveSellers() {
         Specification<CollaboratorEntity> spec = Specification
-            .where(CollaboratorSpecification.isActiveEquals(true));
+            .where(CollaboratorSpecification.roleEquals(CollaboratorRole.SELLER))
+            .and(CollaboratorSpecification.isActiveEquals(true));
         return collaboratorJpaRepository.count(spec);
     }
 }
