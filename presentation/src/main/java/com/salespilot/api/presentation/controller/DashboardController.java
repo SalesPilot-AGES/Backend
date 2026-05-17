@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDate;
@@ -25,6 +30,11 @@ public class DashboardController {
         this.getCardMetricsUseCase = getCardMetricsUseCase;
     }
 
+    @Operation(summary = "Buscar as metricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class))),
+            @ApiResponse(responseCode = "409", description = "Período inválido", content = @Content),
+    })
     @GetMapping("/metrics")
     public ResponseEntity<GroupCardMetricsResponseDTO> getCardMetrics(
             @RequestParam String period,
