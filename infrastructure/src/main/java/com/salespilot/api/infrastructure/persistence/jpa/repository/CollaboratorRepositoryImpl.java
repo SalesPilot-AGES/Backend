@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -95,5 +96,11 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
                 .and(CollaboratorSpecification.isActiveEquals(active));
 
         return collaboratorJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long getAllActiveSellersByPeriod(LocalDateTime period) {
+        return collaboratorJpaRepository.countByRoleAndActiveTrueAndCreatedAtGreaterThanEqual(CollaboratorRole.SELLER, period);
     }
 }

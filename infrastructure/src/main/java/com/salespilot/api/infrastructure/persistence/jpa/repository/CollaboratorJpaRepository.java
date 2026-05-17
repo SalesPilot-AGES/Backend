@@ -1,13 +1,16 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
 
 public interface CollaboratorJpaRepository extends JpaRepository<CollaboratorEntity, UUID>, JpaSpecificationExecutor<CollaboratorEntity> {
     boolean existsByCompanyIdAndEmail(UUID companyId, String email);
+    Long countByRoleAndActiveTrueAndCreatedAtGreaterThanEqual(CollaboratorRole role, LocalDateTime period);
 }
 

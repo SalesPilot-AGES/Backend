@@ -126,4 +126,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         subscription.setUpdatedAt(LocalDateTime.now());
         companySubscriptionsJpaRepository.save(subscription);
     }
+
+    @Override
+    public Long countCompaniesByActiveValueAndPeriod(boolean active, LocalDateTime period) {
+        return companyJpaRepository.countByActiveAndCreatedAtBefore(active, period);
+    }
 }
