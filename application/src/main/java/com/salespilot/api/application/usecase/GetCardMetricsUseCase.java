@@ -69,15 +69,11 @@ public class GetCardMetricsUseCase {
                 break;
             case "custom":
                 if (startDate == null || endDate == null) {
-                    throw new IllegalArgumentException(
-                            "startDate and endDate are required for custom period"
-                    );
+                    throw new InvalidPeriodException(period);
                 }
 
                 if (startDate.isAfter(endDate)) {
-                    throw new IllegalArgumentException(
-                            "startDate cannot be after endDate"
-                    );
+                    throw new InvalidPeriodException(period);
                 }
 
                 currentStart = startDate.atStartOfDay();

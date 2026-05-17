@@ -30,7 +30,7 @@ public class DashboardController {
         this.getCardMetricsUseCase = getCardMetricsUseCase;
     }
 
-    @Operation(summary = "Buscar as metricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
+    @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class))),
             @ApiResponse(responseCode = "409", description = "Período inválido", content = @Content),
