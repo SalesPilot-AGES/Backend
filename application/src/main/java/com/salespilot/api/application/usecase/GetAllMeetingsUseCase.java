@@ -56,6 +56,6 @@ public class GetAllMeetingsUseCase {
                 repository.getTotalMeetings(),
                 repository.getAverageDurationSeconds(),
                 meetingPostAnalysisRepository.getAverageSuccessRate()
-        ));
+        ), "Reuniões listadas com sucesso");
     }
 }
