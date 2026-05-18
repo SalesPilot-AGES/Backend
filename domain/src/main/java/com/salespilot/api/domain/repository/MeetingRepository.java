@@ -4,6 +4,7 @@ import com.salespilot.api.domain.entity.Meeting;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,5 @@ public interface MeetingRepository {
     Optional<Meeting> getMeetingById(UUID id);
     boolean existsById(UUID id);
     Optional<Meeting> getLatestMeetingByCollaborator(UUID CollaboratorId);
+    List<Meeting> groupAllMeetingsPerMonth();
 }

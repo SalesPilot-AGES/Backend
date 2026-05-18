@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -75,5 +76,11 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     @Override
     public boolean existsById(UUID id){
         return meetingsJpaRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Meeting> groupAllMeetingsPerMonth() {
+        
     }
 }

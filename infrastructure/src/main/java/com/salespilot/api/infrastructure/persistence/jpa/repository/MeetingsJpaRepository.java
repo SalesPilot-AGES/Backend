@@ -2,12 +2,15 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MeetingsJpaRepository extends JpaRepository<MeetingEntity, UUID>, JpaSpecificationExecutor<MeetingEntity> {
     @Query("SELECT AVG(m.durationSeconds) FROM MeetingEntity m WHERE m.durationSeconds IS NOT NULL")

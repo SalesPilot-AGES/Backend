@@ -4,6 +4,7 @@ import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
+import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
@@ -105,5 +106,10 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
         return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
+    }
+
+    @Bean
+    public GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase(MeetingRepository meetingRepository) {
+        return new GetAverageMeetingDurationPerMonthUseCase(meetingRepository);
     }
 }
