@@ -3,6 +3,7 @@ package com.salespilot.api.application.usecase;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -41,7 +42,11 @@ class GetCollaboratorByIdUseCaseTest {
     private final CollaboratorPreferences preferences = new CollaboratorPreferences("light", "gpt-4o");
 
     private Collaborator buildCollaborator() {
-        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", CollaboratorRole.SELLER, true, 0, preferences, now, now);
+        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", CollaboratorRole.MANAGER, true, 0, preferences, now, now);
+    }
+
+    private Collaborator buildCollaboratorWithRole(CollaboratorRole role) {
+        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", role, true, 0, preferences, now, now);
     }
 
     private Company buildCompany() {
@@ -68,6 +73,16 @@ class GetCollaboratorByIdUseCaseTest {
         when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.empty());
 
         assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(collaboratorId));
+
+        verify(companyRepository, never()).getCompanyById(any());
+    }
+
+    @Test
+    void shouldThrowWhenCollaboratorRoleIsNotManager() {
+        when(collaboratorRepository.getCollaboratorById(collaboratorId))
+                .thenReturn(Optional.of(buildCollaboratorWithRole(CollaboratorRole.SELLER)));
+
+        assertThrows(InvalidCollaboratorRoleException.class, () -> useCase.execute(collaboratorId));
 
         verify(companyRepository, never()).getCompanyById(any());
     }
