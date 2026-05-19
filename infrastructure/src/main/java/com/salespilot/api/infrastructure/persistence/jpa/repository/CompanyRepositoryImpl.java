@@ -1,6 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -125,5 +126,10 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         subscription.setCreatedAt(LocalDateTime.now());
         subscription.setUpdatedAt(LocalDateTime.now());
         companySubscriptionsJpaRepository.save(subscription);
+    }
+
+    @Override
+    public List<Object[]> getTopFiveCompaniesByMeetingTotal(LocalDateTime start, LocalDateTime end) {
+        return companyJpaRepository.getTopFiveCompaniesByMeetingTotal(start, end);
     }
 }
