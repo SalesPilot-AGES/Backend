@@ -1,8 +1,6 @@
 package com.salespilot.api.infrastructure.persistence.jpa.entity;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
+import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,17 +13,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
-import com.salespilot.api.domain.enums.CollaboratorRole;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -60,9 +58,6 @@ public class CollaboratorEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @Column(name = "average_feeling")
-    private Integer averageFeeling;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "preferences", columnDefinition = "jsonb")
     private CollaboratorPreferences preferences;
@@ -75,7 +70,7 @@ public class CollaboratorEntity {
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
 
-    public CollaboratorEntity(CompanyEntity company, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences, Integer averageFeeling) {
+    public CollaboratorEntity(CompanyEntity company, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences) {
         this.company = company;
         this.name = name;
         this.email = email;
@@ -83,6 +78,5 @@ public class CollaboratorEntity {
         this.active = active;
         this.phone = phone;
         this.preferences = preferences;
-        this.averageFeeling = averageFeeling;
     }
 }
