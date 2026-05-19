@@ -24,14 +24,18 @@ INSERT INTO company_subscriptions (id, company_id, plan_id, active, starts_at) V
 ('99999999-9999-9999-9999-999999999999', 'f5a6b7c8-d9e0-1234-6789-0abcdef12345', '11111111-1111-1111-1111-111111111111', TRUE, NOW())
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO collaborators (id, company_id, name, email, role, active, preferences) VALUES
-('b2c3d4e5-f6a7-8901-2345-67890abcdef1', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Ana Costa',      'ana@digitalsales.com',     'SYSTEM_ADMIN', TRUE, '{"theme":"dark","default_model":"gpt-4o"}'),
-('c3d4e5f6-a7b8-9012-3456-7890abcdef12', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Gabriel Ribeiro', 'gabriel@digitalsales.com', 'MANAGER',      TRUE, '{"theme":"light","default_model":"gpt-4o"}'),
-('d4e5f6a7-b8c9-0123-4567-890abcdef123', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Laura Silva',    'laura@digitalsales.com',    'SELLER', FALSE, '{}'),
-('e5f6a7b8-c9d0-1234-5678-90abcdef1234', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Saulo Souza',    'saulo@digitalsales.com',    'SELLER', TRUE,  '{"theme":"dark","default_model":"gpt-3.5"}'),
-('f6a7b8c9-d0e1-2345-6789-0abcdef12345', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Marcos Pereira', 'marcos@digitalsales.com',   'SELLER', TRUE,  '{"theme":"light","default_model":"gpt-4o"}'),
-('a7b8c9d0-e1f2-3456-7890-abcdef123456', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Julia Fernandes','julia@digitalsales.com',    'SELLER', TRUE,  '{"theme":"dark","default_model":"gpt-4o"}')
+INSERT INTO collaborators (id, company_id, name, email, role, active, preferences, password_hash) VALUES
+('b2c3d4e5-f6a7-8901-2345-67890abcdef1', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Ana Costa',      'ana@digitalsales.com',     'SYSTEM_ADMIN', TRUE, '{"theme":"dark","default_model":"gpt-4o"}', '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si'),
+('c3d4e5f6-a7b8-9012-3456-7890abcdef12', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Gabriel Ribeiro', 'gabriel@digitalsales.com', 'MANAGER',      TRUE, '{"theme":"light","default_model":"gpt-4o"}', '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si'),
+('d4e5f6a7-b8c9-0123-4567-890abcdef123', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Laura Silva',    'laura@digitalsales.com',    'SELLER', FALSE, '{}', '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si'),
+('e5f6a7b8-c9d0-1234-5678-90abcdef1234', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Saulo Souza',    'saulo@digitalsales.com',    'SELLER', TRUE,  '{"theme":"dark","default_model":"gpt-3.5"}', '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si'),
+('f6a7b8c9-d0e1-2345-6789-0abcdef12345', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Marcos Pereira', 'marcos@digitalsales.com',   'SELLER', TRUE,  '{"theme":"light","default_model":"gpt-4o"}', '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si'),
+('a7b8c9d0-e1f2-3456-7890-abcdef123456', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'Julia Fernandes','julia@digitalsales.com',    'SELLER', TRUE,  '{"theme":"dark","default_model":"gpt-4o"}', '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si')
 ON CONFLICT (id) DO NOTHING;
+
+UPDATE collaborators
+SET password_hash = '$2a$10$7EqJtq98hPqEX7fNZaFWoO/1b8GJ3VwH7S3w7Dnk3a1JpN96CB2si'
+WHERE password_hash IS NULL;
 
 INSERT INTO clients (id, company_id, collaborator_id, name, client_company_name, sector, overall_sentiment, created_at, updated_at) VALUES
 ('11111111-2222-3333-4444-555555555555', 'b1c2d3e4-f5a6-7890-2345-67890abcdef1', 'e5f6a7b8-c9d0-1234-5678-90abcdef1234', 'Marina Lima',     'Alfa Industrial',  'Manufacturing', 8,  NOW(), NOW()),

@@ -4,10 +4,12 @@ import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
+import com.salespilot.api.application.exception.InvalidCredentialsException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
+import com.salespilot.api.application.exception.RefreshTokenInvalidException;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
-import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +57,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCollaboratorRoleException.class)
     public ResponseEntity<Void> handleInvalidCollaboratorRoleExeption() {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Void> handleInvalidCredentialsException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(RefreshTokenInvalidException.class)
+    public ResponseEntity<Void> handleRefreshTokenInvalidException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
