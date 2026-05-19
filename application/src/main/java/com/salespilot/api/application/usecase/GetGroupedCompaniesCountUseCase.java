@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.salespilot.api.application.dto.CompanyStatusCountDTO;
 import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
+import com.salespilot.api.domain.model.CompanyStatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
 
 public class GetGroupedCompaniesCountUseCase {
@@ -15,7 +16,8 @@ public class GetGroupedCompaniesCountUseCase {
 
     public GroupCompanyCountResponseDTO execute() {
 
-        List<CompanyStatusCountDTO> data = companyRepository.countCompaniesGroupedByStatus()
+        List<CompanyStatusCountDTO> data = companyRepository
+            .countCompaniesGroupedByStatus()
             .stream()
             .map(this::mapToDto)
             .toList();
@@ -24,20 +26,10 @@ public class GetGroupedCompaniesCountUseCase {
             .mapToLong(CompanyStatusCountDTO::value)
             .sum();
 
-        return new GroupCompanyCountResponseDTO(
-            data,
-            total
-        );
+        return new GroupCompanyCountResponseDTO(data, total);
     }
 
-    private CompanyStatusCountDTO mapToDto(Object[] item) {
-
-        boolean active = (Boolean) item[0];
-        long count = ((Number) item[1]).longValue();
-
-        return new CompanyStatusCountDTO(
-                active ? "Ativas" : "Inativas",
-                count
-        );
+    private CompanyStatusCountDTO mapToDto(CompanyStatusCount item) {
+        return new CompanyStatusCountDTO(item.active() ? "Ativas" : "Inativas", item.total());
     }
 }
