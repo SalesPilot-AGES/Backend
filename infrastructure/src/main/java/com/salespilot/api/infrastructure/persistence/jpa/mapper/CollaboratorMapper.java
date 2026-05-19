@@ -16,7 +16,6 @@ public class CollaboratorMapper {
                 collaboratorEntity.getPhone(),
                 collaboratorEntity.getRole(),
                 collaboratorEntity.isActive(),
-                collaboratorEntity.getAverageFeeling(),
                 collaboratorEntity.getPreferences(),
                 collaboratorEntity.getCreatedAt(),
                 collaboratorEntity.getUpdatedAt());

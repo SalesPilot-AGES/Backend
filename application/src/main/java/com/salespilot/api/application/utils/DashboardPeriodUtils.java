@@ -33,7 +33,7 @@ public class DashboardPeriodUtils {
                 previousStart = currentStart.minusDays(30);
                 previousEnd = currentEnd.minusDays(30);
                 break;
-            case "all":
+            case "month":
                 currentStart = today
                     .withDayOfMonth(1)
                     .atStartOfDay();
