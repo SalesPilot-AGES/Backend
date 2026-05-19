@@ -2,6 +2,7 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import java.util.UUID;
 
+import com.salespilot.api.application.dto.AverageMeetingDurationPerMonthResponseDTO;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
@@ -15,7 +16,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -80,7 +86,67 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
     @Transactional(readOnly = true)
     @Override
-    public List<Meeting> groupAllMeetingsPerMonth() {
-        
+    public List<AverageMeetingDurationPerMonthResponseDTO> groupAverageMeetingDurationPerMonth(
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+
+        List<Object[]> rows = meetingsJpaRepository.findAverageDurationPerMonth(start, end);
+
+        if (rows == null || rows.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return rows.stream()
+                .map(row -> {
+
+                    LocalDateTime month = extractMonth(row[0]);
+
+                    Double avgMinutes = row[1] != null
+                            ? ((Number) row[1]).doubleValue()
+                            : 0.0;
+
+                    String monthLabel = month != null
+                            ? getMonthLabel(month.getMonthValue())
+                            : null;
+
+                    return new AverageMeetingDurationPerMonthResponseDTO(
+                            month,
+                            monthLabel,
+                            avgMinutes
+                    );
+                })
+                .toList();
+    }
+
+    private LocalDateTime extractMonth(Object value) {
+
+        if (value instanceof Timestamp timestamp) {
+            return timestamp.toLocalDateTime();
+        }
+
+        if (value instanceof LocalDateTime localDateTime) {
+            return localDateTime;
+        }
+
+        return null;
+    }
+
+    private String getMonthLabel(int month) {
+        return switch (month) {
+            case 1 -> "Jan";
+            case 2 -> "Fev";
+            case 3 -> "Mar";
+            case 4 -> "Abr";
+            case 5 -> "Mai";
+            case 6 -> "Jun";
+            case 7 -> "Jul";
+            case 8 -> "Ago";
+            case 9 -> "Set";
+            case 10 -> "Out";
+            case 11 -> "Nov";
+            case 12 -> "Dez";
+            default -> "";
+        };
     }
 }

@@ -15,4 +15,14 @@ import org.springframework.data.repository.query.Param;
 public interface MeetingsJpaRepository extends JpaRepository<MeetingEntity, UUID>, JpaSpecificationExecutor<MeetingEntity> {
     @Query("SELECT AVG(m.durationSeconds) FROM MeetingEntity m WHERE m.durationSeconds IS NOT NULL")
     Optional<Double> findAverageDurationSeconds();
+
+    @Query(value = """
+        SELECT DATE_TRUNC('month', created_at) AS month,
+        ROUND(AVG(duration_seconds) / 60.0, 1) AS avg_minutes
+        FROM meetings
+        WHERE created_at BETWEEN :start AND :end
+        GROUP BY month
+        ORDER BY month ASC
+        """, nativeQuery = true)
+    List<Object[]> findAverageDurationPerMonth(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
