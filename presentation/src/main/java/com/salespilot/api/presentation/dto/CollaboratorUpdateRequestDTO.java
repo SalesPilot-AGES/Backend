@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-@Schema(description = "Dados para cadastro de um colaborador")
-public record CollaboratorRequestDTO(
+@Schema(description = "Dados para atualização de um colaborador")
+public record CollaboratorUpdateRequestDTO(
         @Schema(description = "UUID da empresa à qual o colaborador pertence", example = "b1c2d3e4-f5a6-7890-2345-67890abcdef1")
         @NotNull UUID companyId,
 

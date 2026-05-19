@@ -158,3 +158,4 @@ Base URL local: `http://localhost:8080`
 
 - `GET /api/v1/system/ping`
   - Body: não possui
+  

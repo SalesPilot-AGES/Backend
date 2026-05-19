@@ -6,6 +6,7 @@ import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
+import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,12 +15,13 @@ import java.util.UUID;
 
 public class GetAllMeetingsUseCase {
     private final MeetingRepository repository;
+    private final MeetingPostAnalysisRepository meetingPostAnalysisRepository;
     private final ClientRepository clientRepository;
     private final CollaboratorRepository collaboratorRepository;
-    private final int TEMPORARY_DEFAULT_SUCCESS_RATE = 0;
 
-    public GetAllMeetingsUseCase(MeetingRepository meetingRepository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
+    public GetAllMeetingsUseCase(MeetingRepository meetingRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
         this.repository = meetingRepository;
+        this.meetingPostAnalysisRepository = meetingPostAnalysisRepository;
         this.clientRepository = clientRepository;
         this.collaboratorRepository = collaboratorRepository;
     }
@@ -53,7 +55,7 @@ public class GetAllMeetingsUseCase {
         return MeetingPageResponseDTO.from(page, new SummaryResponseDTO(
                 repository.getTotalMeetings(),
                 repository.getAverageDurationSeconds(),
-                TEMPORARY_DEFAULT_SUCCESS_RATE
+                meetingPostAnalysisRepository.getAverageSuccessRate()
         ));
     }
 }

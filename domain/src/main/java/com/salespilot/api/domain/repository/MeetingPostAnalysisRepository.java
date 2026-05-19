@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface MeetingPostAnalysisRepository {
     Optional<MeetingPostAnalysis> findByMeetingId(UUID meetingId);
+    Double getAverageSuccessRate();
+    Double getAverageFeelingByCollaborator(UUID collaboratorId);
 }

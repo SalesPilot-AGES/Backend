@@ -12,10 +12,12 @@ import org.springframework.context.annotation.Configuration;
 
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
+import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -23,6 +25,7 @@ import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.ClientRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
 import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
+import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 
 @Configuration
@@ -74,13 +77,19 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository) {
-        return new GetAllSellersUseCase(repository, companyRepository, meetingRepository);
+    public GetAllSellersUseCase getAllSellersUseCase(CollaboratorRepository repository, CompanyRepository companyRepository, MeetingRepository meetingRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
+        return new GetAllSellersUseCase(repository, companyRepository, meetingRepository, meetingPostAnalysisRepository);
     }
     
+
     @Bean
-    public GetAllMeetingsUseCase getAllMeetingsUseCase(MeetingRepository repository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
-        return new GetAllMeetingsUseCase(repository, clientRepository, collaboratorRepository);
+    public GetSellerByIdUseCase getSellerByIdUseCase(CollaboratorRepository collaboratorRepository, CompanyRepository companyRepository, ClientRepository clientRepository, MeetingRepository meetingRepository) {
+        return new GetSellerByIdUseCase(collaboratorRepository, companyRepository, clientRepository, meetingRepository);
+    }
+
+    @Bean
+    public GetAllMeetingsUseCase getAllMeetingsUseCase(MeetingRepository repository, MeetingPostAnalysisRepository meetingPostAnalysisRepository, ClientRepository clientRepository, CollaboratorRepository collaboratorRepository) {
+        return new GetAllMeetingsUseCase(repository, meetingPostAnalysisRepository, clientRepository, collaboratorRepository);
     }
 
     @Bean
@@ -91,5 +100,10 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase(MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
         return new GetMeetingPostAnalysisUseCase(meetingPostAnalysisRepository);
+    }
+
+    @Bean
+    public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
+        return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
     }
 }

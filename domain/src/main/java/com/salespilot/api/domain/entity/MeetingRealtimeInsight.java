@@ -1,6 +1,8 @@
 package com.salespilot.api.domain.entity;
 
 import com.salespilot.api.domain.enums.RealtimeInsightType;
+import com.salespilot.api.domain.valueobject.InsightDescription;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,6 +16,6 @@ public class MeetingRealtimeInsight {
     private UUID meetingId;
     private String content;
     private RealtimeInsightType type;
-    private String description;
+    private InsightDescription description;
     private LocalDateTime createdAt;
 }
