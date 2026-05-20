@@ -22,8 +22,8 @@ public interface MeetingsJpaRepository extends JpaRepository<MeetingEntity, UUID
             COUNT(*) AS total
         FROM meetings
         WHERE created_at BETWEEN :start AND :end
-        GROUP BY month
-        ORDER BY month ASC
+        GROUP BY DATE_TRUNC('month', created_at)
+        ORDER BY DATE_TRUNC('month', created_at) ASC
     """, nativeQuery = true)
     List<Object[]> getMeetingsGroupedByMonth(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

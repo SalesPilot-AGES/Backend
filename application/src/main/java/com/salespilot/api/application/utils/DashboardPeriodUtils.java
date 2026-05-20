@@ -18,12 +18,12 @@ public class DashboardPeriodUtils {
                 start = end.minusDays(90);
             case "custom" -> {
                 if (startDate == null || endDate == null) {
-                    throw new InvalidPeriodException();
+                    throw new InvalidPeriodException(startDate, endDate);
                 }
                 start = startDate.atStartOfDay();
                 end = endDate.atTime(23, 59, 59);
             }
-            default -> throw new InvalidPeriodException();
+            default -> throw new InvalidPeriodException(startDate, endDate);
         }
 
         return new LocalDateTime[] { start, end };

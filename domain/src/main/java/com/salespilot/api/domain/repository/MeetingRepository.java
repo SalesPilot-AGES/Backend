@@ -1,6 +1,8 @@
 package com.salespilot.api.domain.repository;
 
 import com.salespilot.api.domain.entity.Meeting;
+import com.salespilot.api.domain.model.MonthAndTotal;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,5 +19,5 @@ public interface MeetingRepository {
     Optional<Meeting> getMeetingById(UUID id);
     boolean existsById(UUID id);
     Optional<Meeting> getLatestMeetingByCollaborator(UUID CollaboratorId);
-    List<Object[]> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end);
+    List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end);
 }

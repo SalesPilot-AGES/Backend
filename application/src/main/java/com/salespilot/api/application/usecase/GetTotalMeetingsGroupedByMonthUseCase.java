@@ -2,13 +2,12 @@ package com.salespilot.api.application.usecase;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
 import com.salespilot.api.application.dto.MonthAndTotalDTO;
 import com.salespilot.api.application.utils.DashboardPeriodUtils;
+import com.salespilot.api.domain.model.MonthAndTotal;
 import com.salespilot.api.domain.repository.MeetingRepository;
 
 public class GetTotalMeetingsGroupedByMonthUseCase {
@@ -28,16 +27,7 @@ public class GetTotalMeetingsGroupedByMonthUseCase {
         return new MeetingsGroupedByMonthResponseDTO(data);
     }
 
-    private MonthAndTotalDTO map(Object[] item) {
-        LocalDateTime month = (LocalDateTime) item[0];
-        Long total = ((Number) item[1]).longValue();
-
-        String monthLabel = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
-
-        return new MonthAndTotalDTO(month, capitalize(monthLabel),total);
-    }
-
-    private String capitalize(String monthLabel) {
-        return monthLabel.substring(0, 1).toUpperCase() + monthLabel.substring(1);
+    private MonthAndTotalDTO map(MonthAndTotal item) {
+        return new MonthAndTotalDTO(item.month(), item.monthLabel(), item.total());
     }
 }

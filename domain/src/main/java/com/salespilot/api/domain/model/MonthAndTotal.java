@@ -1,8 +1,8 @@
-package com.salespilot.api.application.dto;
+package com.salespilot.api.domain.model;
 
 import java.time.LocalDate;
 
-public record MonthAndTotalDTO(
+public record MonthAndTotal(
     LocalDate month,
     String monthLabel,
     Long total
