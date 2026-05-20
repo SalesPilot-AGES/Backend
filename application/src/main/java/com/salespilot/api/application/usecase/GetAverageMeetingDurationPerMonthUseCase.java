@@ -26,7 +26,7 @@ public class GetAverageMeetingDurationPerMonthUseCase {
         List<AverageMeetingDurationPerMonth> averageMeetingsDurationPerMonth = meetingRepository.groupAverageMeetingDurationPerMonth(start, end);
 
         if(averageMeetingsDurationPerMonth == null) {
-            return null;
+            return new GroupAverageMeetingDurationPerMonthResponseDTO(List.of());
         }
 
         List<AverageMeetingDurationPerMonthResponseDTO> response = averageMeetingsDurationPerMonth
