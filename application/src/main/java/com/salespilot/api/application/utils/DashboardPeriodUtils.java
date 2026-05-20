@@ -21,6 +21,9 @@ public class DashboardPeriodUtils {
                 if (startDate == null || endDate == null) {
                     throw new InvalidPeriodException(period);
                 }
+                if(endDate.isBefore(startDate)) {
+                    throw new InvalidPeriodException(period);
+                }
                 start = startDate.atStartOfDay();
                 end = endDate.atTime(23, 59, 59);
             }
