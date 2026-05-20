@@ -24,8 +24,6 @@ public class Collaborator {
 
     private boolean active;
 
-    private Integer averageFeeling;
-    
     private CollaboratorPreferences preferences;
 
     private LocalDateTime createdAt;

@@ -39,7 +39,7 @@ Usaremos o Conventional Commits para manter o histórico do repositório mais or
 
 ## Como Executar o Projeto
 
-Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele subirá automaticamente a nossa API, o banco de dados PostgreSQL e o SonarQube.
+Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele subirá automaticamente a nossa API e o banco de dados PostgreSQL. Os serviços de métricas (Prometheus, Grafana e SonarQube) só sobem quando o profile `metrics` estiver ativo.
 
 ### Passo a Passo
 
@@ -53,11 +53,15 @@ Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele su
    ```text
     docker-compose up -d --build
    ```
-4. **(Opcional) Rodar a API localmente com o Postgres do Docker:** Como o projeto usa `spring.config.import=optional:file:.env[.properties]`, ao manter o `.env` na raiz você pode iniciar a API local sem exportar variáveis manualmente.
+4. **(Opcional) Subir também os serviços de métricas:** Use o profile `metrics` para iniciar Prometheus, Grafana e SonarQube.
+   ```text
+    docker-compose --profile metrics up -d --build
+   ```
+5. **(Opcional) Rodar a API localmente com o Postgres do Docker:** Como o projeto usa `spring.config.import=optional:file:.env[.properties]`, ao manter o `.env` na raiz você pode iniciar a API local sem exportar variáveis manualmente.
    ```text
     mvn -pl bootstrap spring-boot:run
    ```
-5. **Verifique a Execução:** A API estará rodando em http://localhost:8080.
+6. **Verifique a Execução:** A API estará rodando em http://localhost:8080.
    - O banco de dados PostgreSQL estará disponível na porta 5432.
    - SonarQube estará acessível em http://localhost:9000.
    - Grafana estará acessível em http://localhost:3000
@@ -158,4 +162,3 @@ Base URL local: `http://localhost:8080`
 
 - `GET /api/v1/system/ping`
   - Body: não possui
-  
