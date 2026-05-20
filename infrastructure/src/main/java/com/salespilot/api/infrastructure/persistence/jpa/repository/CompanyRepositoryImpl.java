@@ -129,6 +129,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         companySubscriptionsJpaRepository.save(subscription);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CompanyStatusCount> countCompaniesGroupedByStatus() {
         return companyJpaRepository
