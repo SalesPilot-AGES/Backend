@@ -2,8 +2,10 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import java.util.UUID;
 
-import com.salespilot.api.application.dto.AverageMeetingDurationPerMonthResponseDTO;
+import com.salespilot.api.application.exception.InvalidMonthException;
 import com.salespilot.api.domain.entity.Meeting;
+import com.salespilot.api.domain.enums.Months;
+import com.salespilot.api.domain.model.AverageMeetingDurationPerMonth;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingMapper;
@@ -18,10 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -86,7 +87,7 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
     @Transactional(readOnly = true)
     @Override
-    public List<AverageMeetingDurationPerMonthResponseDTO> groupAverageMeetingDurationPerMonth(
+    public List<AverageMeetingDurationPerMonth> groupAverageMeetingDurationPerMonth(
             LocalDateTime start,
             LocalDateTime end
     ) {
@@ -102,15 +103,24 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
                     LocalDateTime month = extractMonth(row[0]);
 
+                    if(month == null) {
+                        throw new InvalidMonthException();
+                    }
+
                     Double avgMinutes = row[1] != null
                             ? ((Number) row[1]).doubleValue()
                             : 0.0;
+                            
+                    Months monthValue =  Arrays
+                            .stream(Months.values())
+                            .filter(m -> m.getMonthValue()
+                            .equals(month.getMonthValue()))
+                            .findFirst()
+                            .orElse(null);
 
-                    String monthLabel = month != null
-                            ? getMonthLabel(month.getMonthValue())
-                            : null;
+                    String monthLabel = monthValue.getValue();
 
-                    return new AverageMeetingDurationPerMonthResponseDTO(
+                    return new AverageMeetingDurationPerMonth(
                             month,
                             monthLabel,
                             avgMinutes
@@ -130,23 +140,5 @@ public class MeetingRepositoryImpl implements MeetingRepository{
         }
 
         return null;
-    }
-
-    private String getMonthLabel(int month) {
-        return switch (month) {
-            case 1 -> "Jan";
-            case 2 -> "Fev";
-            case 3 -> "Mar";
-            case 4 -> "Abr";
-            case 5 -> "Mai";
-            case 6 -> "Jun";
-            case 7 -> "Jul";
-            case 8 -> "Ago";
-            case 9 -> "Set";
-            case 10 -> "Out";
-            case 11 -> "Nov";
-            case 12 -> "Dez";
-            default -> "";
-        };
     }
 }
