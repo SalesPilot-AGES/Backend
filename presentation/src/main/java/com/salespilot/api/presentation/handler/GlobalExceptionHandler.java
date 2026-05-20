@@ -66,6 +66,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidMonthException.class)
     public ResponseEntity<Void> handleInvalidMonthException() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

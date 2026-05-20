@@ -28,7 +28,7 @@ public class DashboardController {
         this.getAverageMeetingDurationPerMonthUseCase = getAverageMeetingDurationPerMonthUseCase;
     }
 
-    @Operation(summary = "Retornar a média da duração das reuniões por mês", description = "Calcula e retorna a média da duração das reuniões em todos os meses que tiveram reuniões")
+    @Operation(summary = "Retornar a média da duração das reuniões por mês", description = "Calcula e retorna a média da duração das reuniões em todos os meses que tiveram reuniões de acordo com o período requisitado")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Média da duração das reuniões por mês retornada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupAverageMeetingDurationPerMonthResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
