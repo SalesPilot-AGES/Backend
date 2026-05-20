@@ -1,10 +1,10 @@
 package com.salespilot.api.application.dto;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record SellerWithMeetingsResponseDTO (
     UUID id,
@@ -15,7 +15,6 @@ public record SellerWithMeetingsResponseDTO (
     boolean active,
     String phone,
     CollaboratorPreferences preferences,
-    Integer averageFeeling,
     Long totalMeetings,
     LatestMeetingsResponseDTO latestMeeting,
     LocalDateTime createdAt,

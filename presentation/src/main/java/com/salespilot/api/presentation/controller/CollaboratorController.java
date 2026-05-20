@@ -12,6 +12,7 @@ import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
 import com.salespilot.api.presentation.dto.CollaboratorUpdateRequestDTO;
+import com.salespilot.api.presentation.utils.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +22,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import com.salespilot.api.presentation.utils.PageableUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -75,7 +75,6 @@ public class CollaboratorController {
                 "theme": "light",
                 "default_model": "gpt-4o"
               },
-              "average_feeling": 0,
               "created_at": "2024-04-02T10:01:00",
               "company": {
                 "id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
@@ -102,7 +101,6 @@ public class CollaboratorController {
                 "theme": "light",
                 "default_model": "gpt-4o"
               },
-              "average_feeling": 0,
               "totalMeetings": 0,
               "created_at": "2024-04-02T10:01:00",
               "company": {
@@ -149,8 +147,7 @@ public class CollaboratorController {
                 CollaboratorRole.MANAGER,
                 request.active(),
                 request.phone(),
-                request.preferences(),
-                0);
+                request.preferences());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -240,8 +237,7 @@ public class CollaboratorController {
                 CollaboratorRole.SELLER,
                 request.active(),
                 request.phone(),
-                request.preferences(),
-                0);
+                request.preferences());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
