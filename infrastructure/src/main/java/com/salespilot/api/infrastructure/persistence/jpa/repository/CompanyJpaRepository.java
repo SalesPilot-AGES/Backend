@@ -1,6 +1,5 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,8 +15,6 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
     Page<CompanyEntity> findAll(Specification<CompanyEntity> spec, Pageable pageable);
 
     boolean existsByTaxId(String taxId);
-    
-    Optional<CompanyEntity> findByTaxId(String taxId);
 
-    Long countByActiveAndCreatedAtLessThanEqual(boolean active, LocalDateTime period);
+    Optional<CompanyEntity> findByTaxId(String taxId);
 }

@@ -6,6 +6,7 @@ import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorStatusHistoryEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CollaboratorMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.CollaboratorSpecification;
@@ -24,19 +25,28 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     private final CollaboratorMapper mapper;
     private final CollaboratorJpaRepository collaboratorJpaRepository;
     private final CompanyJpaRepository companyJpaRepository;
+    private final CollaboratorStatusHistoryJpaRepository collaboratorStatusHistoryJpaRepository;
 
-    public CollaboratorRepositoryImpl(CollaboratorMapper mapper, CollaboratorJpaRepository collaboratorJpaRepository, CompanyJpaRepository companyJpaRepository) {
+    public CollaboratorRepositoryImpl(
+            CollaboratorMapper mapper,
+            CollaboratorJpaRepository collaboratorJpaRepository,
+            CompanyJpaRepository companyJpaRepository,
+            CollaboratorStatusHistoryJpaRepository collaboratorStatusHistoryJpaRepository
+    ) {
         this.mapper = mapper;
         this.collaboratorJpaRepository = collaboratorJpaRepository;
         this.companyJpaRepository = companyJpaRepository;
+        this.collaboratorStatusHistoryJpaRepository = collaboratorStatusHistoryJpaRepository;
     }
 
+    @Transactional
     @Override
     public Collaborator create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences preferences) {
         CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
 
         CollaboratorEntity collaboratorEntity = new CollaboratorEntity(companyEntity, name, email, role, active, phone, preferences);
         CollaboratorEntity savedEntity = collaboratorJpaRepository.save(collaboratorEntity);
+        collaboratorStatusHistoryJpaRepository.save(new CollaboratorStatusHistoryEntity(savedEntity, active));
 
         return mapper.toDomain(savedEntity);
     }
@@ -55,6 +65,7 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
         CompanyEntity companyEntity = companyJpaRepository.getReferenceById(companyId);
 
+        boolean previousActive = collaboratorEntity.isActive();
         collaboratorEntity.setCompany(companyEntity);
         collaboratorEntity.setName(name);
         collaboratorEntity.setEmail(email);
@@ -63,6 +74,9 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
         collaboratorEntity.setPreferences(preferences);
 
         CollaboratorEntity saved = collaboratorJpaRepository.save(collaboratorEntity);
+        if (previousActive != active) {
+            collaboratorStatusHistoryJpaRepository.save(new CollaboratorStatusHistoryEntity(saved, active));
+        }
         return mapper.toDomain(saved);
     }
 
@@ -101,7 +115,7 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
     @Transactional(readOnly = true)
     @Override
     public Long countAllActiveSellersByPeriod(LocalDateTime period) {
-        return collaboratorJpaRepository.countByRoleAndActiveTrueAndCreatedAtLessThanEqual(CollaboratorRole.SELLER, period);
+        return collaboratorStatusHistoryJpaRepository.countActiveByRoleSnapshotAt(CollaboratorRole.SELLER.name(), period);
     }
 
     @Transactional(readOnly = true)
