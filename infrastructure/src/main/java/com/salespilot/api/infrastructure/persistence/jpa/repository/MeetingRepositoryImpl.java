@@ -109,14 +109,14 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
                     Double avgMinutes = row[1] != null
                             ? ((Number) row[1]).doubleValue()
-                            : 0.0;
+                            : null;
                             
                     Months monthValue =  Arrays
                             .stream(Months.values())
                             .filter(m -> m.getMonthValue()
                             .equals(month.getMonthValue()))
                             .findFirst()
-                            .orElse(null);
+                            .orElseThrow(InvalidMonthException::new);
 
                     String monthLabel = monthValue.getValue();
 
