@@ -18,6 +18,7 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanySubscript
 import com.salespilot.api.infrastructure.persistence.jpa.entity.SubscriptionPlans;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.CompanySpecification;
+import com.salespilot.api.model.CompanyNameAndTotalMeetings;
 
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
@@ -129,7 +130,14 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public List<Object[]> getTopFiveCompaniesByMeetingTotal(LocalDateTime start, LocalDateTime end) {
-        return companyJpaRepository.getTopFiveCompaniesByMeetingTotal(start, end);
+    public List<CompanyNameAndTotalMeetings> getTopFiveCompaniesByMeetingTotal(LocalDateTime start, LocalDateTime end) {
+        return companyJpaRepository.getTopFiveCompaniesByMeetingTotal(start, end).stream().map(this::mapToNameAndTotalMeetings).toList();
+    }
+
+    private CompanyNameAndTotalMeetings mapToNameAndTotalMeetings(Object[] item){
+        String name = item[0].toString();
+        Long total = (Long) item[1];
+
+        return new CompanyNameAndTotalMeetings(name, total);
     }
 }

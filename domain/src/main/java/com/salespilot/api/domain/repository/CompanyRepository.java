@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.salespilot.api.domain.entity.Company;
+import com.salespilot.api.model.CompanyNameAndTotalMeetings;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,5 +17,5 @@ public interface CompanyRepository {
     Page<Company> getAllCompanies(String name, String taxId, String plan, Boolean active, Pageable pageable);
     Optional<Company> getCompanyById(UUID id);
     Optional<Company> updateCompany(UUID id, String name, String plan, boolean active);
-    List<Object[]> getTopFiveCompaniesByMeetingTotal(LocalDateTime start, LocalDateTime end);
+    List<CompanyNameAndTotalMeetings> getTopFiveCompaniesByMeetingTotal(LocalDateTime start, LocalDateTime end);
 }

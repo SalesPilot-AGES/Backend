@@ -8,6 +8,7 @@ import com.salespilot.api.application.dto.CompanyNameAndTotalMeetingsDto;
 import com.salespilot.api.application.dto.TopFiveCompanyByMeetingTotalResponseDto;
 import com.salespilot.api.application.utils.DashboardPeriodUtils;
 import com.salespilot.api.domain.repository.CompanyRepository;
+import com.salespilot.api.model.CompanyNameAndTotalMeetings;
 
 public class GetTopFiveCompaniesByMeetingTotalUseCase {
     private final CompanyRepository companyRepository;
@@ -26,10 +27,7 @@ public class GetTopFiveCompaniesByMeetingTotalUseCase {
         return new TopFiveCompanyByMeetingTotalResponseDto(data);
     }
 
-    private CompanyNameAndTotalMeetingsDto map(Object[] item) {
-        String name = item[0].toString();
-        Long total = (Long) item[1];
-
-        return new CompanyNameAndTotalMeetingsDto(name, total);
+    private CompanyNameAndTotalMeetingsDto map(CompanyNameAndTotalMeetings item) {
+        return new CompanyNameAndTotalMeetingsDto(item.companyName(), item.total());
     }
 }

@@ -16,19 +16,12 @@ import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
-<<<<<<< HEAD
-import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
-import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
-import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
-import com.salespilot.api.application.usecase.PostCompanyUseCase;
-import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
-=======
->>>>>>> 3953334bd66984b9bcf8b62fc26593956efe719d
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
+import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
