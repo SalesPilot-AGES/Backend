@@ -9,6 +9,7 @@ import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
+import com.salespilot.api.application.exception.InvalidPeriodException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +79,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleHandlerMethodValidationException() {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(ApiResponse.message("Dados inválidos"));
+    }
+
+    @ExceptionHandler(InvalidPeriodException.class)
+    public ResponseEntity<Void> handleInvalidPeriodException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
