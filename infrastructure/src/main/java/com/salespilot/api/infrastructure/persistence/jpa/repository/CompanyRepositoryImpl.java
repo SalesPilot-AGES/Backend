@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.salespilot.api.domain.entity.Company;
+import com.salespilot.api.domain.model.CompanyStatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanySubscriptions;
@@ -140,4 +141,29 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
         return new CompanyNameAndTotalMeetings(name, total);
     }
+
+    
+    @Transactional(readOnly = true)
+    @Override
+    public List<CompanyStatusCount> countCompaniesGroupedByStatus() {
+        return companyJpaRepository
+            .countCompaniesGroupedByStatus()
+            .stream()
+            .map(this::mapToCompanyStatusCount)
+            .toList();
+    }
+
+    private CompanyStatusCount mapToCompanyStatusCount(Object[] item) {
+        if (item == null || item.length < 2) {
+            throw new IllegalStateException("Resultado inválido da query de companies");
+        }
+
+        Boolean active = (Boolean) item[0];
+        Number total = (Number) item[1];
+
+        return new CompanyStatusCount(
+            Boolean.TRUE.equals(active),
+            total.longValue()
+        );
+    }    
 }

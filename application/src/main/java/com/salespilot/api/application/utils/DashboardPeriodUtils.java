@@ -13,6 +13,10 @@ public class DashboardPeriodUtils {
         switch (period) {
             case "all" ->
                 start = LocalDateTime.of(1970, 1, 1, 0, 0);
+            case "30d" ->
+                start = end.minusDays(30);
+            case "90d" ->
+                start = end.minusDays(90);
             case "custom" -> {
                 if (startDate == null || endDate == null) {
                     throw new InvalidPeriodException(startDate, endDate);

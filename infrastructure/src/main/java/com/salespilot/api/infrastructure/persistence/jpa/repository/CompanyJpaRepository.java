@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 
 
@@ -38,4 +39,12 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
         LIMIT 5
     """, nativeQuery = true)
     List<Object[]> getTopFiveCompaniesByMeetingTotal(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    
+    @Query("""
+        SELECT c.active, COUNT(c)
+        FROM CompanyEntity c
+        GROUP BY c.active
+    """)
+    List<Object[]> countCompaniesGroupedByStatus();
 }
