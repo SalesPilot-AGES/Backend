@@ -117,4 +117,9 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     private String capitalize(String monthLabel) {
         return monthLabel.substring(0, 1).toUpperCase() + monthLabel.substring(1);
     }
+
+    @Override
+    public Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd) {
+        return meetingsJpaRepository.countByCreatedAtBetween(currentStart, currentEnd);
+    }
 }
