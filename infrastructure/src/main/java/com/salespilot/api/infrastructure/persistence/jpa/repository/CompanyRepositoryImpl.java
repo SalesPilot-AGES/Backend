@@ -15,6 +15,7 @@ import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.model.CompanyStatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyStatusHistoryEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanySubscriptions;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.SubscriptionPlans;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
@@ -26,15 +27,18 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     private final CompanyJpaRepository companyJpaRepository;
     private final SubscriptionPlansJpaRepository subscriptionPlansJpaRepository;
     private final CompanySubscriptionsJpaRepository companySubscriptionsJpaRepository;
+    private final CompanyStatusHistoryJpaRepository companyStatusHistoryJpaRepository;
 
     public CompanyRepositoryImpl(CompanyJpaRepository companyJpaRepository,
                                  CompanyMapper mapper,
                                  SubscriptionPlansJpaRepository subscriptionPlansJpaRepository,
-                                 CompanySubscriptionsJpaRepository companySubscriptionsJpaRepository) {
+                                 CompanySubscriptionsJpaRepository companySubscriptionsJpaRepository,
+                                 CompanyStatusHistoryJpaRepository companyStatusHistoryJpaRepository) {
         this.companyJpaRepository = companyJpaRepository;
         this.mapper = mapper;
         this.subscriptionPlansJpaRepository = subscriptionPlansJpaRepository;
         this.companySubscriptionsJpaRepository = companySubscriptionsJpaRepository;
+        this.companyStatusHistoryJpaRepository = companyStatusHistoryJpaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -60,9 +64,13 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public Optional<Company> updateCompany(UUID id, String name, String plan, boolean active) {
         return companyJpaRepository.findById(id)
                 .map(entity -> {
+                    boolean previousActive = entity.isActive();
                     entity.setName(name);
                     entity.setActive(active);
                     companyJpaRepository.save(entity);
+                    if (previousActive != active) {
+                        companyStatusHistoryJpaRepository.save(new CompanyStatusHistoryEntity(entity, active));
+                    }
                     updateSubscription(entity, plan);
                     return mapper.toDomain(entity);
                 });
@@ -77,6 +85,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public Company createCompany(String name, String taxId, String plan, boolean active) {
         CompanyEntity entity = companyJpaRepository.saveAndFlush(new CompanyEntity(name, taxId, active));
+        companyStatusHistoryJpaRepository.save(new CompanyStatusHistoryEntity(entity, active));
         CompanySubscriptions subscription = createSubscription(entity, plan);
         entity.getSubscriptions().add(subscription);
         return mapper.toDomain(entity);
@@ -152,4 +161,18 @@ public class CompanyRepositoryImpl implements CompanyRepository {
             total.longValue()
         );
     }    
+    
+    @Transactional(readOnly = true)
+    @Override
+    public Long countCompaniesByActiveValueAndPeriod(boolean active, LocalDateTime period) {
+        return companyStatusHistoryJpaRepository.countActiveSnapshotAt(active, period);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long countCompaniesByActiveValue(boolean active) {
+        Specification<CompanyEntity> spec = Specification
+            .where(CompanySpecification.isActiveEquals(active));
+        return companyJpaRepository.count(spec);
+    }
 }
