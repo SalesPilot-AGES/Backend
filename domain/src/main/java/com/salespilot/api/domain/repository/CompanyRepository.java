@@ -4,7 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.salespilot.api.domain.entity.Company;
+import com.salespilot.api.domain.model.CompanyStatusCount;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +16,5 @@ public interface CompanyRepository {
     Page<Company> getAllCompanies(String name, String taxId, String plan, Boolean active, Pageable pageable);
     Optional<Company> getCompanyById(UUID id);
     Optional<Company> updateCompany(UUID id, String name, String plan, boolean active);
+    List<CompanyStatusCount> countCompaniesGroupedByStatus();
 }
