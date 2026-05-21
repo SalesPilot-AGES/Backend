@@ -123,6 +123,11 @@ public class MeetingRepositoryImpl implements MeetingRepository{
         return monthLabel.substring(0, 1).toUpperCase() + monthLabel.substring(1);
     }
 
+    @Override
+    public Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd) {
+        return meetingsJpaRepository.countByCreatedAtBetween(currentStart, currentEnd);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<AverageMeetingDurationPerMonth> groupAverageMeetingDurationPerMonth(

@@ -21,5 +21,6 @@ public interface MeetingRepository {
     boolean existsById(UUID id);
     Optional<Meeting> getLatestMeetingByCollaborator(UUID CollaboratorId);
     List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end);
+    Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd);
     List<AverageMeetingDurationPerMonth> groupAverageMeetingDurationPerMonth(LocalDateTime start, LocalDateTime end);
 }

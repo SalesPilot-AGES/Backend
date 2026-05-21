@@ -14,6 +14,7 @@ import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
@@ -121,8 +122,14 @@ public class UseCaseConfig {
         return new GetTotalMeetingsGroupedByMonthUseCase(meetingRepository);
     }
     
+    @Bean
     public GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase(CompanyRepository companyRepository) {
         return new GetGroupedCompaniesCountUseCase(companyRepository);
+    }
+
+    @Bean
+    public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository) {
+        return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository);
     }
 
     @Bean

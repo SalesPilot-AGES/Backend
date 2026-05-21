@@ -26,6 +26,7 @@ public interface MeetingsJpaRepository extends JpaRepository<MeetingEntity, UUID
         ORDER BY DATE_TRUNC('month', created_at) ASC
     """, nativeQuery = true)
     List<Object[]> getMeetingsGroupedByMonth(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    Long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query(value = """
         SELECT DATE_TRUNC('month', created_at) AS month,

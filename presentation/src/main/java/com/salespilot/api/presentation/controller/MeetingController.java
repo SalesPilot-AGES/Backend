@@ -1,5 +1,6 @@
 package com.salespilot.api.presentation.controller;
 
+import com.salespilot.api.application.dto.ApiResponse;
 import com.salespilot.api.application.dto.MeetingContextMetadataResponseDTO;
 import com.salespilot.api.application.dto.MeetingPageResponseDTO;
 import com.salespilot.api.application.dto.MeetingPostAnalysisResponseDTO;
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -47,7 +47,7 @@ public class MeetingController {
 
     @Operation(summary = "Listar reuniões", description = "Retorna uma página de reuniões com filtros opcionais e métricas gerais.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Reuniões retornadas com sucesso",
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Reuniões retornadas com sucesso",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = MeetingPageResponseDTO.class),
                             examples = @ExampleObject(value = """
@@ -87,17 +87,18 @@ public class MeetingController {
                                     """)))
     })
     @GetMapping
-    public ResponseEntity<MeetingPageResponseDTO> getAllMeetings(
+    public ResponseEntity<ApiResponse<MeetingPageResponseDTO>> getAllMeetings(
             @Parameter(description = "Filtrar por título (parcial)") @RequestParam(required = false) String title,
             @Parameter(description = "Filtrar por empresa do cliente (parcial)") @RequestParam(required = false) String clientCompanyName,
             @Parameter(description = "Filtrar por ID do vendedor") @RequestParam(required = false) UUID collaboratorId,
             Pageable pageable) {
-        return ResponseEntity.ok(getAllMeetingsUseCase.execute(title, clientCompanyName, collaboratorId, PageableUtils.normalize(pageable)));
+        MeetingPageResponseDTO meetings = getAllMeetingsUseCase.execute(title, clientCompanyName, collaboratorId, PageableUtils.normalize(pageable));
+        return ResponseEntity.ok(ApiResponse.success(meetings, "Reuniões listadas com sucesso"));
     }
 
     @Operation(summary = "Buscar reunião por ID", description = "Retorna os dados completos de contexto e metadados de uma reunião.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Reunião encontrada",
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Reunião encontrada",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = MeetingContextMetadataResponseDTO.class),
                             examples = @ExampleObject(value = """
@@ -144,17 +145,18 @@ public class MeetingController {
                                       "created_at": "2024-06-10T13:30:00Z"
                                     }
                                     """))),
-            @ApiResponse(responseCode = "404", description = "Reunião, seller ou cliente não encontrado", content = @Content)
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião, seller ou cliente não encontrado", content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<MeetingContextMetadataResponseDTO> getMeetingContextAndMetadata(
+    public ResponseEntity<ApiResponse<MeetingContextMetadataResponseDTO>> getMeetingContextAndMetadata(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
-        return ResponseEntity.ok(getMeetingContextAndMetadataUseCase.execute(id));
+        MeetingContextMetadataResponseDTO meeting = getMeetingContextAndMetadataUseCase.execute(id);
+        return ResponseEntity.ok(ApiResponse.success(meeting, "Reunião encontrada"));
     }
 
     @Operation(summary = "Buscar pós-análise da reunião", description = "Retorna o pós-análise de uma reunião com resumo, itens de ação e análise de sentimento.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pós-análise encontrada",
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Pós-análise encontrada",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = MeetingPostAnalysisResponseDTO.class),
                             examples = @ExampleObject(value = """
@@ -179,20 +181,21 @@ public class MeetingController {
                                       "created_at": "2024-06-10T16:00:00Z"
                                     }
                                     """))),
-            @ApiResponse(responseCode = "404", description = "Pós-análise da reunião não encontrada", content = @Content)
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Pós-análise da reunião não encontrada", content = @Content)
     })
 
     @GetMapping("/{id}/post-analysis")
-    public ResponseEntity<MeetingPostAnalysisResponseDTO> getMeetingPostAnalysis(
+    public ResponseEntity<ApiResponse<MeetingPostAnalysisResponseDTO>> getMeetingPostAnalysis(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
-        return ResponseEntity.ok(getMeetingPostAnalysisUseCase.execute(id));
+        MeetingPostAnalysisResponseDTO postAnalysis = getMeetingPostAnalysisUseCase.execute(id);
+        return ResponseEntity.ok(ApiResponse.success(postAnalysis, "Pós-análise da reunião encontrada"));
     }
 
 
 
     @Operation(summary = "Buscar insights da reunião", description = "Retorna os insights gerados automaticamente para uma reunião.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Insights encontrados",
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Insights encontrados",
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = MeetingRealtimeInsightsResponseDTO.class),
                 examples = @ExampleObject(value = """
@@ -217,11 +220,12 @@ public class MeetingController {
                       }
                     ]
                 """))),
-        @ApiResponse(responseCode = "404", description = "Reunião não encontrada", content = @Content)
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião não encontrada", content = @Content)
     })
     @GetMapping("/{id}/insights")
-    public ResponseEntity<List<MeetingRealtimeInsightsResponseDTO>> getMeetingRealtimeInsights(
+    public ResponseEntity<ApiResponse<List<MeetingRealtimeInsightsResponseDTO>>> getMeetingRealtimeInsights(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id){
-        return ResponseEntity.ok(getMeetingInsightUseCase.execute(id));
+        List<MeetingRealtimeInsightsResponseDTO> insights = getMeetingInsightUseCase.execute(id);
+        return ResponseEntity.ok(ApiResponse.success(insights, "Insights da reunião encontrados"));
     }
 }

@@ -18,7 +18,7 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
     Page<CompanyEntity> findAll(Specification<CompanyEntity> spec, Pageable pageable);
 
     boolean existsByTaxId(String taxId);
-    
+
     Optional<CompanyEntity> findByTaxId(String taxId);
 
     @Query("""
