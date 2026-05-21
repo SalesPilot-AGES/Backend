@@ -60,6 +60,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPeriodException.class)
     public ResponseEntity<Void> handleInvalidPeriodException() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

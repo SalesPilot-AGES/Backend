@@ -53,11 +53,11 @@ public class DashboardPeriodUtils {
                 break;
             case "custom":
                 if (startDate == null || endDate == null) {
-                    throw new InvalidPeriodException(period);
+                    throw new InvalidPeriodException(startDate, endDate);
                 }
 
                 if (startDate.isAfter(endDate)) {
-                    throw new InvalidPeriodException(period);
+                    throw new InvalidPeriodException(startDate, endDate);
                 }
 
                 currentStart = startDate.atStartOfDay();
@@ -69,9 +69,31 @@ public class DashboardPeriodUtils {
                 previousEnd = currentEnd.minusDays(days);
                 break;
             default:
-                throw new InvalidPeriodException(period);
+                throw new InvalidPeriodException(startDate, endDate);
         }
 
         return new LocalDateTime[] { previousStart, previousEnd, currentStart, currentEnd };
+    }
+
+    public static LocalDateTime[] resolve(String period, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start;
+
+        switch (period) {
+            case "30d" ->
+                start = end.minusDays(30);
+            case "90d" ->
+                start = end.minusDays(90);
+            case "custom" -> {
+                if (startDate == null || endDate == null) {
+                    throw new InvalidPeriodException(startDate, endDate);
+                }
+                start = startDate.atStartOfDay();
+                end = endDate.atTime(23, 59, 59);
+            }
+            default -> throw new InvalidPeriodException(startDate, endDate);
+        }
+
+        return new LocalDateTime[] { start, end };
     }
 }

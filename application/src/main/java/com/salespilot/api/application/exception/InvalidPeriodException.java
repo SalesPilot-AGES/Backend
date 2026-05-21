@@ -1,7 +1,9 @@
 package com.salespilot.api.application.exception;
 
-public class InvalidPeriodException extends RuntimeException {
-    public InvalidPeriodException(String period) {
-        super("period: " + period + " invalid");
+import java.time.LocalDate;
+
+public class InvalidPeriodException extends RuntimeException{
+    public InvalidPeriodException(LocalDate start, LocalDate end){
+        super("Período inválido: " + start + ", " + end);
     }
 }
