@@ -17,6 +17,7 @@ import com.salespilot.api.application.usecase.GetAllSellersUseCase;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
@@ -112,6 +113,11 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
         return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
+    }
+
+    @Bean
+    public GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase(CompanyRepository companyRepository) {
+        return new GetGroupedCompaniesCountUseCase(companyRepository);
     }
 
     @Bean
