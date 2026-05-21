@@ -1,5 +1,6 @@
 package com.salespilot.api.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @param <T> O tipo do conteúdo da resposta
  */
 @JsonPropertyOrder({"content", "message"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ApiResponse<T>(
         @JsonProperty("content")
         T content,

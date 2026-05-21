@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-@JsonPropertyOrder({"content", "empty", "first", "last", "number", "numberOfElements", "pageable", "size", "sort", "totalElements", "totalPages", "message"})
+@JsonPropertyOrder({"content", "empty", "first", "last", "number", "numberOfElements", "pageable", "size", "sort", "totalElements", "totalPages"})
 public record PaginatedResponse<T>(
     @JsonProperty("content") List<T> content,
     @JsonProperty("empty") boolean empty,
@@ -20,10 +20,9 @@ public record PaginatedResponse<T>(
     @JsonProperty("size") int size,
     @JsonProperty("sort") Sort sort,
     @JsonProperty("totalElements") long totalElements,
-    @JsonProperty("totalPages") int totalPages,
-    @JsonProperty("message") String message
+    @JsonProperty("totalPages") int totalPages
 ) {
-    public static <T> PaginatedResponse<T> from(Page<T> page, String message) {
+    public static <T> PaginatedResponse<T> from(Page<T> page) {
         return new PaginatedResponse<>(
             page.getContent(),
             page.isEmpty(),
@@ -35,8 +34,7 @@ public record PaginatedResponse<T>(
             page.getSize(),
             page.getSort(),
             page.getTotalElements(),
-            page.getTotalPages(),
-            message
+            page.getTotalPages()
         );
     }
 }

@@ -198,7 +198,7 @@ public class CollaboratorController {
         }
 
         @GetMapping("/managers")
-        public ResponseEntity<PaginatedResponse<CollaboratorResponseDTO>> getManagers(
+        public ResponseEntity<ApiResponse<PaginatedResponse<CollaboratorResponseDTO>>> getManagers(
                         @RequestParam(required = false) String name,
                         @RequestParam(required = false) String email,
                         @RequestParam(required = false) UUID companyId,
@@ -206,7 +206,7 @@ public class CollaboratorController {
                         Pageable pageable) {
                 Page<CollaboratorResponseDTO> managers = getAllManagersUseCase.execute(name, email, companyId, active,
                                 PageableUtils.normalize(pageable));
-                return ResponseEntity.ok(PaginatedResponse.from(managers, "Gestores listados com sucesso"));
+                return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(managers), "Gestores listados com sucesso"));
         }
 
         @Operation(summary = "Buscar sellers", description = "Retorna todos os sellers, a partir de um filtro ou não.")
@@ -215,7 +215,7 @@ public class CollaboratorController {
                         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content)
         })
         @GetMapping("/sellers")
-        public ResponseEntity<PaginatedResponse<SellerResponseDTO>> getSellers(
+        public ResponseEntity<ApiResponse<PaginatedResponse<SellerResponseDTO>>> getSellers(
                         @Parameter(description = "Filtro por nome (contendo)") @RequestParam(required = false) String name,
                         @Parameter(description = "Filtro por email (exato)") @RequestParam(required = false) String email,
                         @Parameter(description = "Filtro por companyId") @RequestParam(required = false) UUID companyId,
@@ -223,7 +223,7 @@ public class CollaboratorController {
                         @Parameter(description = "Paginação e ordenação") Pageable pageable) {
                 Page<SellerResponseDTO> sellers = getAllSellersUseCase.execute(name, email, companyId, active,
                                 PageableUtils.normalize(pageable));
-                return ResponseEntity.ok(PaginatedResponse.from(sellers, "Vendedores listados com sucesso"));
+                return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(sellers), "Vendedores listados com sucesso"));
         }
 
         @Operation(summary = "Cadastrar seller", description = "Cria um novo colaborador com o papel de SELLER.")

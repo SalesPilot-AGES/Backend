@@ -163,7 +163,7 @@ public class CompanyController {
                             }
                             """)))
     @GetMapping
-    public ResponseEntity<PaginatedResponse<CompanyResponseDTO>> getAll(
+    public ResponseEntity<ApiResponse<PaginatedResponse<CompanyResponseDTO>>> getAll(
             @Parameter(description = "Filtro por nome (parcial)") @RequestParam(required = false) String name,
             @Parameter(description = "Filtro por CNPJ (exato)") @RequestParam(required = false) String taxId,
             @Parameter(description = "Filtro por plano", example = "BASIC") @RequestParam(required = false) String plan,
@@ -171,7 +171,7 @@ public class CompanyController {
             Pageable pageable) {
         Pageable safePageable = normalizePageable(pageable);
         Page<CompanyResponseDTO> companies = getCompanyUseCase.execute(name, taxId, plan, active, safePageable);
-        return ResponseEntity.ok(PaginatedResponse.from(companies, "Empresas listadas com sucesso"));
+        return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(companies), "Empresas listadas com sucesso"));
     }
 
     private Pageable normalizePageable(Pageable pageable) {

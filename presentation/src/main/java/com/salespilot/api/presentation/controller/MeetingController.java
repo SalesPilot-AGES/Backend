@@ -87,20 +87,13 @@ public class MeetingController {
                                     """)))
     })
     @GetMapping
-    public ResponseEntity<MeetingPageResponseDTO> getAllMeetings(
+    public ResponseEntity<ApiResponse<MeetingPageResponseDTO>> getAllMeetings(
             @Parameter(description = "Filtrar por título (parcial)") @RequestParam(required = false) String title,
             @Parameter(description = "Filtrar por empresa do cliente (parcial)") @RequestParam(required = false) String clientCompanyName,
             @Parameter(description = "Filtrar por ID do vendedor") @RequestParam(required = false) UUID collaboratorId,
             Pageable pageable) {
         MeetingPageResponseDTO meetings = getAllMeetingsUseCase.execute(title, clientCompanyName, collaboratorId, PageableUtils.normalize(pageable));
-        MeetingPageResponseDTO meetingsWithMessage = new MeetingPageResponseDTO(
-                meetings.content(),
-                meetings.totalElements(),
-                meetings.totalPages(),
-                meetings.summary(),
-                "Reuniões listadas com sucesso"
-        );
-        return ResponseEntity.ok(meetingsWithMessage);
+        return ResponseEntity.ok(ApiResponse.success(meetings, "Reuniões listadas com sucesso"));
     }
 
     @Operation(summary = "Buscar reunião por ID", description = "Retorna os dados completos de contexto e metadados de uma reunião.")
