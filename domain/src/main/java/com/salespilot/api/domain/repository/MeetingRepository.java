@@ -1,6 +1,7 @@
 package com.salespilot.api.domain.repository;
 
 import com.salespilot.api.domain.entity.Meeting;
+import com.salespilot.api.domain.model.MonthAndTotal;
 import com.salespilot.api.domain.model.AverageMeetingDurationPerMonth;
 
 import org.springframework.data.domain.Page;
@@ -19,5 +20,6 @@ public interface MeetingRepository {
     Optional<Meeting> getMeetingById(UUID id);
     boolean existsById(UUID id);
     Optional<Meeting> getLatestMeetingByCollaborator(UUID CollaboratorId);
+    List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end);
     List<AverageMeetingDurationPerMonth> groupAverageMeetingDurationPerMonth(LocalDateTime start, LocalDateTime end);
 }
