@@ -4,12 +4,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
+import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,9 +28,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/api/dashboard")
 public class DashboardController {
     private final GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth;
+    private final GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase;
 
-    public DashboardController(GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth){
+    private static final String COMPANY_STATUS_RESPONSE_EXAMPLE = """
+            {
+                "data": [
+                    { "label": "Ativas", "value": 6 },
+                    { "label": "Inativas", "value": 1 }
+                ],
+                "total": 7
+            }
+            """;
+
+    public DashboardController(GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth, GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase){
         this.getTotalMeetingsGroupedByMonth = getTotalMeetingsGroupedByMonth;
+        this.getGroupedCompaniesCountUseCase = getGroupedCompaniesCountUseCase;
     }
 
     @Operation(summary = "Listar reunoões por mês", description = "Retorna uma lista contendo o mês e sua quantidade de reniões a partir de filtros personalizados, 30d, ou 90d.")
@@ -50,6 +65,19 @@ public class DashboardController {
         @RequestParam(name = "start_date", required = false) LocalDate startDate,
         @RequestParam(name = "end_date", required = false) LocalDate endDate) {
         return ResponseEntity.ok(getTotalMeetingsGroupedByMonth.execute(period, startDate, endDate));
+    }
+    
+
+    @Operation(summary = "Retornar empresas ativas e inativas", description = "Retorna a quantidade de empresas ativas e inativas")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
+                            examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
+    })
+    @GetMapping("/companies-status")
+    public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {
+        return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
     }
     
 }
