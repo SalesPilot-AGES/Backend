@@ -5,4 +5,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record PostAnalysisSentimentAnalysis(
         String overall,
         double score
-) {}
+) implements java.io.Serializable {}
