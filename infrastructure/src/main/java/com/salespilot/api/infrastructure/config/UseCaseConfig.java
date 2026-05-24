@@ -14,13 +14,16 @@ import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
+import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
+import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
 import com.salespilot.api.application.usecase.SetCollaboratorPasswordUseCase;
@@ -113,6 +116,21 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
         return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
+    }
+
+    @Bean
+    public GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonthUseCase(MeetingRepository meetingRepository) {
+        return new GetTotalMeetingsGroupedByMonthUseCase(meetingRepository);
+    }
+
+    @Bean
+    public GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase(CompanyRepository companyRepository) {
+        return new GetGroupedCompaniesCountUseCase(companyRepository);
+    }
+
+    @Bean
+    public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository) {
+        return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository);
     }
 
     @Bean

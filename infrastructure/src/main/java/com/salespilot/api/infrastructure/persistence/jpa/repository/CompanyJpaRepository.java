@@ -1,13 +1,16 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 
 
@@ -15,6 +18,13 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
     Page<CompanyEntity> findAll(Specification<CompanyEntity> spec, Pageable pageable);
 
     boolean existsByTaxId(String taxId);
-    
+
     Optional<CompanyEntity> findByTaxId(String taxId);
+
+    @Query("""
+        SELECT c.active, COUNT(c)
+        FROM CompanyEntity c
+        GROUP BY c.active
+    """)
+    List<Object[]> countCompaniesGroupedByStatus();
 }

@@ -3,6 +3,7 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 import java.util.UUID;
 
 import com.salespilot.api.domain.entity.Meeting;
+import com.salespilot.api.domain.model.MonthAndTotal;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingMapper;
@@ -15,6 +16,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Repository
@@ -75,5 +82,44 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     @Override
     public boolean existsById(UUID id){
         return meetingsJpaRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end) {
+        return meetingsJpaRepository.getMeetingsGroupedByMonth(start, end).stream().map(this::mapToMonthAndTotal).toList();
+    }
+
+    private MonthAndTotal mapToMonthAndTotal(Object[] item) {
+        Object rawMonth = item[0];
+
+        LocalDate month;
+
+        if (rawMonth instanceof Timestamp timestamp) {
+            month = timestamp.toLocalDateTime().toLocalDate();
+        } else if (rawMonth instanceof LocalDateTime localDateTime) {
+            month = localDateTime.toLocalDate();
+        } else if (rawMonth instanceof LocalDate localDate) {
+            month = localDate;
+        } else {
+            throw new IllegalStateException("Tipo inesperado para month: " + rawMonth.getClass());
+        }
+        Long total = ((Number) item[1]).longValue();
+        String monthLabel = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
+
+        return new MonthAndTotal(
+            month,
+            capitalize(monthLabel),
+            total
+        );
+    }
+
+    private String capitalize(String monthLabel) {
+        return monthLabel.substring(0, 1).toUpperCase() + monthLabel.substring(1);
+    }
+
+    @Override
+    public Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd) {
+        return meetingsJpaRepository.countByCreatedAtBetween(currentStart, currentEnd);
     }
 }
