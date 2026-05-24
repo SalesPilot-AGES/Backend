@@ -3,6 +3,8 @@ package com.salespilot.api.infrastructure.security;
 import com.salespilot.api.application.service.TokenService;
 import com.salespilot.api.domain.entity.AuthUser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -39,7 +41,9 @@ public class JwtTokenService implements TokenService {
                 .claim("company_id", user.getCompanyId().toString())
                 .build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 
     @Override
