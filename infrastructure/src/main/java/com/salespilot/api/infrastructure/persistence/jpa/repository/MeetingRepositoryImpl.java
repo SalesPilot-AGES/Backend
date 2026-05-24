@@ -106,7 +106,7 @@ public class MeetingRepositoryImpl implements MeetingRepository{
                 month = localDate;
                 break;
             default:
-                throw new IllegalStateException("Tipo inesperado para month: " + rawMonth.getClass());
+                throw new IllegalStateException("Unexpected type for the month: " + rawMonth.getClass());
         }
         
         Long total = ((Number) item[1]).longValue();
