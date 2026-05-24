@@ -19,10 +19,10 @@ public class RefreshTokenUseCase {
     private static final String TOKEN_TYPE = "Bearer";
 
     public RefreshTokenUseCase(
-       AuthenticationRepository authenticationRepository,
-       RefreshTokenRepository refreshTokenRepository,
-       TokenService tokenService,
-       long refreshTokenTtlSeconds
+        AuthenticationRepository authenticationRepository,
+        RefreshTokenRepository refreshTokenRepository,
+        TokenService tokenService,
+        long refreshTokenTtlSeconds
     ) {
         this.authenticationRepository = authenticationRepository;
         this.refreshTokenRepository = refreshTokenRepository;

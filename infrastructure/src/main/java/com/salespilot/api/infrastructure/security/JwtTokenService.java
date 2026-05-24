@@ -17,9 +17,9 @@ public class JwtTokenService implements TokenService {
     private final long accessTokenTtlSeconds;
 
     public JwtTokenService(
-       JwtEncoder jwtEncoder,
-       @Value("${app.security.jwt.issuer:api}") String issuer,
-       @Value("${app.security.jwt.access-ttl-seconds:1800}") long accessTokenTtlSeconds
+        JwtEncoder jwtEncoder,
+        @Value("${app.security.jwt.issuer:api}") String issuer,
+        @Value("${app.security.jwt.access-ttl-seconds:1800}") long accessTokenTtlSeconds
     ) {
         this.jwtEncoder = jwtEncoder;
         this.issuer = issuer;
@@ -47,4 +47,3 @@ public class JwtTokenService implements TokenService {
         return accessTokenTtlSeconds;
     }
 }
-
