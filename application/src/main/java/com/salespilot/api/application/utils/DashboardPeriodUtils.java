@@ -8,6 +8,8 @@ import java.time.temporal.ChronoUnit;
 import com.salespilot.api.application.exception.InvalidPeriodException;
 
 public class DashboardPeriodUtils {
+    private DashboardPeriodUtils() {}
+
     public static LocalDateTime[] dashboardPeriodUtilsToCardMetrics(String period, LocalDate startDate, LocalDate endDate) {
         LocalDateTime previousEnd;
         LocalDateTime previousStart;
