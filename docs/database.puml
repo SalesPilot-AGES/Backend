@@ -34,7 +34,7 @@ entity "collaborators" as collaborators {
   company_id : uuid <<FK>>
   name : varchar
   role : enum('admin', 'manager', 'seller')
-  email : varchar
+  email : varchar <<UNIQUE>>
   phone : varchar
   active : boolean
   preferences : json
@@ -82,9 +82,9 @@ entity "meeting_pre_analysis" as pre_analysis {
   * id : uuid <<PK>>
   --
   meeting_id : uuid <<FK>>
-  recommended_strategy : jsonb
-  key_points : jsonb
-  possible_objections : jsonb
+  recommended_strategy : json
+  key_points : json
+  possible_objections : json
   created_at : datetime
 }
 
@@ -94,7 +94,7 @@ entity "meeting_realtime_insights" as insights {
   meeting_id : uuid <<FK>>
   content : text
   type : enum('key_point', 'action_item')
-  description : jsonb
+  description : json
   created_at : datetime
 }
 
@@ -103,8 +103,8 @@ entity "meeting_post_analysis" as post_analysis {
   --
   meeting_id : uuid <<FK>>
   summary : text
-  action_items : jsonb
-  sentiment_analysis : jsonb
+  action_items : json
+  sentiment_analysis : json
   created_at : datetime
 }
 
