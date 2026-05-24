@@ -8,13 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.HexFormat;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final int REFRESH_TOKEN_BYTES = 32;
+
     private final RefreshTokenJpaRepository refreshTokenJpaRepository;
 
     public RefreshTokenRepositoryImpl(RefreshTokenJpaRepository refreshTokenJpaRepository) {
@@ -24,7 +29,9 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     @Transactional
     @Override
     public String create(UUID userId, Instant expiresAt) {
-        String rawToken = UUID.randomUUID().toString();
+        byte[] tokenBytes = new byte[REFRESH_TOKEN_BYTES];
+        SECURE_RANDOM.nextBytes(tokenBytes);
+        String rawToken = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
         String tokenHash = hashToken(rawToken);
 
         refreshTokenJpaRepository.save(new RefreshTokenEntity(userId, tokenHash, expiresAt));
