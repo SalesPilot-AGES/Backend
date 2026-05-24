@@ -39,7 +39,9 @@ public class RefreshTokenUseCase {
                 .filter(AuthUser::isActive)
                 .orElseThrow(RefreshTokenInvalidException::new);
 
-        refreshTokenRepository.revoke(refreshToken, now);
+        if (!refreshTokenRepository.revoke(refreshToken, now)) {
+            throw new RefreshTokenInvalidException();
+        }
 
         String newAccessToken = tokenService.generateAccessToken(user);
         String newRefreshToken = refreshTokenRepository.create(user.getId(), now.plusSeconds(refreshTokenTtlSeconds));

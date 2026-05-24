@@ -42,9 +42,9 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 
     @Transactional
     @Override
-    public void revoke(String rawToken, Instant now) {
+    public boolean revoke(String rawToken, Instant now) {
         String tokenHash = hashToken(rawToken);
-        refreshTokenJpaRepository.revokeByTokenHash(tokenHash, now);
+        return refreshTokenJpaRepository.revokeByTokenHash(tokenHash, now) > 0;
     }
 
     private String hashToken(String rawToken) {
@@ -57,4 +57,3 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         }
     }
 }
-

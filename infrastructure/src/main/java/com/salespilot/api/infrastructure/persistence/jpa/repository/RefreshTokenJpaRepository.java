@@ -14,7 +14,6 @@ public interface RefreshTokenJpaRepository extends JpaRepository<RefreshTokenEnt
     Optional<RefreshTokenEntity> findByTokenHashAndRevokedAtIsNull(String tokenHash);
 
     @Modifying
-    @Query("update RefreshTokenEntity t set t.revokedAt = :revokedAt where t.tokenHash = :tokenHash")
-    void revokeByTokenHash(@Param("tokenHash") String tokenHash, @Param("revokedAt") Instant revokedAt);
+    @Query("update RefreshTokenEntity t set t.revokedAt = :revokedAt where t.tokenHash = :tokenHash and t.revokedAt is null")
+    int revokeByTokenHash(@Param("tokenHash") String tokenHash, @Param("revokedAt") Instant revokedAt);
 }
-
