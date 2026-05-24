@@ -305,9 +305,9 @@ public class CollaboratorController {
     @Operation(summary = "Definir senha do colaborador", description = "Define ou atualiza a senha de um colaborador.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorPasswordRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_PASSWORD_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Senha definida com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Colaborador não encontrado", content = @Content),
-            @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Senha definida com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Colaborador não encontrado", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
     @PatchMapping("/{id}/password")
     public ResponseEntity<Void> setPassword(
