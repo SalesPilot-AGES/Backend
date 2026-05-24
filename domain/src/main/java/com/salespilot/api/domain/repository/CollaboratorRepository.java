@@ -19,4 +19,5 @@ public interface CollaboratorRepository {
     Page<Collaborator> getSellers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
     Long countAllActiveSellersByPeriod(LocalDateTime period);
     Long countAllActiveSellers();
+    void updatePasswordHash(UUID collaboratorId, String passwordHash);
 }

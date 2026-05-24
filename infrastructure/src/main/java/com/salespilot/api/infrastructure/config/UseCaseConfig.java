@@ -26,6 +26,7 @@ import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
+import com.salespilot.api.application.usecase.SetCollaboratorPasswordUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -34,6 +35,7 @@ import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
+import com.salespilot.api.application.service.PasswordHasher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -120,7 +122,7 @@ public class UseCaseConfig {
     public GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonthUseCase(MeetingRepository meetingRepository) {
         return new GetTotalMeetingsGroupedByMonthUseCase(meetingRepository);
     }
-    
+
     @Bean
     public GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase(CompanyRepository companyRepository) {
         return new GetGroupedCompaniesCountUseCase(companyRepository);
@@ -129,5 +131,10 @@ public class UseCaseConfig {
     @Bean
     public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository) {
         return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository);
+    }
+
+    @Bean
+    public SetCollaboratorPasswordUseCase setCollaboratorPasswordUseCase(CollaboratorRepository repository, PasswordHasher passwordHasher) {
+        return new SetCollaboratorPasswordUseCase(repository, passwordHasher);
     }
 }

@@ -37,7 +37,7 @@ CREATE TABLE collaborators (
     company_id UUID NOT NULL REFERENCES companies(id),
     role VARCHAR NOT NULL,
     name VARCHAR NOT NULL,
-    email VARCHAR NOT NULL,
+    email VARCHAR NOT NULL UNIQUE,
     phone VARCHAR,
     active BOOLEAN NOT NULL DEFAULT TRUE,
     preferences JSON,
