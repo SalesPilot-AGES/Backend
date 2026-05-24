@@ -9,7 +9,9 @@ import com.salespilot.api.application.usecase.GetAllSellersUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
+import com.salespilot.api.application.usecase.SetCollaboratorPasswordUseCase;
 import com.salespilot.api.domain.enums.CollaboratorRole;
+import com.salespilot.api.presentation.dto.CollaboratorPasswordRequestDTO;
 import com.salespilot.api.presentation.dto.CollaboratorRequestDTO;
 import com.salespilot.api.presentation.dto.CollaboratorUpdateRequestDTO;
 import com.salespilot.api.presentation.utils.PageableUtils;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.util.UUID;
 
@@ -48,6 +51,7 @@ public class CollaboratorController {
     private final GetAllManagersUseCase getAllManagersUseCase;
     private final GetAllSellersUseCase getAllSellersUseCase;
     private final GetSellerByIdUseCase getSellerByIdUseCase;
+    private final SetCollaboratorPasswordUseCase setCollaboratorPasswordUseCase;
 
     private static final String COLLABORATOR_REQUEST_EXAMPLE = """
             {
@@ -120,13 +124,15 @@ public class CollaboratorController {
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
             GetAllManagersUseCase getAllManagersUseCase,
             GetAllSellersUseCase getAllSellersUseCase,
-            GetSellerByIdUseCase getSellerByIdUseCase) {
+            GetSellerByIdUseCase getSellerByIdUseCase,
+            SetCollaboratorPasswordUseCase setCollaboratorPasswordUseCase) {
         this.postCollaboratorUseCase = postCollaboratorUseCase;
         this.editCollaboratorUseCase = editCollaboratorUseCase;
         this.getCollaboratorByIdUseCase = getCollaboratorByIdUseCase;
         this.getAllManagersUseCase = getAllManagersUseCase;
         this.getAllSellersUseCase = getAllSellersUseCase;
         this.getSellerByIdUseCase = getSellerByIdUseCase;
+        this.setCollaboratorPasswordUseCase = setCollaboratorPasswordUseCase;
     }
 
     @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
@@ -277,5 +283,19 @@ public class CollaboratorController {
                 @Parameter(description = "UUID do vendedor") @PathVariable UUID id) {
         SellerWithMeetingsResponseDTO sellerWithMeetingsResponseDTO = getSellerByIdUseCase.execute(id);
         return ResponseEntity.ok(sellerWithMeetingsResponseDTO);
+    }
+
+    @Operation(summary = "Definir senha do colaborador", description = "Define ou atualiza a senha de um colaborador.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Senha definida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Colaborador não encontrado", content = @Content),
+            @ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
+    })
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<Void> setPassword(
+            @Parameter(description = "UUID do colaborador") @PathVariable UUID id,
+            @Valid @RequestBody CollaboratorPasswordRequestDTO request) {
+        setCollaboratorPasswordUseCase.execute(id, request.password());
+        return ResponseEntity.noContent().build();
     }
 }

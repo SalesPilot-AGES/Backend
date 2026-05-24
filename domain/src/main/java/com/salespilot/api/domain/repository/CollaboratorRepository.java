@@ -16,4 +16,5 @@ public interface CollaboratorRepository {
     Optional<Collaborator> getCollaboratorById(UUID id);
     Page<Collaborator> getManagers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
     Page<Collaborator> getSellers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
+    void updatePasswordHash(UUID collaboratorId, String passwordHash);
 }

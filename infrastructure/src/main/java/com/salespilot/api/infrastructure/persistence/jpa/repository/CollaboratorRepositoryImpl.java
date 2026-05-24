@@ -96,4 +96,15 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
 
         return collaboratorJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
+
+    @Transactional
+    @Override
+    public void updatePasswordHash(UUID collaboratorId, String passwordHash) {
+        CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
+            .findById(collaboratorId)
+            .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
+
+        collaboratorEntity.setPasswordHash(passwordHash);
+        collaboratorJpaRepository.save(collaboratorEntity);
+    }
 }

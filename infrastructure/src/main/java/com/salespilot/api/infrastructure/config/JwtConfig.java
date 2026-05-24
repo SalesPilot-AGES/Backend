@@ -22,6 +22,10 @@ public class JwtConfig {
     private final String secret;
 
     public JwtConfig(@Value("${app.security.jwt.secret}") String secret) {
+        int secretLength = secret.getBytes(StandardCharsets.UTF_8).length;
+        if (secretLength < 32) {
+            throw new IllegalArgumentException("JWT secret must be at least 32 bytes for HS256");
+        }
         this.secret = secret;
     }
 

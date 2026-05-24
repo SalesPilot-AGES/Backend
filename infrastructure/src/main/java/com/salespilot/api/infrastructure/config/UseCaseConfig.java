@@ -23,6 +23,7 @@ import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.PostCollaboratorUseCase;
 import com.salespilot.api.application.usecase.PostCompanyUseCase;
+import com.salespilot.api.application.usecase.SetCollaboratorPasswordUseCase;
 import com.salespilot.api.application.usecase.UpdateCompanyUseCase;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -31,6 +32,7 @@ import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
+import com.salespilot.api.application.service.PasswordHasher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -111,5 +113,10 @@ public class UseCaseConfig {
     @Bean
     public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
         return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
+    }
+
+    @Bean
+    public SetCollaboratorPasswordUseCase setCollaboratorPasswordUseCase(CollaboratorRepository repository, PasswordHasher passwordHasher) {
+        return new SetCollaboratorPasswordUseCase(repository, passwordHasher);
     }
 }
