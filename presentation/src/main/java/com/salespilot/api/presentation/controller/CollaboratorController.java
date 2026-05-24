@@ -119,6 +119,12 @@ public class CollaboratorController {
             }
             """;
 
+    private static final String COLLABORATOR_PASSWORD_REQUEST_EXAMPLE = """
+            {
+              "password": "ChangeMe123!"
+            }
+            """;
+
     public CollaboratorController(PostCollaboratorUseCase postCollaboratorUseCase,
             EditCollaboratorUseCase editCollaboratorUseCase,
             GetCollaboratorByIdUseCase getCollaboratorByIdUseCase,
@@ -286,6 +292,7 @@ public class CollaboratorController {
     }
 
     @Operation(summary = "Definir senha do colaborador", description = "Define ou atualiza a senha de um colaborador.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorPasswordRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_PASSWORD_REQUEST_EXAMPLE)))
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Senha definida com sucesso"),
             @ApiResponse(responseCode = "404", description = "Colaborador não encontrado", content = @Content),
