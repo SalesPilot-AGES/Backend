@@ -137,4 +137,33 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
         collaboratorEntity.setPasswordHash(passwordHash);
         collaboratorJpaRepository.save(collaboratorEntity);
     }
+
+    @Override
+    public Long countSellersByCompanyIdAndActiveValue(UUID companyId, boolean active) {
+        Specification<CollaboratorEntity> spec = Specification
+                .where(CollaboratorSpecification.companyIdEquals(companyId))
+                .and(CollaboratorSpecification.roleEquals(CollaboratorRole.SELLER))
+                .and(CollaboratorSpecification.isActiveEquals(active));
+        return collaboratorJpaRepository.count(spec);
+    }
+
+    @Override
+    public Long countActiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period) {
+        return collaboratorStatusHistoryJpaRepository.countByCompanyIdAndRoleAndActiveSnapshotAt(
+                companyId,
+                CollaboratorRole.SELLER.name(),
+                true,
+                period
+        );
+    }
+
+    @Override
+    public Long countInactiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period) {
+        return collaboratorStatusHistoryJpaRepository.countByCompanyIdAndRoleAndActiveSnapshotAt(
+                companyId,
+                CollaboratorRole.SELLER.name(),
+                false,
+                period
+        );
+    }
 }

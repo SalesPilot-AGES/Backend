@@ -1,11 +1,13 @@
 package com.salespilot.api.presentation.controller;
 
-import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
+import com.salespilot.api.presentation.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -15,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,13 +65,16 @@ public class DashboardController {
                             """))),
         @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
     })
-    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/meetings-by-month")
     public ResponseEntity<MeetingsGroupedByMonthResponseDTO> getMeetingsGroupedByMonth(
+            @AuthenticationPrincipal Jwt jwt,
         @RequestParam(required = true) String period,
         @RequestParam(name = "start_date", required = false) LocalDate startDate,
         @RequestParam(name = "end_date", required = false) LocalDate endDate) {
-        return ResponseEntity.ok(getTotalMeetingsGroupedByMonth.execute(period, startDate, endDate));
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        return ResponseEntity.ok(getTotalMeetingsGroupedByMonth.execute(period, startDate, endDate, authUser));
     }
 
     @Operation(summary = "Retornar empresas ativas e inativas", description = "Retorna a quantidade de empresas ativas e inativas")
@@ -77,7 +84,7 @@ public class DashboardController {
                             schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
                             examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
     })
-    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping("/companies-status")
     public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {
         return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
@@ -85,16 +92,19 @@ public class DashboardController {
 
     @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AdminGroupCardMetricsResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
     })
-    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/metrics")
-    public ResponseEntity<GroupCardMetricsResponseDTO> getCardMetrics(
+    public ResponseEntity<Record> getCardMetrics(
+            @AuthenticationPrincipal Jwt jwt,
             @RequestParam String period,
             @RequestParam(name = "start_date", required = false) LocalDate startDate,
             @RequestParam(name = "end_date", required = false) LocalDate endDate) {
-        return ResponseEntity.ok(getCardMetricsUseCase.execute(period, startDate, endDate));
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        return ResponseEntity.ok(getCardMetricsUseCase.execute(period, startDate, endDate, authUser));
     }
     
 }

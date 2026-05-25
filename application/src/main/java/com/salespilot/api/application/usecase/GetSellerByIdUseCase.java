@@ -1,6 +1,7 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.SellerWithMeetingsAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.ClientResponseDTO;
 import com.salespilot.api.application.dto.LatestMeetingsResponseDTO;
 import com.salespilot.api.application.dto.SellerWithMeetingsResponseDTO;
@@ -8,6 +9,7 @@ import com.salespilot.api.application.exception.InvalidCollaboratorRoleException
 import com.salespilot.api.application.queryservice.ClientQueryService;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
+import com.salespilot.api.application.utils.CollaboratorAccessUtils;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -30,7 +32,7 @@ public class GetSellerByIdUseCase {
         this.assembler = assembler;
     }
 
-    public SellerWithMeetingsResponseDTO execute(UUID id) {
+    public SellerWithMeetingsResponseDTO execute(UUID id, AuthUserDTO authUser) {
         Collaborator collaborator = collaboratorQueryService.getOrThrowById(id);
 
         if(collaborator.getRole() != CollaboratorRole.SELLER) {
@@ -38,6 +40,8 @@ public class GetSellerByIdUseCase {
         }
 
         Company company = companyQueryService.getOrThrowById(collaborator.getCompanyId());
+
+        CollaboratorAccessUtils.grantAccess(company.getId(), authUser);
 
         LatestMeetingsResponseDTO latestMeeting = meetingRepository
                 .getLatestMeetingByCollaborator(collaborator.getId())

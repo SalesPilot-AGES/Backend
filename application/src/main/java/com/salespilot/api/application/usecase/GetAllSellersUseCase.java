@@ -1,9 +1,11 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.SellerAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.SellerResponseDTO;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Company;
+import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
@@ -28,9 +30,10 @@ public class GetAllSellersUseCase {
         this.assembler = assembler;
     }
 
-    public Page<SellerResponseDTO> execute(String name, String email, UUID companyId, Boolean active, Pageable pageable) {
+    public Page<SellerResponseDTO> execute(String name, String email, UUID companyId, Boolean active, Pageable pageable, AuthUserDTO authUser) {
+        SellerFilters filters = resolveFilters(authUser, companyId);
 
-        return repository.getSellers(name, email, companyId, active, pageable)
+        return repository.getSellers(name, email, filters.companyId(), active, pageable)
                 .map(c -> {
                     Long totalMeetings = meetingRepository.getTotalMeetingsByCollaborator(c.getId());
                     Double averageFeeling = meetingPostAnalysisRepository.getAverageFeelingByCollaborator(c.getId());
@@ -43,5 +46,21 @@ public class GetAllSellersUseCase {
                             company
                     );
                 });
+    }
+
+    private record SellerFilters(UUID companyId) {}
+
+    private SellerFilters resolveFilters(AuthUserDTO authUser, UUID requestedCompanyId) {
+        CollaboratorRole authUserRole = authUser.role();
+
+        UUID authUserCompanyId;
+
+        if(authUserRole == CollaboratorRole.MANAGER) {
+            authUserCompanyId = authUser.companyId();
+        } else {
+            authUserCompanyId = requestedCompanyId;
+        }
+
+        return new SellerFilters(authUserCompanyId);
     }
 }

@@ -9,6 +9,7 @@ import com.salespilot.api.application.queryservice.ClientQueryService;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.application.queryservice.MeetingQueryService;
+import com.salespilot.api.application.service.PasswordHasher;
 import com.salespilot.api.application.usecase.EditCollaboratorUseCase;
 import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
@@ -35,7 +36,6 @@ import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRealtimeInsightRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.repository.SystemStatusRepository;
-import com.salespilot.api.application.service.PasswordHasher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -109,13 +109,13 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase(MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
-        return new GetMeetingPostAnalysisUseCase(meetingPostAnalysisRepository);
+    public GetMeetingPostAnalysisUseCase getMeetingPostAnalysisUseCase(MeetingPostAnalysisRepository meetingPostAnalysisRepository, MeetingQueryService meetingQueryService, CollaboratorQueryService collaboratorQueryService) {
+        return new GetMeetingPostAnalysisUseCase(meetingPostAnalysisRepository, meetingQueryService, collaboratorQueryService);
     }
 
     @Bean
-    public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository meetingRealtimeInsightRepository, MeetingRepository meetingRepository) {
-        return new GetMeetingInsightUseCase(meetingRealtimeInsightRepository, meetingRepository);
+    public GetMeetingInsightUseCase getMeetingInsightUseCase(MeetingRealtimeInsightRepository repository, MeetingQueryService meetingQueryService, CollaboratorQueryService collaboratorQueryService) {
+        return new GetMeetingInsightUseCase(repository, meetingQueryService, collaboratorQueryService);
     }
 
     @Bean

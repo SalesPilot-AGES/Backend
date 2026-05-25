@@ -1,6 +1,7 @@
 package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.ApiResponse;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.MeetingContextMetadataResponseDTO;
 import com.salespilot.api.application.dto.MeetingPageResponseDTO;
 import com.salespilot.api.application.dto.MeetingPostAnalysisResponseDTO;
@@ -9,6 +10,7 @@ import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
+import com.salespilot.api.presentation.utils.JwtUtils;
 import com.salespilot.api.presentation.utils.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +22,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,14 +90,17 @@ public class MeetingController {
                                     }
                                     """)))
     })
-    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping
     public ResponseEntity<ApiResponse<MeetingPageResponseDTO>> getAllMeetings(
+            @AuthenticationPrincipal Jwt jwt,
             @Parameter(description = "Filtrar por título (parcial)") @RequestParam(required = false) String title,
             @Parameter(description = "Filtrar por empresa do cliente (parcial)") @RequestParam(required = false) String clientCompanyName,
             @Parameter(description = "Filtrar por ID do vendedor") @RequestParam(required = false) UUID collaboratorId,
             Pageable pageable) {
-        MeetingPageResponseDTO meetings = getAllMeetingsUseCase.execute(title, clientCompanyName, collaboratorId, PageableUtils.normalize(pageable));
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        MeetingPageResponseDTO meetings = getAllMeetingsUseCase.execute(title, clientCompanyName, collaboratorId, PageableUtils.normalize(pageable), authUser);
         return ResponseEntity.ok(ApiResponse.success(meetings, "Reuniões listadas com sucesso"));
     }
 
@@ -148,11 +155,14 @@ public class MeetingController {
                                     """))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião, seller ou cliente não encontrado", content = @Content)
     })
-    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MeetingContextMetadataResponseDTO>> getMeetingContextAndMetadata(
+            @AuthenticationPrincipal Jwt jwt,
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
-        MeetingContextMetadataResponseDTO meeting = getMeetingContextAndMetadataUseCase.execute(id);
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        MeetingContextMetadataResponseDTO meeting = getMeetingContextAndMetadataUseCase.execute(id, authUser);
         return ResponseEntity.ok(ApiResponse.success(meeting, "Reunião encontrada"));
     }
 
@@ -185,11 +195,14 @@ public class MeetingController {
                                     """))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Pós-análise da reunião não encontrada", content = @Content)
     })
-    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}/post-analysis")
     public ResponseEntity<ApiResponse<MeetingPostAnalysisResponseDTO>> getMeetingPostAnalysis(
+            @AuthenticationPrincipal Jwt jwt,
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
-        MeetingPostAnalysisResponseDTO postAnalysis = getMeetingPostAnalysisUseCase.execute(id);
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        MeetingPostAnalysisResponseDTO postAnalysis = getMeetingPostAnalysisUseCase.execute(id, authUser);
         return ResponseEntity.ok(ApiResponse.success(postAnalysis, "Pós-análise da reunião encontrada"));
     }
 
@@ -222,11 +235,14 @@ public class MeetingController {
                 """))),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião não encontrada", content = @Content)
     })
-    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}/insights")
     public ResponseEntity<ApiResponse<List<MeetingRealtimeInsightsResponseDTO>>> getMeetingRealtimeInsights(
+            @AuthenticationPrincipal Jwt jwt,
             @Parameter(description = "UUID da reunião") @PathVariable UUID id){
-        List<MeetingRealtimeInsightsResponseDTO> insights = getMeetingInsightUseCase.execute(id);
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        List<MeetingRealtimeInsightsResponseDTO> insights = getMeetingInsightUseCase.execute(id, authUser);
         return ResponseEntity.ok(ApiResponse.success(insights, "Insights da reunião encontrados"));
     }
 }
