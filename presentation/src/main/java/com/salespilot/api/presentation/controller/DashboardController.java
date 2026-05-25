@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDate;
@@ -50,19 +49,17 @@ public class DashboardController {
     }
 
     @Operation(summary = "Listar reunoões por mês", description = "Retorna uma lista contendo o mês e sua quantidade de reniões a partir de filtros personalizados, 30d, ou 90d.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",
-            content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = """
-                            {
-                                "data": [
-                                    { "month": "2024-05-01T00:00:00Z", "month_label": "Mai", "total": 15 },
-                                    { "month": "2024-06-01T00:00:00Z", "month_label": "Jun", "total": 23 }
-                                ]
-                            }
-                            """))),
-        @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
-    })
+    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",
+        content = @Content(mediaType = "application/json",
+                examples = @ExampleObject(value = """
+                        {
+                            "data": [
+                                { "month": "2024-05-01T00:00:00Z", "month_label": "Mai", "total": 15 },
+                                { "month": "2024-06-01T00:00:00Z", "month_label": "Jun", "total": 23 }
+                            ]
+                        }
+                        """)))
+    @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
     @GetMapping("/meetings-by-month")
     public ResponseEntity<MeetingsGroupedByMonthResponseDTO> getMeetingsGroupedByMonth(
         @RequestParam(required = true) String period,
@@ -72,22 +69,18 @@ public class DashboardController {
     }
 
     @Operation(summary = "Retornar empresas ativas e inativas", description = "Retorna a quantidade de empresas ativas e inativas")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
-                            examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
-    })
+    @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
+                    examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE)))
     @GetMapping("/companies-status")
     public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {
         return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
     }
 
     @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
-    })
+    @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class)))
+    @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content)
     @GetMapping("/metrics")
     public ResponseEntity<GroupCardMetricsResponseDTO> getCardMetrics(
             @RequestParam String period,
