@@ -17,9 +17,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,6 +86,7 @@ public class MeetingController {
                                     }
                                     """)))
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping
     public ResponseEntity<ApiResponse<MeetingPageResponseDTO>> getAllMeetings(
             @Parameter(description = "Filtrar por título (parcial)") @RequestParam(required = false) String title,
@@ -147,6 +148,7 @@ public class MeetingController {
                                     """))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião, seller ou cliente não encontrado", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<MeetingContextMetadataResponseDTO>> getMeetingContextAndMetadata(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
@@ -183,15 +185,13 @@ public class MeetingController {
                                     """))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Pós-análise da reunião não encontrada", content = @Content)
     })
-
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}/post-analysis")
     public ResponseEntity<ApiResponse<MeetingPostAnalysisResponseDTO>> getMeetingPostAnalysis(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id) {
         MeetingPostAnalysisResponseDTO postAnalysis = getMeetingPostAnalysisUseCase.execute(id);
         return ResponseEntity.ok(ApiResponse.success(postAnalysis, "Pós-análise da reunião encontrada"));
     }
-
-
 
     @Operation(summary = "Buscar insights da reunião", description = "Retorna os insights gerados automaticamente para uma reunião.")
     @ApiResponses({
@@ -222,6 +222,7 @@ public class MeetingController {
                 """))),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião não encontrada", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}/insights")
     public ResponseEntity<ApiResponse<List<MeetingRealtimeInsightsResponseDTO>>> getMeetingRealtimeInsights(
             @Parameter(description = "UUID da reunião") @PathVariable UUID id){

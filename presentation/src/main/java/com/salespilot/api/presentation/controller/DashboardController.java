@@ -1,16 +1,11 @@
 package com.salespilot.api.presentation.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
 import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
-import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
-import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -18,11 +13,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Tag(name = "Dashboard")
@@ -63,6 +61,7 @@ public class DashboardController {
                             """))),
         @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/meetings-by-month")
     public ResponseEntity<MeetingsGroupedByMonthResponseDTO> getMeetingsGroupedByMonth(
         @RequestParam(required = true) String period,
@@ -78,6 +77,7 @@ public class DashboardController {
                             schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
                             examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
     })
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/companies-status")
     public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {
         return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
@@ -88,6 +88,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/metrics")
     public ResponseEntity<GroupCardMetricsResponseDTO> getCardMetrics(
             @RequestParam String period,

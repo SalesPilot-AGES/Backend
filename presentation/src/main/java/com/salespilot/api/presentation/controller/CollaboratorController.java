@@ -29,7 +29,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.util.UUID;
 
@@ -150,6 +151,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PostMapping("/managers")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> createManager(
             @Valid @RequestBody CollaboratorRequestDTO request) {
@@ -175,6 +177,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @PutMapping("/managers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> editManager(
             @Parameter(description = "UUID do manager") @PathVariable UUID id,
@@ -196,9 +199,10 @@ public class CollaboratorController {
     @Operation(summary = "Buscar manager por ID", description = "Retorna os dados de um manager pelo seu UUID.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Manager encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),                        
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Role inválida", content = @Content)
     })
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/managers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> getManagerById(
             @Parameter(description = "UUID do manager") @PathVariable UUID id) {
@@ -210,6 +214,7 @@ public class CollaboratorController {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Managers listados com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
     })
+    @PreAuthorize("hasAuthority('SYSTEM_ADMIN')")
     @GetMapping("/managers")
     public ResponseEntity<ApiResponse<PaginatedResponse<CollaboratorResponseDTO>>> getManagers(
             @RequestParam(required = false) String name,
@@ -227,6 +232,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Sellers encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/sellers")
     public ResponseEntity<ApiResponse<PaginatedResponse<SellerResponseDTO>>> getSellers(
             @Parameter(description = "Filtro por nome (contendo)") @RequestParam(required = false) String name,
@@ -238,8 +244,8 @@ public class CollaboratorController {
                 PageableUtils.normalize(pageable));
         return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(sellers), "Sellers listados com sucesso"));
     }
-        
-        
+
+
     @Operation(summary = "Cadastrar seller", description = "Cria um novo colaborador com o papel de SELLER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
@@ -248,6 +254,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER')")
     @PostMapping("/sellers")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> createSeller(
             @Valid @RequestBody CollaboratorRequestDTO request) {
@@ -262,7 +269,7 @@ public class CollaboratorController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(response, "Seller criado com sucesso"));
     }
-    
+
     @Operation(summary = "Editar seller", description = "Atualiza os dados de um colaborador com papel de SELLER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorUpdateRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
@@ -271,6 +278,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER')")
     @PutMapping("/sellers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> editSeller(
             @Parameter(description = "UUID do seller") @PathVariable UUID id,
@@ -295,6 +303,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/sellers/{id}")
     public ResponseEntity<ApiResponse<SellerWithMeetingsResponseDTO>> getSellerById(
             @Parameter(description = "UUID do seller") @PathVariable UUID id) {
@@ -309,6 +318,7 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Colaborador não encontrado", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @PatchMapping("/{id}/password")
     public ResponseEntity<Void> setPassword(
             @Parameter(description = "UUID do colaborador") @PathVariable UUID id,
