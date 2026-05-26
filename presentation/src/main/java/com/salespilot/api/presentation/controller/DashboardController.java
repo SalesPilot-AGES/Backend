@@ -85,7 +85,7 @@ public class DashboardController {
     })
     @GetMapping("/meetings-by-company")
     public ResponseEntity<TopFiveCompanyByMeetingTotalResponseDto> getTopFiveCompaniesByMeetingTotal(
-        @RequestParam(required = false) String period,
+        @RequestParam(required = true) String period,
         @RequestParam(name = "start_date", required = false) LocalDate startDate,
         @RequestParam(name = "end_date", required = false) LocalDate endDate) {
         return ResponseEntity.ok(getTopFiveCompaniesByMeetingTotalUseCase.execute(period, startDate, endDate));

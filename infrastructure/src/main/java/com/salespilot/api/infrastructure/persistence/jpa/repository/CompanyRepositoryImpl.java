@@ -146,7 +146,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     private CompanyNameAndTotalMeetings mapToNameAndTotalMeetings(Object[] item){
         String name = item[0].toString();
-        Long total = (Long) item[1];
+        Long total = ((Number) item[1]).longValue();
 
         return new CompanyNameAndTotalMeetings(name, total);
     }

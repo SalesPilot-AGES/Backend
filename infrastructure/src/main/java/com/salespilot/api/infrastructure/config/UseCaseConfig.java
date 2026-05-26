@@ -124,6 +124,7 @@ public class UseCaseConfig {
         return new GetTopFiveCompaniesByMeetingTotalUseCase(companyRepository);
     }
     
+    @Bean
     public GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonthUseCase(MeetingRepository meetingRepository) {
         return new GetTotalMeetingsGroupedByMonthUseCase(meetingRepository);
     }

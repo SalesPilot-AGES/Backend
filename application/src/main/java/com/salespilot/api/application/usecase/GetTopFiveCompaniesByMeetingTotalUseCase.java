@@ -18,7 +18,7 @@ public class GetTopFiveCompaniesByMeetingTotalUseCase {
     }
 
     public TopFiveCompanyByMeetingTotalResponseDto execute(String period, LocalDate start, LocalDate end){
-        LocalDateTime[] range =DashboardPeriodUtils.resolve(period, start, end);
+        LocalDateTime[] range = DashboardPeriodUtils.resolve(period, start, end);
 
         LocalDateTime startDate = range[0]; 
         LocalDateTime endDate = range[1];
