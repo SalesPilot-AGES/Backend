@@ -17,14 +17,15 @@ public interface MeetingsJpaRepository extends JpaRepository<MeetingEntity, UUID
 
     @Query(value = """
                 SELECT
-                    DATE_TRUNC('month', created_at) AS month,
+                    DATE_TRUNC('month', m.created_at) AS month,
                     COUNT(*) AS total
-                FROM meetings
-                WHERE created_at BETWEEN :start AND :end
-                  AND (:company_id IS NULL OR company_id = :company_id)
-                  AND (:collaborator_id IS NULL OR collaborator_id = :collaborator_id)
-                GROUP BY DATE_TRUNC('month', created_at)
-                ORDER BY DATE_TRUNC('month', created_at) ASC
+                FROM meetings m
+                JOIN collaborators c ON c.id = m.collaborator_id
+                WHERE m.created_at BETWEEN :start AND :end
+                  AND (:company_id IS NULL OR c.company_id = :company_id)
+                  AND (:collaborator_id IS NULL OR m.collaborator_id = :collaborator_id)
+                GROUP BY DATE_TRUNC('month', m.created_at)
+                ORDER BY DATE_TRUNC('month', m.created_at) ASC
             """, nativeQuery = true)
     List<Object[]> getMeetingsGroupedByMonth(
             @Param("start") LocalDateTime start,
@@ -34,4 +35,17 @@ public interface MeetingsJpaRepository extends JpaRepository<MeetingEntity, UUID
     );
 
     Long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+            SELECT 
+                AVG(m.durationSeconds) 
+            FROM MeetingEntity m 
+            WHERE m.durationSeconds IS NOT NULL 
+                AND m.collaborator.id = :collaborator_id 
+                AND m.createdAt BETWEEN :start AND :end""")
+    Optional<Double> findAverageDurationSecondsByCollaboratorAndPeriod(
+            @Param("collaborator_id") UUID collaboratorId,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 }

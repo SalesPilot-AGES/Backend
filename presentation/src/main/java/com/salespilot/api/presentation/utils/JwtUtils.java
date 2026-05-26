@@ -10,10 +10,12 @@ public class JwtUtils {
     private JwtUtils() {}
 
     public static AuthUserDTO toAuthUserDTO(Jwt jwt) {
+        String companyIdStr = jwt.getClaimAsString("company_id");
+
         return new AuthUserDTO(
                 CollaboratorRole.valueOf(jwt.getClaimAsString("role")),
                 UUID.fromString(jwt.getClaimAsString("sub")),
-                UUID.fromString(jwt.getClaimAsString("company_id"))
+                companyIdStr != null ? UUID.fromString(companyIdStr) : null
         );
     }
 }

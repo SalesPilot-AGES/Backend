@@ -3,11 +3,10 @@ package com.salespilot.api.application.usecase;
 import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
 import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.CardMetricsResponseDTO;
+import com.salespilot.api.application.dto.GroupCardMetricsResponse;
 import com.salespilot.api.application.dto.ManagerGroupCardMetricsResponseDTO;
 import com.salespilot.api.application.dto.SellerGroupCardMetricsResponseDTO;
-import com.salespilot.api.application.exception.ForbiddenException;
 import com.salespilot.api.application.utils.DashboardPeriodUtils;
-import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.enums.MetricsTrends;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -28,36 +27,30 @@ public class GetCardMetricsUseCase {
         this.collaboratorRepository = collaboratorRepository;
     }
 
-    public Record execute(String period, LocalDate startDate, LocalDate endDate, AuthUserDTO authUser) {
+    public GroupCardMetricsResponse execute(String period, LocalDate startDate, LocalDate endDate, AuthUserDTO authUser) {
         LocalDateTime[] dates = DashboardPeriodUtils.dashboardPeriodUtilsToCardMetrics(period, startDate, endDate);
         LocalDateTime previousStart = dates[0];
         LocalDateTime previousEnd = dates[1];
         LocalDateTime currentStart = dates[2];
         LocalDateTime currentEnd = dates[3];
 
-        if(authUser.role() == CollaboratorRole.SYSTEM_ADMIN) {
-            return buildAdminGroupCard(previousStart, previousEnd, currentStart, currentEnd);
-        }
-        if(authUser.role() == CollaboratorRole.MANAGER) {
-            return buildManagerGroupCard(previousStart, previousEnd, currentStart, currentEnd, authUser.companyId());
-        }
-        if(authUser.role() == CollaboratorRole.SELLER) {
-            return buildSellerGroupCard(previousStart, previousEnd, currentStart, currentEnd, authUser.id());
-        }
-
-        throw new ForbiddenException();
+        return switch (authUser.role()) {
+            case SYSTEM_ADMIN -> buildAdminGroupCard(previousStart, previousEnd, currentStart, currentEnd);
+            case MANAGER -> buildManagerGroupCard(previousStart, previousEnd, currentStart, currentEnd, authUser.companyId());
+            case SELLER -> buildSellerGroupCard(previousStart, previousEnd, currentStart, currentEnd, authUser.id());
+        };
     }
 
     private Double calculateVariationPercent(Long previous, Long current) {
         if (previous == 0) {
             return current > 0 ? 100.0 : 0.0;
         } else {
-            return ((double) (current - previous) / previous) * 100.0; 
+            return ((double) (current - previous) / previous) * 100.0;
         }
     }
 
     private MetricsTrends getTrendFromVariationPercent(Double variationPercent) {
-        if(variationPercent == 0) {
+        if (variationPercent == 0) {
             return MetricsTrends.NEUTRAL;
         } else {
             return variationPercent > 0 ? MetricsTrends.UP : MetricsTrends.DOWN;

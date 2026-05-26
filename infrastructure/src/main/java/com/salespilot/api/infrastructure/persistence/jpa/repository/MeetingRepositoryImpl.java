@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -151,12 +150,8 @@ public class MeetingRepositoryImpl implements MeetingRepository{
                 .where(MeetingSpecification.collaboratorIdEquals(collaboratorId))
                 .and(MeetingSpecification.createdAtBetween(start, end));
 
-        return meetingsJpaRepository.findAll(spec)
-                .stream()
-                .map(MeetingEntity::getDurationSeconds)
-                .filter(Objects::nonNull)
-                .mapToInt(Integer::intValue)
-                .average()
+        return meetingsJpaRepository
+                .findAverageDurationSecondsByCollaboratorAndPeriod(collaboratorId, start, end)
                 .orElse(0.0);
     }
 }

@@ -5,4 +5,4 @@ public record AdminGroupCardMetricsResponseDTO(
     CardMetricsResponseDTO inactiveCompanies,
     CardMetricsResponseDTO totalMeetings,
     CardMetricsResponseDTO activeSellers
-) {}
+) implements GroupCardMetricsResponse {}

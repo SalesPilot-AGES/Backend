@@ -2,6 +2,7 @@ package com.salespilot.api.presentation.controller;
 
 import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
 import com.salespilot.api.application.dto.AuthUserDTO;
+import com.salespilot.api.application.dto.GroupCardMetricsResponse;
 import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
@@ -97,7 +98,7 @@ public class DashboardController {
     })
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/metrics")
-    public ResponseEntity<Record> getCardMetrics(
+    public ResponseEntity<GroupCardMetricsResponse> getCardMetrics(
             @AuthenticationPrincipal Jwt jwt,
             @RequestParam String period,
             @RequestParam(name = "start_date", required = false) LocalDate startDate,

@@ -60,18 +60,20 @@ public class GetAllMeetingsUseCase {
     private MeetingFilters resolveFilters(AuthUserDTO authUser, UUID requestedCollaboratorId) {
         CollaboratorRole authUserRole = authUser.role();
 
-        UUID authUserCollaboratorId;
-        UUID authUserCompanyId;
+        UUID authUserCollaboratorId = null;
+        UUID authUserCompanyId = null;
 
-        if (authUserRole == CollaboratorRole.SELLER) {
-            authUserCollaboratorId = authUser.id();
-            authUserCompanyId = null;
-        } else if (authUserRole == CollaboratorRole.MANAGER) {
-            authUserCollaboratorId = null;
-            authUserCompanyId = authUser.companyId();
-        } else {
-            authUserCollaboratorId = requestedCollaboratorId;
-            authUserCompanyId = null;
+        switch(authUserRole) {
+            case SELLER -> {
+                authUserCollaboratorId = authUser.id();
+            }
+            case MANAGER -> {
+                authUserCollaboratorId = requestedCollaboratorId;
+                authUserCompanyId = authUser.companyId();
+            }
+            case SYSTEM_ADMIN -> {
+                authUserCollaboratorId = requestedCollaboratorId;
+            }
         }
 
         return new MeetingFilters(

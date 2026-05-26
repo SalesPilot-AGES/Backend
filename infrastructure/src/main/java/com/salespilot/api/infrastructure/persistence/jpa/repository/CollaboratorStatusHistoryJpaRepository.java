@@ -32,8 +32,8 @@ public interface CollaboratorStatusHistoryJpaRepository extends JpaRepository<Co
                     JOIN collaborators c ON c.id = csh.collaborator_id
                     WHERE c.company_id = :company_id
                       AND c.role = :role
-                      AND csh.created_at <= :period
-                    ORDER BY csh.collaborator_id, csh.created_at DESC
+                      AND csh.changed_at <= :period
+                    ORDER BY csh.collaborator_id, csh.changed_at DESC
                 ) latest_status
                 WHERE latest_status.active = :active
             """, nativeQuery = true)

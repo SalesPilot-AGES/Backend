@@ -7,6 +7,8 @@ import com.salespilot.api.domain.enums.CollaboratorRole;
 import java.util.UUID;
 
 public class CollaboratorAccessUtils {
+    private CollaboratorAccessUtils() {}
+
     public static void grantAccess(UUID companyId, AuthUserDTO authUser) {
         CollaboratorRole authUserRole = authUser.role();
 
