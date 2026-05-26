@@ -5,4 +5,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record PostAnalysisActionItem(
         String text,
         boolean done
-) {}
+) implements java.io.Serializable {}

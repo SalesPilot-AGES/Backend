@@ -126,4 +126,15 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
             .and(CollaboratorSpecification.isActiveEquals(true));
         return collaboratorJpaRepository.count(spec);
     }
+
+    @Transactional
+    @Override
+    public void updatePasswordHash(UUID collaboratorId, String passwordHash) {
+        CollaboratorEntity collaboratorEntity = collaboratorJpaRepository
+            .findById(collaboratorId)
+            .orElseThrow(() -> new CollaboratorNotFoundException(collaboratorId));
+
+        collaboratorEntity.setPasswordHash(passwordHash);
+        collaboratorJpaRepository.save(collaboratorEntity);
+    }
 }
