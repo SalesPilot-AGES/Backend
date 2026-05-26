@@ -100,15 +100,20 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
         LocalDate month;
 
-        if (rawMonth instanceof Timestamp timestamp) {
-            month = timestamp.toLocalDateTime().toLocalDate();
-        } else if (rawMonth instanceof LocalDateTime localDateTime) {
-            month = localDateTime.toLocalDate();
-        } else if (rawMonth instanceof LocalDate localDate) {
-            month = localDate;
-        } else {
-            throw new IllegalStateException("Tipo inesperado para month: " + rawMonth.getClass());
+        switch (rawMonth) {
+            case Timestamp timestamp: 
+                month = timestamp.toLocalDateTime().toLocalDate();
+                break;
+            case LocalDateTime localDateTime:
+                month = localDateTime.toLocalDate();
+                break;
+            case LocalDate localDate:
+                month = localDate;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected type for the month: " + rawMonth.getClass());
         }
+        
         Long total = ((Number) item[1]).longValue();
         String monthLabel = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
 

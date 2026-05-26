@@ -48,6 +48,9 @@ public class CollaboratorEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "password_hash")
+    private String passwordHash;
+
     @Column(name = "phone")
     private String phone;
 

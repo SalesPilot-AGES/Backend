@@ -5,10 +5,12 @@ import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
+import com.salespilot.api.application.exception.InvalidCredentialsException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
+import com.salespilot.api.application.exception.RefreshTokenInvalidException;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
-import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.application.exception.InvalidMonthException;
 import com.salespilot.api.application.exception.InvalidPeriodException;
 
@@ -85,6 +87,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidPeriodException.class)
     public ResponseEntity<Void> handleInvalidPeriodException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Void> handleInvalidCredentialsException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(RefreshTokenInvalidException.class)
+    public ResponseEntity<Void> handleRefreshTokenInvalidException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(InvalidMonthException.class)
