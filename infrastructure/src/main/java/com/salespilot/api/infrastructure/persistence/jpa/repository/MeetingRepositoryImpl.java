@@ -178,15 +178,15 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     }
 
     private LocalDateTime extractMonth(Object value) {
-
-        if (value instanceof Timestamp timestamp) {
-            return timestamp.toLocalDateTime();
-        }
-
-        if (value instanceof LocalDateTime localDateTime) {
-            return localDateTime;
-        }
-
-        return null;
+        return switch (value) {
+            case Timestamp timestamp -> 
+                timestamp.toLocalDateTime();
+            case LocalDateTime localDateTime ->
+                localDateTime;
+            case LocalDate localDate ->
+                localDate.atStartOfDay();
+            default ->
+                null;
+        };
     }
 }

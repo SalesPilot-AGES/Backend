@@ -100,16 +100,17 @@ public class DashboardPeriodUtils {
     }
 
     public static LocalDateTime[] dashboardPeriodUtilsToAverageMeetingDurationPerMonth(String period, LocalDate startDate, LocalDate endDate) {
-        LocalDateTime end = LocalDateTime.now();
+        LocalDate today = LocalDate.now();
+        LocalDateTime end = today.atTime(LocalTime.MAX);
         LocalDateTime start;
 
         switch (period) {
             case "7d" ->
-                start = end.minusDays(7);
+                start = today.minusDays(7).atStartOfDay();
             case "30d" ->
-                start = end.minusDays(30);
+                start = today.minusDays(30).atStartOfDay();
             case "90d" ->
-                start = end.minusDays(90);
+                start = today.minusDays(90).atStartOfDay();
             case "custom" -> {
                 if (startDate == null || endDate == null) {
                     throw new InvalidPeriodException(startDate, endDate);
@@ -118,7 +119,7 @@ public class DashboardPeriodUtils {
                     throw new InvalidPeriodException(startDate, endDate);
                 }
                 start = startDate.atStartOfDay();
-                end = endDate.atTime(23, 59, 59);
+                end = endDate.atTime(LocalTime.MAX);
             }
             default -> throw new InvalidPeriodException(startDate, endDate);
         }
