@@ -36,6 +36,16 @@ public class DashboardController {
     private final GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase;
     private final GetCardMetricsUseCase getCardMetricsUseCase;
 
+    private static final String COMPANY_STATUS_RESPONSE_EXAMPLE = """
+            {
+                "data": [
+                    { "label": "Ativas", "value": 6 },
+                    { "label": "Inativas", "value": 1 }
+                ],
+                "total": 7
+            }
+            """;
+
     public DashboardController(GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase, GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth, GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase, GetCardMetricsUseCase getCardMetricsUseCase){
         this.getGroupedCompaniesCountUseCase = getGroupedCompaniesCountUseCase;
         this.getTotalMeetingsGroupedByMonth = getTotalMeetingsGroupedByMonth;
@@ -96,15 +106,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
-                            examples = @ExampleObject(value = """
-                            {
-                                "data": [
-                                    { "label": "Ativas", "value": 6 },
-                                    { "label": "Inativas", "value": 1 }
-                                ],
-                                "total": 7
-                            }
-                            """))),
+                            examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
     })
     @GetMapping("/companies-status")
     public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {

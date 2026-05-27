@@ -34,7 +34,7 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
         JOIN companies c 
             ON col.company_id = c.id
         WHERE m.created_at BETWEEN :start AND :end
-        GROUP BY c.name
+        GROUP BY c.id, c.name
         ORDER BY total DESC
         LIMIT 5
     """, nativeQuery = true)
