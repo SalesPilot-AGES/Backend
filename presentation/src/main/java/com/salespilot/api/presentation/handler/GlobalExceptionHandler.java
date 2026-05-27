@@ -11,7 +11,6 @@ import com.salespilot.api.application.exception.MeetingNotFoundException;
 import com.salespilot.api.application.exception.MeetingPostAnalysisNotFoundException;
 import com.salespilot.api.application.exception.RefreshTokenInvalidException;
 import com.salespilot.api.application.exception.TaxIdAlreadyExists;
-import com.salespilot.api.application.exception.InvalidMonthException;
 import com.salespilot.api.application.exception.InvalidPeriodException;
 
 import org.springframework.http.HttpStatus;
@@ -97,10 +96,5 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RefreshTokenInvalidException.class)
     public ResponseEntity<Void> handleRefreshTokenInvalidException() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    @ExceptionHandler(InvalidMonthException.class)
-    public ResponseEntity<Void> handleInvalidMonthException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

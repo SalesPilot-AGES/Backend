@@ -2,10 +2,8 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import java.util.UUID;
 
-import com.salespilot.api.application.exception.InvalidMonthException;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.model.MonthAndTotal;
-import com.salespilot.api.domain.enums.Months;
 import com.salespilot.api.domain.model.AverageMeetingDurationPerMonth;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
@@ -25,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -96,32 +93,19 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     }
 
     private MonthAndTotal mapToMonthAndTotal(Object[] item) {
-        Object rawMonth = item[0];
-
-        LocalDate month;
-
-        switch (rawMonth) {
-            case Timestamp timestamp: 
-                month = timestamp.toLocalDateTime().toLocalDate();
-                break;
-            case LocalDateTime localDateTime:
-                month = localDateTime.toLocalDate();
-                break;
-            case LocalDate localDate:
-                month = localDate;
-                break;
-            default:
-                throw new IllegalStateException("Unexpected type for the month: " + rawMonth.getClass());
-        }
-        
+        LocalDate month = toLocalDateTime(item[0]).toLocalDate();
         Long total = ((Number) item[1]).longValue();
-        String monthLabel = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
 
         return new MonthAndTotal(
             month,
-            capitalize(monthLabel),
+            monthLabel(month),
             total
         );
+    }
+
+    private String monthLabel(LocalDate month) {
+        String label = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
+        return capitalize(label);
     }
 
     private String capitalize(String monthLabel) {
@@ -139,7 +123,6 @@ public class MeetingRepositoryImpl implements MeetingRepository{
             LocalDateTime start,
             LocalDateTime end
     ) {
-
         List<Object[]> rows = meetingsJpaRepository.findAverageDurationPerMonth(start, end);
 
         if (rows == null || rows.isEmpty()) {
@@ -148,45 +131,27 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
         return rows.stream()
                 .map(row -> {
-
-                    LocalDateTime month = extractMonth(row[0]);
-
-                    if(month == null) {
-                        throw new InvalidMonthException();
-                    }
+                    LocalDateTime month = toLocalDateTime(row[0]);
 
                     Double avgMinutes = row[1] != null
                             ? ((Number) row[1]).doubleValue()
                             : null;
-                            
-                    Months monthValue =  Arrays
-                            .stream(Months.values())
-                            .filter(m -> m.getMonthValue()
-                            .equals(month.getMonthValue()))
-                            .findFirst()
-                            .orElseThrow(InvalidMonthException::new);
-
-                    String monthLabel = monthValue.getValue();
 
                     return new AverageMeetingDurationPerMonth(
                             month,
-                            monthLabel,
+                            monthLabel(month.toLocalDate()),
                             avgMinutes
                     );
                 })
                 .toList();
     }
 
-    private LocalDateTime extractMonth(Object value) {
+    private LocalDateTime toLocalDateTime(Object value) {
         return switch (value) {
-            case Timestamp timestamp -> 
-                timestamp.toLocalDateTime();
-            case LocalDateTime localDateTime ->
-                localDateTime;
-            case LocalDate localDate ->
-                localDate.atStartOfDay();
-            default ->
-                null;
+            case Timestamp timestamp -> timestamp.toLocalDateTime();
+            case LocalDateTime localDateTime -> localDateTime;
+            case LocalDate localDate -> localDate.atStartOfDay();
+            default -> throw new IllegalStateException("Unexpected type for the month: " + value.getClass());
         };
     }
 }
