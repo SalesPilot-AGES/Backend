@@ -1,5 +1,7 @@
 package com.salespilot.api.presentation.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,8 @@ import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalU
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
+import com.salespilot.api.application.dto.GroupAverageMeetingDurationPerMonthResponseDTO;
+import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,8 +24,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.time.LocalDate;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +37,7 @@ public class DashboardController {
     private final GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase;
     private final GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase;
     private final GetCardMetricsUseCase getCardMetricsUseCase;
+    private final GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase;
 
     private static final String COMPANY_STATUS_RESPONSE_EXAMPLE = """
             {
@@ -46,12 +49,12 @@ public class DashboardController {
             }
             """;
 
-    public DashboardController(GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase, GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth, GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase, GetCardMetricsUseCase getCardMetricsUseCase){
-        this.getGroupedCompaniesCountUseCase = getGroupedCompaniesCountUseCase;
+    public DashboardController(GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth, GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase, GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase, GetCardMetricsUseCase getCardMetricsUseCase, GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase){
         this.getTotalMeetingsGroupedByMonth = getTotalMeetingsGroupedByMonth;
+        this.getGroupedCompaniesCountUseCase = getGroupedCompaniesCountUseCase;
         this.getTopFiveCompaniesByMeetingTotalUseCase = getTopFiveCompaniesByMeetingTotalUseCase;
         this.getCardMetricsUseCase = getCardMetricsUseCase;
-
+        this.getAverageMeetingDurationPerMonthUseCase = getAverageMeetingDurationPerMonthUseCase;
     }
 
     @Operation(summary = "Listar reunoões por mês", description = "Retorna uma lista contendo o mês e sua quantidade de reniões a partir de filtros personalizados, 30d, ou 90d.")
@@ -125,5 +128,18 @@ public class DashboardController {
             @RequestParam(name = "end_date", required = false) LocalDate endDate) {
         return ResponseEntity.ok(getCardMetricsUseCase.execute(period, startDate, endDate));
     }
-    
+
+    @Operation(summary = "Retornar a média da duração das reuniões por mês", description = "Calcula e retorna a média da duração das reuniões em todos os meses que tiveram reuniões de acordo com o período requisitado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Média da duração das reuniões por mês retornada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupAverageMeetingDurationPerMonthResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
+    })
+    @GetMapping("/avg-duration")
+    public ResponseEntity<GroupAverageMeetingDurationPerMonthResponseDTO> getAverageMeetingDurationPerMonth(
+        @RequestParam String period,
+        @RequestParam(name = "start_date", required = false) LocalDate startDate,
+        @RequestParam(name = "end_date", required = false) LocalDate endDate)
+    {
+        return ResponseEntity.ok(getAverageMeetingDurationPerMonthUseCase.execute(period, startDate, endDate));
+    }
 }
