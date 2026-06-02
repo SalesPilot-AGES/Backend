@@ -55,7 +55,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           chmod +x ./mvnw
-          ./mvnw clean compile sonar:sonar -DskipTests -Dsonar.projectKey=salespilot-backend -Dsonar.host.url=${{ env.SONAR_HOST_URL }} -Dsonar.login=${{ env.SONAR_TOKEN }}
+          ./mvnw clean compile sonar:sonar -DskipTests -Dsonar.projectKey=salespilot-backend -Dsonar.host.url=${{ env.SONAR_HOST_URL }} -Dsonar.login=${{ env.SONAR_TOKEN }} -Dsonar.qualitygate.wait=true
 
   docker-build-push:
     runs-on: self-hosted
