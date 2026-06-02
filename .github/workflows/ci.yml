@@ -56,7 +56,29 @@ jobs:
         run: |
           chmod +x ./mvnw
           ./mvnw clean compile sonar:sonar -DskipTests -Dsonar.projectKey=salespilot-backend -Dsonar.host.url=${{ env.SONAR_HOST_URL }} -Dsonar.login=${{ env.SONAR_TOKEN }}
+          - name: Check Quality Gate
+            run: |
+              timeout 300 bash -c '
+              while true; do
+                STATUS=$(curl -s -u "${SONAR_TOKEN}:" \
+                  "${SONAR_HOST_URL}/api/qualitygates/project_status?projectKey=my-project" \
+                  | jq -r ".projectStatus.status")
 
+                  echo "Quality Gate Status: $STATUS"
+
+                  if [ "$STATUS" = "OK" ]; then
+                    exit 0
+                  elif [ "$STATUS" = "ERROR" ]; then
+                    exit 1
+                  fi
+
+                  sleep 10
+                done
+              '
+            env:
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+              
   docker-build-push:
     runs-on: self-hosted
     needs: [compile, secret-detection, sonarqube]
