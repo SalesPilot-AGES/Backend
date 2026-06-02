@@ -140,10 +140,6 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
     @Override
     public Double getAverageDurationByCollaboratorIdAndPeriod(UUID collaboratorId, LocalDateTime start, LocalDateTime end) {
-        Specification<MeetingEntity> spec = Specification
-                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId))
-                .and(MeetingSpecification.createdAtBetween(start, end));
-
         return meetingsJpaRepository
                 .findAverageDurationSecondsByCollaboratorAndPeriod(collaboratorId, start, end)
                 .orElse(0.0);
