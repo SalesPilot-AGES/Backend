@@ -103,6 +103,7 @@ public class DashboardController {
                             """))),
         @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
     })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/meetings-by-company")
     public ResponseEntity<TopFiveCompanyByMeetingTotalResponseDto> getTopFiveCompaniesByMeetingTotal(
         @RequestParam(required = true) String period,
@@ -146,6 +147,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "200", description = "Média da duração das reuniões por mês retornada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupAverageMeetingDurationPerMonthResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
     })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/avg-duration")
     public ResponseEntity<GroupAverageMeetingDurationPerMonthResponseDTO> getAverageMeetingDurationPerMonth(
         @RequestParam String period,
