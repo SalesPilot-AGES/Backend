@@ -1,9 +1,11 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.CollaboratorAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
+import com.salespilot.api.application.utils.CollaboratorAccessUtils;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -23,7 +25,9 @@ public class PostCollaboratorUseCase {
         this.assembler = assembler;
     }
 
-    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences) {
+    public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences, AuthUserDTO authUser) {
+        CollaboratorAccessUtils.grantAccess(companyId, authUser);
+
         if(collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {
             throw new CollaboratorAlreadyExistsException(companyId, email);
         }

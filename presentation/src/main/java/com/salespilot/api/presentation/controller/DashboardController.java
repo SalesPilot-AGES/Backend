@@ -1,22 +1,18 @@
 package com.salespilot.api.presentation.controller;
 
-import java.time.LocalDate;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.AuthUserDTO;
+import com.salespilot.api.application.dto.GroupAverageMeetingDurationPerMonthResponseDTO;
+import com.salespilot.api.application.dto.GroupCardMetricsResponse;
 import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
 import com.salespilot.api.application.dto.TopFiveCompanyByMeetingTotalResponseDto;
+import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
-import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
-import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
-import com.salespilot.api.application.dto.GroupAverageMeetingDurationPerMonthResponseDTO;
-import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
-
+import com.salespilot.api.presentation.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -24,9 +20,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 
 @Tag(name = "Dashboard")
@@ -71,12 +74,16 @@ public class DashboardController {
                             """))),
         @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
     })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/meetings-by-month")
     public ResponseEntity<MeetingsGroupedByMonthResponseDTO> getMeetingsGroupedByMonth(
+            @AuthenticationPrincipal Jwt jwt,
         @RequestParam(required = true) String period,
         @RequestParam(name = "start_date", required = false) LocalDate startDate,
         @RequestParam(name = "end_date", required = false) LocalDate endDate) {
-        return ResponseEntity.ok(getTotalMeetingsGroupedByMonth.execute(period, startDate, endDate));
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        return ResponseEntity.ok(getTotalMeetingsGroupedByMonth.execute(period, startDate, endDate, authUser));
     }
 
     @Operation(summary = "Listar top 5 empresas por número de reuniões", description = "Retorna uma lista contendo o nome da empresa e a quantidade de reuniões, limitado a 5 empresas em ordem decrescente de reuniões, de todo período ou intervalo de datas personalizadas")
@@ -96,6 +103,7 @@ public class DashboardController {
                             """))),
         @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
     })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/meetings-by-company")
     public ResponseEntity<TopFiveCompanyByMeetingTotalResponseDto> getTopFiveCompaniesByMeetingTotal(
         @RequestParam(required = true) String period,
@@ -111,6 +119,7 @@ public class DashboardController {
                             schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
                             examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
     })
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping("/companies-status")
     public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {
         return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
@@ -118,15 +127,19 @@ public class DashboardController {
 
     @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupCardMetricsResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AdminGroupCardMetricsResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
     })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/metrics")
-    public ResponseEntity<GroupCardMetricsResponseDTO> getCardMetrics(
+    public ResponseEntity<GroupCardMetricsResponse> getCardMetrics(
+            @AuthenticationPrincipal Jwt jwt,
             @RequestParam String period,
             @RequestParam(name = "start_date", required = false) LocalDate startDate,
             @RequestParam(name = "end_date", required = false) LocalDate endDate) {
-        return ResponseEntity.ok(getCardMetricsUseCase.execute(period, startDate, endDate));
+
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        return ResponseEntity.ok(getCardMetricsUseCase.execute(period, startDate, endDate, authUser));
     }
 
     @Operation(summary = "Retornar a média da duração das reuniões por mês", description = "Calcula e retorna a média da duração das reuniões em todos os meses que tiveram reuniões de acordo com o período requisitado")
@@ -134,6 +147,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "200", description = "Média da duração das reuniões por mês retornada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupAverageMeetingDurationPerMonthResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
     })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/avg-duration")
     public ResponseEntity<GroupAverageMeetingDurationPerMonthResponseDTO> getAverageMeetingDurationPerMonth(
         @RequestParam String period,

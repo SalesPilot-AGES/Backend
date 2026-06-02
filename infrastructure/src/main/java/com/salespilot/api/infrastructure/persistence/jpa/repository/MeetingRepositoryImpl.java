@@ -1,7 +1,5 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.util.UUID;
-
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.model.MonthAndTotal;
 import com.salespilot.api.domain.model.AverageMeetingDurationPerMonth;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class MeetingRepositoryImpl implements MeetingRepository{
@@ -48,12 +47,13 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorID, Pageable pageable) {
+    public Page<Meeting> getAllMeetings(String title, String clientCompanyName, UUID collaboratorId, UUID companyId, Pageable pageable) {
         Specification<MeetingEntity> spec = Specification
                 .where(MeetingSpecification.titleLike(title)
                 .and(MeetingSpecification.clientCompanyNameLike(clientCompanyName)
-                .and(MeetingSpecification.collaboratorIdEquals(collaboratorID)))
-                .and(MeetingSpecification.collaboratorIsActive(collaboratorID)));
+                .and(MeetingSpecification.collaboratorIdEquals(collaboratorId)))
+                .and(MeetingSpecification.collaboratorIsActive(collaboratorId)))
+                .and(MeetingSpecification.companyIdEquals(companyId));
 
         return meetingsJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
@@ -88,8 +88,11 @@ public class MeetingRepositoryImpl implements MeetingRepository{
 
     @Transactional(readOnly = true)
     @Override
-    public List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end) {
-        return meetingsJpaRepository.getMeetingsGroupedByMonth(start, end).stream().map(this::mapToMonthAndTotal).toList();
+    public List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end, UUID companyId, UUID collaboratorId) {
+        return meetingsJpaRepository.getMeetingsGroupedByMonth(start, end, companyId, collaboratorId)
+                .stream()
+                .map(this::mapToMonthAndTotal)
+                .toList();
     }
 
     private MonthAndTotal mapToMonthAndTotal(Object[] item) {
@@ -115,6 +118,35 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     @Override
     public Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd) {
         return meetingsJpaRepository.countByCreatedAtBetween(currentStart, currentEnd);
+    }
+
+    @Override
+    public Long countTotalMeetingsByCompanyIdAndPeriod(UUID companyId, LocalDateTime start, LocalDateTime end) {
+        Specification<MeetingEntity> spec = Specification
+                .where(MeetingSpecification.companyIdEquals(companyId))
+                .and(MeetingSpecification.createdAtBetween(start, end));
+
+        return meetingsJpaRepository.count(spec);
+    }
+
+    @Override
+    public Long countTotalMeetingsByCollaboratorIdAndPeriod(UUID collaboratorId, LocalDateTime start, LocalDateTime end) {
+        Specification<MeetingEntity> spec = Specification
+                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId))
+                .and(MeetingSpecification.createdAtBetween(start, end));
+
+        return meetingsJpaRepository.count(spec);
+    }
+
+    @Override
+    public Double getAverageDurationByCollaboratorIdAndPeriod(UUID collaboratorId, LocalDateTime start, LocalDateTime end) {
+        Specification<MeetingEntity> spec = Specification
+                .where(MeetingSpecification.collaboratorIdEquals(collaboratorId))
+                .and(MeetingSpecification.createdAtBetween(start, end));
+
+        return meetingsJpaRepository
+                .findAverageDurationSecondsByCollaboratorAndPeriod(collaboratorId, start, end)
+                .orElse(0.0);
     }
 
     @Transactional(readOnly = true)
