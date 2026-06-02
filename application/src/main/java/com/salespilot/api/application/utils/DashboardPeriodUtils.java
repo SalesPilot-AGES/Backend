@@ -8,6 +8,13 @@ import java.time.temporal.ChronoUnit;
 import com.salespilot.api.application.exception.InvalidPeriodException;
 
 public class DashboardPeriodUtils {
+    private static final String DATE_LABEL_CUSTOM = "custom";
+    private static final String DATE_LABEL_SEVEN_DAYS = "7d";
+    private static final String DATE_LABEL_THIRTY_DAYS = "30d";
+    private static final String DATE_LABEL_MONTH = "month";
+    private static final String DATE_LABEL_ALL = "all";
+    private static final String DATE_LABEL_NINETY_DAYS = "90d";
+    
     private DashboardPeriodUtils() {}
 
     public static LocalDateTime[] dashboardPeriodUtilsToCardMetrics(String period, LocalDate startDate, LocalDate endDate) {
@@ -19,7 +26,7 @@ public class DashboardPeriodUtils {
         LocalDate previousMonth = today.minusMonths(1);
 
         switch (period) {
-            case "7d":
+            case DATE_LABEL_SEVEN_DAYS:
                 currentStart = today
                     .minusDays(6)
                     .atStartOfDay();
@@ -27,7 +34,7 @@ public class DashboardPeriodUtils {
                 previousStart = currentStart.minusDays(7);
                 previousEnd = currentEnd.minusDays(7);
                 break;
-            case "30d":      
+            case DATE_LABEL_THIRTY_DAYS:      
                 currentStart = today
                     .minusDays(29)
                     .atStartOfDay();
@@ -35,7 +42,7 @@ public class DashboardPeriodUtils {
                 previousStart = currentStart.minusDays(30);
                 previousEnd = currentEnd.minusDays(30);
                 break;
-            case "month":
+            case DATE_LABEL_MONTH:
                 currentStart = today
                     .withDayOfMonth(1)
                     .atStartOfDay();
@@ -53,7 +60,7 @@ public class DashboardPeriodUtils {
                         .atTime(LocalTime.MAX);
 
                 break;
-            case "custom":
+            case DATE_LABEL_CUSTOM:
                 if (startDate == null || endDate == null) {
                     throw new InvalidPeriodException(startDate, endDate);
                 }
@@ -82,13 +89,13 @@ public class DashboardPeriodUtils {
         LocalDateTime start;
 
         switch (period) {
-            case "all" ->
+            case DATE_LABEL_ALL ->
                 start = LocalDateTime.of(1970, 1, 1, 0, 0);
-            case "30d" ->
+            case DATE_LABEL_THIRTY_DAYS ->
                 start = end.minusDays(30);
-            case "90d" ->
+            case DATE_LABEL_NINETY_DAYS ->
                 start = end.minusDays(90);
-            case "custom" -> {
+            case DATE_LABEL_CUSTOM -> {
                 if (startDate == null || endDate == null) {
                     throw new InvalidPeriodException(startDate, endDate);
                 }
@@ -107,13 +114,13 @@ public class DashboardPeriodUtils {
         LocalDateTime start;
 
         switch (period) {
-            case "7d" ->
+            case DATE_LABEL_SEVEN_DAYS ->
                 start = today.minusDays(7).atStartOfDay();
-            case "30d" ->
+            case DATE_LABEL_THIRTY_DAYS ->
                 start = today.minusDays(30).atStartOfDay();
-            case "90d" ->
+            case DATE_LABEL_NINETY_DAYS ->
                 start = today.minusDays(90).atStartOfDay();
-            case "custom" -> {
+            case DATE_LABEL_CUSTOM -> {
                 if (startDate == null || endDate == null) {
                     throw new InvalidPeriodException(startDate, endDate);
                 }
