@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Referências a variáveis de ambiente e expressões do GitHub Actions não são segredos"
+regexTarget = "match"
+regexes = [
+    '''\$\{\{\s*(secrets|env|vars)\.[A-Za-z0-9_]+\s*\}\}''',
+    '''-u\s+["']?\$\{?[A-Z_][A-Z0-9_]*\}?:?["']?''',
+]
