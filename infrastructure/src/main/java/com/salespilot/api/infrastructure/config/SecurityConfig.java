@@ -18,7 +18,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
-
+    
+    @SuppressWarnings("java:S112")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
