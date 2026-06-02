@@ -2,6 +2,7 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.model.MonthAndTotal;
+import com.salespilot.api.domain.model.AverageMeetingDurationPerMonth;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingMapper;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -94,27 +96,19 @@ public class MeetingRepositoryImpl implements MeetingRepository{
     }
 
     private MonthAndTotal mapToMonthAndTotal(Object[] item) {
-        Object rawMonth = item[0];
-
-        LocalDate month;
-
-        if (rawMonth instanceof Timestamp timestamp) {
-            month = timestamp.toLocalDateTime().toLocalDate();
-        } else if (rawMonth instanceof LocalDateTime localDateTime) {
-            month = localDateTime.toLocalDate();
-        } else if (rawMonth instanceof LocalDate localDate) {
-            month = localDate;
-        } else {
-            throw new IllegalStateException("Tipo inesperado para month: " + rawMonth.getClass());
-        }
+        LocalDate month = toLocalDateTime(item[0]).toLocalDate();
         Long total = ((Number) item[1]).longValue();
-        String monthLabel = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
 
         return new MonthAndTotal(
             month,
-            capitalize(monthLabel),
+            monthLabel(month),
             total
         );
+    }
+
+    private String monthLabel(LocalDate month) {
+        String label = month.getMonth().getDisplayName(TextStyle.SHORT, Locale.of("pt", "BR")).replace(".", "");
+        return capitalize(label);
     }
 
     private String capitalize(String monthLabel) {
@@ -153,5 +147,43 @@ public class MeetingRepositoryImpl implements MeetingRepository{
         return meetingsJpaRepository
                 .findAverageDurationSecondsByCollaboratorAndPeriod(collaboratorId, start, end)
                 .orElse(0.0);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AverageMeetingDurationPerMonth> groupAverageMeetingDurationPerMonth(
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+        List<Object[]> rows = meetingsJpaRepository.findAverageDurationPerMonth(start, end);
+
+        if (rows == null || rows.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return rows.stream()
+                .map(row -> {
+                    LocalDateTime month = toLocalDateTime(row[0]);
+
+                    Double avgMinutes = row[1] != null
+                            ? ((Number) row[1]).doubleValue()
+                            : null;
+
+                    return new AverageMeetingDurationPerMonth(
+                            month,
+                            monthLabel(month.toLocalDate()),
+                            avgMinutes
+                    );
+                })
+                .toList();
+    }
+
+    private LocalDateTime toLocalDateTime(Object value) {
+        return switch (value) {
+            case Timestamp timestamp -> timestamp.toLocalDateTime();
+            case LocalDateTime localDateTime -> localDateTime;
+            case LocalDate localDate -> localDate.atStartOfDay();
+            default -> throw new IllegalStateException("Unexpected type for the month: " + value.getClass());
+        };
     }
 }
