@@ -32,12 +32,15 @@ class GetSystemStatusUseCaseTest {
     }
 
     @Test
-    void shouldDelegateToRepositoryOnEveryCall() {
-        when(repository.getCurrentStatus()).thenReturn(new SystemStatus("UP", "2026-05-19T10:00:00"));
+    void shouldReturnFreshStatusOnEachCall() {
+        when(repository.getCurrentStatus())
+                .thenReturn(new SystemStatus("UP", "2026-05-19T10:00:00"))
+                .thenReturn(new SystemStatus("DEGRADED", "2026-05-19T10:01:00"));
 
-        useCase.execute();
-        useCase.execute();
+        SystemStatusResponseDTO first = useCase.execute();
+        SystemStatusResponseDTO second = useCase.execute();
 
-        verify(repository, times(2)).getCurrentStatus();
+        assertEquals("UP", first.currentStatus());
+        assertEquals("DEGRADED", second.currentStatus());
     }
 }
