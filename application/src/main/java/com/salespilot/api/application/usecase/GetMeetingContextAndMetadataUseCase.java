@@ -1,10 +1,12 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.MeetingContextMetadataAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.MeetingContextMetadataResponseDTO;
 import com.salespilot.api.application.queryservice.ClientQueryService;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.application.queryservice.MeetingQueryService;
+import com.salespilot.api.application.utils.MeetingAccessUtils;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
@@ -28,10 +30,12 @@ public class GetMeetingContextAndMetadataUseCase {
         this.assembler = assembler;
     }
 
-    public MeetingContextMetadataResponseDTO execute(UUID meetingId) {
+    public MeetingContextMetadataResponseDTO execute(UUID meetingId, AuthUserDTO authUser) {
         Meeting meeting = meetingQueryService.getOrThrowById(meetingId);
 
         Collaborator seller = collaboratorQueryService.getOrThrowById(meeting.getCollaboratorId());
+
+        MeetingAccessUtils.grantAccess(seller.getId(), seller.getCompanyId(), authUser);
 
         Client client = clientQueryService.getOrThrowById(meeting.getClientId());
 

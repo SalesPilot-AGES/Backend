@@ -6,6 +6,7 @@ import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,4 +17,10 @@ public interface CollaboratorRepository {
     Optional<Collaborator> getCollaboratorById(UUID id);
     Page<Collaborator> getManagers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
     Page<Collaborator> getSellers(String name, String email, UUID companyId, Boolean active, Pageable pageable);
+    Long countAllActiveSellersByPeriod(LocalDateTime period);
+    Long countAllActiveSellers();
+    void updatePasswordHash(UUID collaboratorId, String passwordHash);
+    Long countSellersByCompanyIdAndActiveValue(UUID companyId, boolean active);
+    Long countActiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period);
+    Long countInactiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period);
 }
