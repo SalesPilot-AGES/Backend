@@ -18,7 +18,7 @@ public class LoginUseCase {
     private final long refreshTokenTtlSeconds;
 
     private static final String TOKEN_TYPE = "Bearer";
-    private static final String DUMMY_PASSWORD_HASH = "$2a$10$7g0zK3tT8S.0dG4f0ZxR.u4uB8V5ZtX4H2xB1O1mXw9JQ2o7yP7i6";
+    private static final String DUMMY_UNKNOWN_OR_INACTIVE_HASH = "$2a$10$7g0zK3tT8S.0dG4f0ZxR.u4uB8V5ZtX4H2xB1O1mXw9JQ2o7yP7i6";
 
     public LoginUseCase(
         AuthenticationRepository authenticationRepository,
@@ -41,7 +41,7 @@ public class LoginUseCase {
 
         if (user == null) {
             // dummy hash check to reduce timing differences for unknown/inactive users
-            passwordHasher.matches(rawPassword, DUMMY_PASSWORD_HASH);
+            passwordHasher.matches(rawPassword, DUMMY_UNKNOWN_OR_INACTIVE_HASH);
             throw new InvalidCredentialsException();
         }
 
