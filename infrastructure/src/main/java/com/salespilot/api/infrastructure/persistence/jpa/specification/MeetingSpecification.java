@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public class MeetingSpecification {
 
+    private static final String COLLABORATOR = "collaborator";
+
     public static Specification<MeetingEntity> titleLike(String title) {
         return (root, query, cb) -> title == null || title.isBlank() ? null
                 : cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
@@ -20,17 +22,17 @@ public class MeetingSpecification {
 
     public static Specification<MeetingEntity> collaboratorIdEquals(UUID collaboratorId) {
         return (root, query, cb) -> collaboratorId == null ? null
-                : cb.equal(root.get("collaborator").get("id"), collaboratorId);
+                : cb.equal(root.get(COLLABORATOR).get("id"), collaboratorId);
     }
 
     public static Specification<MeetingEntity> collaboratorIsActive(UUID collaboratorId) {
         return (root, query, cb) -> collaboratorId == null ? null
-                : cb.equal(root.get("collaborator").get("active"), true);
+                : cb.equal(root.get(COLLABORATOR).get("active"), true);
     }
 
     public static Specification<MeetingEntity> companyIdEquals(UUID companyId) {
         return (root, query, cb) -> companyId == null ? null
-                : cb.equal(root.join("collaborator").join("company").get("id"), companyId);
+                : cb.equal(root.join(COLLABORATOR).join("company").get("id"), companyId);
     }
 
     public static Specification<MeetingEntity> createdAtBetween(LocalDateTime start, LocalDateTime end) {
