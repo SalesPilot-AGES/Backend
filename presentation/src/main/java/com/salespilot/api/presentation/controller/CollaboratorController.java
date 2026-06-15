@@ -214,11 +214,13 @@ public class CollaboratorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Role inválida", content = @Content)
     })
-    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/managers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> getManagerById(
+            @AuthenticationPrincipal Jwt jwt,
             @Parameter(description = "UUID do manager") @PathVariable UUID id) {
-        CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id);
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id, authUser);
         return ResponseEntity.ok(ApiResponse.success(collaboratorResponseDTO, "Manager encontrado"));
     }
 
