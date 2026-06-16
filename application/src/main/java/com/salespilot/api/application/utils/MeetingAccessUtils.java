@@ -15,15 +15,11 @@ public class MeetingAccessUtils {
         if(authUserRole == CollaboratorRole.SYSTEM_ADMIN){
             return;
         }
-        if(authUserRole == CollaboratorRole.MANAGER){
-            if(authUser.companyId().equals(sellerCompanyId)){
-                return;
-            }
+        if(authUserRole == CollaboratorRole.MANAGER && authUser.companyId().equals(sellerCompanyId)){
+            return;
         }
-        if(authUserRole == CollaboratorRole.SELLER){
-            if(authUser.id().equals(sellerId)){
-                return;
-            }
+        if(authUserRole == CollaboratorRole.SELLER && authUser.id().equals(sellerId)){
+            return;
         }
 
         throw new ForbiddenException();

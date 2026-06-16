@@ -15,10 +15,8 @@ public class CollaboratorAccessUtils {
         if(authUserRole == CollaboratorRole.SYSTEM_ADMIN) {
             return;
         }
-        if(authUserRole == CollaboratorRole.MANAGER) {
-            if(authUser.companyId().equals(companyId)) {
-                return;
-            }
+        if(authUserRole == CollaboratorRole.MANAGER && authUser.companyId().equals(companyId)) {
+            return;
         }
 
         throw new ForbiddenException();
