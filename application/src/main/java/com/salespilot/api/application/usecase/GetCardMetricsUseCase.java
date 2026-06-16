@@ -1,15 +1,20 @@
 package com.salespilot.api.application.usecase;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.CardMetricsResponseDTO;
-import com.salespilot.api.application.dto.GroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.GroupCardMetricsResponse;
+import com.salespilot.api.application.dto.ManagerGroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.SellerGroupCardMetricsResponseDTO;
 import com.salespilot.api.application.utils.DashboardPeriodUtils;
 import com.salespilot.api.domain.enums.MetricsTrends;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class GetCardMetricsUseCase {
     private final CompanyRepository companyRepository;
@@ -22,13 +27,43 @@ public class GetCardMetricsUseCase {
         this.collaboratorRepository = collaboratorRepository;
     }
 
-    public GroupCardMetricsResponseDTO execute(String period, LocalDate startDate, LocalDate endDate) {
+    public GroupCardMetricsResponse execute(String period, LocalDate startDate, LocalDate endDate, AuthUserDTO authUser) {
         LocalDateTime[] dates = DashboardPeriodUtils.dashboardPeriodUtilsToCardMetrics(period, startDate, endDate);
         LocalDateTime previousStart = dates[0];
         LocalDateTime previousEnd = dates[1];
         LocalDateTime currentStart = dates[2];
         LocalDateTime currentEnd = dates[3];
-        
+
+        return switch (authUser.role()) {
+            case SYSTEM_ADMIN -> buildAdminGroupCard(previousStart, previousEnd, currentStart, currentEnd);
+            case MANAGER -> buildManagerGroupCard(previousStart, previousEnd, currentStart, currentEnd, authUser.companyId());
+            case SELLER -> buildSellerGroupCard(previousStart, previousEnd, currentStart, currentEnd, authUser.id());
+        };
+    }
+
+    private Double calculateVariationPercent(Long previous, Long current) {
+        if (previous == 0) {
+            return current > 0 ? 100.0 : 0.0;
+        } else {
+            return ((double) (current - previous) / previous) * 100.0;
+        }
+    }
+
+    private MetricsTrends getTrendFromVariationPercent(Double variationPercent) {
+        if (variationPercent == 0) {
+            return MetricsTrends.NEUTRAL;
+        } else {
+            return variationPercent > 0 ? MetricsTrends.UP : MetricsTrends.DOWN;
+        }
+    }
+
+    private CardMetricsResponseDTO buildMetricCard(Long current, Long previous) {
+        Double variation = calculateVariationPercent(previous, current);
+        MetricsTrends trend = getTrendFromVariationPercent(variation);
+        return new CardMetricsResponseDTO(current, variation, trend.getValue());
+    }
+
+    private AdminGroupCardMetricsResponseDTO buildAdminGroupCard(LocalDateTime previousStart, LocalDateTime previousEnd, LocalDateTime currentStart, LocalDateTime currentEnd) {
         Long currentActiveCompanies = companyRepository.countCompaniesByActiveValue(true);
         Long previousActiveCompanies = companyRepository.countCompaniesByActiveValueAndPeriod(true, previousEnd);
 
@@ -45,29 +80,41 @@ public class GetCardMetricsUseCase {
         CardMetricsResponseDTO inactiveCompaniesCard = buildMetricCard(currentInactiveCompanies, previousInactiveCompanies);
         CardMetricsResponseDTO totalMeetingsCard = buildMetricCard(currentMeetings, previousMeetings);
         CardMetricsResponseDTO activeSellersCard = buildMetricCard(currentActiveSellers, previousActiveSellers);
-        
-        return new GroupCardMetricsResponseDTO(activeCompaniesCard, inactiveCompaniesCard, totalMeetingsCard, activeSellersCard);
+
+        return new AdminGroupCardMetricsResponseDTO(activeCompaniesCard, inactiveCompaniesCard, totalMeetingsCard, activeSellersCard);
     }
 
-    private Double calculateVariationPercent(Long previous, Long current) {
-        if (previous == 0) {
-            return current > 0 ? 100.0 : 0.0;
-        } else {
-            return ((double) (current - previous) / previous) * 100.0; 
-        }
+    private ManagerGroupCardMetricsResponseDTO buildManagerGroupCard(LocalDateTime previousStart, LocalDateTime previousEnd, LocalDateTime currentStart, LocalDateTime currentEnd, UUID companyId
+    ) {
+        Long currentActiveSellers = collaboratorRepository.countSellersByCompanyIdAndActiveValue(companyId, true);
+        Long previousActiveSellers = collaboratorRepository.countActiveSellersByCompanyIdAndPeriod(companyId, previousEnd);
+
+        Long currentInactiveSellers = collaboratorRepository.countSellersByCompanyIdAndActiveValue(companyId, false);
+        Long previousInactiveSellers = collaboratorRepository.countInactiveSellersByCompanyIdAndPeriod(companyId, previousEnd);
+
+        Long currentMeetings = meetingRepository.countTotalMeetingsByCompanyIdAndPeriod(companyId, currentStart, currentEnd);
+        Long previousMeetings = meetingRepository.countTotalMeetingsByCompanyIdAndPeriod(companyId, previousStart, previousEnd);
+
+        return new ManagerGroupCardMetricsResponseDTO(
+                buildMetricCard(currentActiveSellers, previousActiveSellers),
+                buildMetricCard(currentInactiveSellers, previousInactiveSellers),
+                buildMetricCard(currentMeetings, previousMeetings)
+        );
     }
 
-    private MetricsTrends getTrendFromVariationPercent(Double variationPercent) {
-        if(variationPercent == 0) {
-            return MetricsTrends.NEUTRAL;
-        } else {
-            return variationPercent > 0 ? MetricsTrends.UP : MetricsTrends.DOWN;
-        }
-    }
+    private SellerGroupCardMetricsResponseDTO buildSellerGroupCard(LocalDateTime previousStart, LocalDateTime previousEnd, LocalDateTime currentStart, LocalDateTime currentEnd, UUID sellerId
+    ) {
+        Long currentMeetings = meetingRepository.countTotalMeetingsByCollaboratorIdAndPeriod(sellerId, currentStart, currentEnd);
 
-    private CardMetricsResponseDTO buildMetricCard(Long current, Long previous) {
-        Double variation = calculateVariationPercent(previous, current);
-        MetricsTrends trend = getTrendFromVariationPercent(variation);
-        return new CardMetricsResponseDTO(current, variation, trend.getValue());
+        Long previousMeetings = meetingRepository.countTotalMeetingsByCollaboratorIdAndPeriod(sellerId, previousStart, previousEnd);
+
+        Long currentAverageDuration = Math.round(meetingRepository.getAverageDurationByCollaboratorIdAndPeriod(sellerId, currentStart, currentEnd));
+
+        Long previousAverageDuration = Math.round(meetingRepository.getAverageDurationByCollaboratorIdAndPeriod(sellerId, previousStart, previousEnd));
+
+        return new SellerGroupCardMetricsResponseDTO(
+                buildMetricCard(currentMeetings, previousMeetings),
+                buildMetricCard(currentAverageDuration, previousAverageDuration)
+        );
     }
 }

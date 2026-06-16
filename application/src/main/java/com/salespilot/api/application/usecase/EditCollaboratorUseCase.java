@@ -1,11 +1,13 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.CollaboratorAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorAlreadyExistsException;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
+import com.salespilot.api.application.utils.CollaboratorAccessUtils;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -27,10 +29,12 @@ public class EditCollaboratorUseCase {
         this.assembler = assembler;
     }
 
-    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, String phone, boolean active, CollaboratorPreferences collaboratorPreferences, CollaboratorRole role){
+    public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, String phone, boolean active, CollaboratorPreferences collaboratorPreferences, CollaboratorRole role, AuthUserDTO authUser){
         Company company = companyQueryService.getOrThrowById(companyId);
 
         Collaborator existing = collaboratorQueryService.getOrThrowById(collaboratorId);
+
+        CollaboratorAccessUtils.grantAccess(existing.getCompanyId(), authUser);
 
         if(existing.getRole() != role) {
             throw new InvalidCollaboratorRoleException(existing.getRole(), role);

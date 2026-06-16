@@ -1,6 +1,7 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.MeetingAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.MeetingPageResponseDTO;
 import com.salespilot.api.application.dto.MeetingResponseDTO;
 import com.salespilot.api.application.dto.SummaryResponseDTO;
@@ -8,6 +9,7 @@ import com.salespilot.api.application.queryservice.ClientQueryService;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
+import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import org.springframework.data.domain.Page;
@@ -30,8 +32,10 @@ public class GetAllMeetingsUseCase {
         this.assembler = assembler;
     }
 
-    public MeetingPageResponseDTO execute(String title, String clientCompanyName, UUID collaboratorId, Pageable pageable) {
-        Page<MeetingResponseDTO> page = repository.getAllMeetings(title, clientCompanyName, collaboratorId, pageable)
+    public MeetingPageResponseDTO execute(String title, String clientCompanyName, UUID collaboratorId, Pageable pageable, AuthUserDTO authUser) {
+        MeetingFilters filters = resolveFilters(authUser, collaboratorId);
+
+        Page<MeetingResponseDTO> page = repository.getAllMeetings(title, clientCompanyName, filters.collaboratorId, filters.companyId, pageable)
                 .map(m -> {
                     Collaborator seller = collaboratorQueryService.getOrThrowById(m.getCollaboratorId());
 
@@ -49,5 +53,32 @@ public class GetAllMeetingsUseCase {
                 repository.getAverageDurationSeconds(),
                 meetingPostAnalysisRepository.getAverageSuccessRate()
         ));
+    }
+
+    private record MeetingFilters(UUID collaboratorId, UUID companyId) {}
+
+    private MeetingFilters resolveFilters(AuthUserDTO authUser, UUID requestedCollaboratorId) {
+        CollaboratorRole authUserRole = authUser.role();
+
+        UUID authUserCollaboratorId = null;
+        UUID authUserCompanyId = null;
+
+        switch(authUserRole) {
+            case SELLER -> {
+                authUserCollaboratorId = authUser.id();
+            }
+            case MANAGER -> {
+                authUserCollaboratorId = requestedCollaboratorId;
+                authUserCompanyId = authUser.companyId();
+            }
+            case SYSTEM_ADMIN -> {
+                authUserCollaboratorId = requestedCollaboratorId;
+            }
+        }
+
+        return new MeetingFilters(
+            authUserCollaboratorId,
+                authUserCompanyId
+        );
     }
 }

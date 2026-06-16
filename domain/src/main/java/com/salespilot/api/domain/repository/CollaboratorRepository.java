@@ -20,4 +20,7 @@ public interface CollaboratorRepository {
     Long countAllActiveSellersByPeriod(LocalDateTime period);
     Long countAllActiveSellers();
     void updatePasswordHash(UUID collaboratorId, String passwordHash);
+    Long countSellersByCompanyIdAndActiveValue(UUID companyId, boolean active);
+    Long countActiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period);
+    Long countInactiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period);
 }
