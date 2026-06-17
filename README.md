@@ -14,6 +14,14 @@ O projeto utiliza uma estrutura **multimódulo Maven**, onde cada camada da arqu
 
 ---
 
+## Endpoints da API
+
+A API do Sales Pilot é documentada utilizando o padrão OpenAPI (Swagger). Você pode explorar todos os recursos disponíveis, esquemas de request/response e testar os endpoints diretamente pela interface interativa.
+
+**Para uma lista completa e detalhada de todos os recursos, consulte os [Endpoints Disponíveis](docs/AvailableEndpoints.md) ou acesse o Swagger local em `/swagger-ui.html`.**
+
+---
+
 ## Padrões de Commit
 
 Usaremos o Conventional Commits para manter o histórico do repositório mais organizado e legível, além de melhorar a comunicação interna.
@@ -66,99 +74,3 @@ Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele su
    - SonarQube estará acessível em http://localhost:9000.
    - Grafana estará acessível em http://localhost:3000
    - (Para parar a execução, utilize o comando docker-compose down).
----
-
-## Endpoints Disponíveis
-
-Base URL local: `http://localhost:8080`
-
-| Método | Caminho | Descrição |
-|--------|---------|-----------|
-| GET | `/api/v1/system/ping` | Verifica o status do sistema |
-| POST | `/api/companies` | Cria uma nova empresa |
-| GET | `/api/companies` | Lista empresas com filtros opcionais e paginação |
-| GET | `/api/companies/{id}` | Busca empresa por ID |
-| PUT | `/api/companies/{id}` | Atualiza `name`, `plan` e `active` de uma empresa |
-| POST | `/api/collaborators/managers` | Cria colaborador com role de gestor |
-| PUT | `/api/collaborators/managers/{id}` | Atualiza colaborador com role de gestor |
-| GET | `/api/collaborators/managers/{id}` | Busca gestor por ID |
-| GET | `/api/collaborators/managers` | Lista gestores com filtros opcionais e paginação |
-
-### Corpos de request (Postman)
-
-- `POST /api/companies`
-  - Body JSON:
-
-  ```json
-  {
-    "name": "Digital Sales Ltda",
-    "tax_id": "12.345.678/0001-90",
-    "plan": "BASIC",
-    "active": true
-  }
-  ```
-
-  - `plan`: `BASIC`, `PRO`, `ENTERPRISE`
-
-- `GET /api/companies`
-  - Query params opcionais: `name`, `taxId`, `plan`, `active`, `page`, `size`, `sort`
-  - Limite de paginação: `size` máximo de `100`
-  - Body: não possui
-
-- `GET /api/companies/{id}`
-  - Body: não possui
-
-- `PUT /api/companies/{id}`
-  - Body JSON:
-
-  ```json
-  {
-    "name": "Digital Sales Ltda",
-    "plan": "PRO",
-    "active": true
-  }
-  ```
-
-   - `plan`: `BASIC`, `PRO`, `ENTERPRISE`
-
-- `POST /api/collaborators/managers`
-  - Body JSON:
-
-  ```json
-  {
-    "company_id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
-    "name": "Gabriel Ribeiro",
-    "email": "gabriel@digitalsales.com",
-    "active": true,
-    "preferences": {
-      "theme": "light",
-      "default_model": "gpt-4o"
-    }
-  }
-  ```
-
-- `PUT /api/collaborators/managers/{id}`
-  - Body JSON:
-
-  ```json
-  {
-    "company_id": "b1c2d3e4-f5a6-7890-2345-67890abcdef1",
-    "name": "Gabriel Ribeiro",
-    "email": "gabriel@digitalsales.com",
-    "active": true,
-    "preferences": {
-      "theme": "light",
-      "default_model": "gpt-4o"
-    }
-  }
-  ```
-
-- `GET /api/collaborators/managers/{id}`
-  - Body: não possui
-
-- `GET /api/collaborators/managers`
-  - Query params opcionais: `name`, `email`, `companyId`, `active`, `page`, `size`, `sort`
-  - Body: não possui
-
-- `GET /api/v1/system/ping`
-  - Body: não possui
