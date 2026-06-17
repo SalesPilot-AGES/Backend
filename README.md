@@ -51,24 +51,27 @@ Para facilitar a configuração do ambiente, utilizamos o Docker Compose. Ele su
 
 ### Passo a Passo
 
-1. **Instale o Docker:** Certifique-se de ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando na sua máquina.
-2. **Configure as Variáveis de Ambiente:** Na raiz do projeto, copie `.env.example` para `.env` e ajuste as credenciais do banco de dados:
-   ```env
-   DB_NAME=salespilot
-   DB_USER=postgres
-   DB_PASSWORD=postgres
-3. **Suba os Contêineres:** Abra o terminal na raiz do projeto e execute o comando abaixo para construir a aplicação e iniciar os serviços:
-   ```text
-    docker-compose up -d --build
+1. **Instale o Docker:** Certifique-se de ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando.
+2. **Configure as Variáveis de Ambiente:** Na raiz do projeto, copie o arquivo `.env.example` para `.env`:
+   ```bash
+   cp .env.example .env
    ```
-4. **(Opcional) Subir também os serviços de métricas:** Use o profile `metrics` para iniciar Prometheus, Grafana e SonarQube.
-   ```text
-    docker-compose --profile metrics up -d --build
+   *As configurações padrão já permitem a execução via Docker sem alterações.*
+3. **Suba a infraestrutura e a API:**
+   ```bash
+   docker-compose up -d --build
    ```
-5. **(Opcional) Rodar a API localmente com o Postgres do Docker:** Como o projeto usa `spring.config.import=optional:file:.env[.properties]`, ao manter o `.env` na raiz você pode iniciar a API local sem exportar variáveis manualmente.
-   ```text
-    mvn -pl bootstrap spring-boot:run
+4. **(Opcional) Serviços de Monitoramento:** Para subir Prometheus, Grafana e SonarQube, utilize o profile `metrics`:
+   ```bash
+   docker-compose --profile metrics up -d
    ```
+5. **(Opcional) Execução Local (Desenvolvimento):** Caso queira rodar a API fora do Docker (usando apenas o banco de dados do container):
+   - Certifique-se de que o container `salespilot-db` esteja rodando.
+   - Verifique se a `DB_URL` no seu `.env` aponta para `localhost:5432`.
+   - Execute via Maven:
+     ```bash
+     mvn -pl bootstrap spring-boot:run
+     ```
 6. **Verifique a Execução:** A API estará rodando em http://localhost:8080.
    - O banco de dados PostgreSQL estará disponível na porta 5432.
    - SonarQube estará acessível em http://localhost:9000.
