@@ -50,35 +50,46 @@ public class MeetingController {
     }
 
     @Operation(summary = "Listar reuniões", description = "Retorna uma página de reuniões com filtros opcionais e métricas gerais.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Reuniões retornadas com sucesso",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = MeetingPageResponseDTO.class),
-                    examples = @ExampleObject(value = """
-                            {
-                                "content": [
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Reuniões retornadas com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = MeetingPageResponseDTO.class),
+                            examples = @ExampleObject(value = """
                                     {
-                                        "id": "99999999-8888-7777-6666-555555555555",
-                                        "title": "Reuniao de descoberta",
-                                        "seller": {
-                                            "id": "e5f6a7b8-c9d0-1234-5678-90abcdef1234",
-                                            "name": "Saulo Souza",
-                                            "email": "saulo@digitalsales.com"
-                                        },
-                                        "client": {
-                                            "id": "11111111-2222-3333-4444-555555555555",
-                                            "name": "Marina Lima",
-                                            "client_company_name": "Alfa Industrial",
-                                            "sector": "Manufacturing",
-                                            "overall_sentiment": 8
-                                        },
-                                        "meeting_type": "ONLINE",
-                                        "scheduled_for": "2026-05-02T15:50:24.533071",
-                                        "started_at": null,
-                                        "ended_at": null,
-                                        "duration_seconds": 1800,
-                                        "status": "SCHEDULED"
+                                        "content": [
+                                            {
+                                                "id": "99999999-8888-7777-6666-555555555555",
+                                                "title": "Reuniao de descoberta",
+                                                "seller": {
+                                                    "id": "e5f6a7b8-c9d0-1234-5678-90abcdef1234",
+                                                    "name": "Saulo Souza",
+                                                    "email": "saulo@digitalsales.com"
+                                                },
+                                                "client": {
+                                                    "id": "11111111-2222-3333-4444-555555555555",
+                                                    "name": "Marina Lima",
+                                                    "client_company_name": "Alfa Industrial",
+                                                    "sector": "Manufacturing",
+                                                    "overall_sentiment": 8
+                                                },
+                                                "meeting_type": "ONLINE",
+                                                "scheduled_for": "2026-05-02T15:50:24.533071",
+                                                "started_at": null,
+                                                "ended_at": null,
+                                                "duration_seconds": 1800,
+                                                "status": "SCHEDULED"
+                                            }
+                                        ],
+                                        "total_elements": 1,
+                                        "total_pages": 1,
+                                        "summary": {
+                                            "total_meetings": 1,
+                                            "average_duration_seconds": 1800.0,
+                                            "success_rate": 0.0
+                                        }
                                     }
                                     """)))
+    })
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping
     public ResponseEntity<ApiResponse<MeetingPageResponseDTO>> getAllMeetings(
