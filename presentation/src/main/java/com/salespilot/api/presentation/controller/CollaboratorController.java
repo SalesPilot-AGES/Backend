@@ -147,10 +147,10 @@ public class CollaboratorController {
         this.setCollaboratorPasswordUseCase = setCollaboratorPasswordUseCase;
     }
 
-    @Operation(summary = "Cadastrar gestor", description = "Cria um novo colaborador com o papel de GESTOR.")
+    @Operation(summary = "Cadastrar manager", description = "Cria um novo colaborador com o papel de MANAGER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Gestor criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Manager criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
@@ -172,16 +172,16 @@ public class CollaboratorController {
                 request.preferences(),
                 authUser);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response, "Gestor criado com sucesso"));
+                .body(ApiResponse.success(response, "Manager criado com sucesso"));
     }
 
-    @Operation(summary = "Editar gestor", description = "Atualiza os dados de um colaborador com papel de GESTOR.")
+    @Operation(summary = "Editar manager", description = "Atualiza os dados de um colaborador com papel de MANAGER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorUpdateRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Gestor atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Gestor não encontrado", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Manager atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Cargo inválido", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
@@ -189,7 +189,7 @@ public class CollaboratorController {
     @PutMapping("/managers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> editManager(
             @AuthenticationPrincipal Jwt jwt,
-            @Parameter(description = "UUID do gestor") @PathVariable UUID id,
+            @Parameter(description = "UUID do manager") @PathVariable UUID id,
             @Valid @RequestBody CollaboratorUpdateRequestDTO request) {
 
         AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
@@ -205,26 +205,28 @@ public class CollaboratorController {
                 authUser);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(response, "Gestor atualizado com sucesso"));
+                .body(ApiResponse.success(response, "Manager atualizado com sucesso"));
     }
 
-    @Operation(summary = "Buscar gestor por ID", description = "Retorna os dados de um gestor pelo seu UUID.")
+    @Operation(summary = "Buscar manager por ID", description = "Retorna os dados de um manager pelo seu UUID.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Gestor encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Gestor não encontrado", content = @Content),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Cargo inválido", content = @Content)
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Manager encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = MANAGER_RESPONSE_EXAMPLE))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Manager não encontrado", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Role inválida", content = @Content)
     })
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping("/managers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> getManagerById(
+            @AuthenticationPrincipal Jwt jwt,
             @Parameter(description = "UUID do gestor") @PathVariable UUID id) {
-        CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id);
-        return ResponseEntity.ok(ApiResponse.success(collaboratorResponseDTO, "Gestor encontrado"));
+        AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
+        CollaboratorResponseDTO collaboratorResponseDTO = getCollaboratorByIdUseCase.execute(id, authUser);
+        return ResponseEntity.ok(ApiResponse.success(collaboratorResponseDTO, "Manager encontrado"));
     }
 
-    @Operation(summary = "Listar gestores", description = "Retorna uma página de gestores com filtros opcionais.")
+    @Operation(summary = "Listar managers", description = "Retorna uma página de managers com filtros opcionais.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Gestores listados com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Managers listados com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))),
     })
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping("/managers")
@@ -236,13 +238,13 @@ public class CollaboratorController {
             Pageable pageable) {
         Page<CollaboratorResponseDTO> managers = getAllManagersUseCase.execute(name, email, companyId, active,
                 PageableUtils.normalize(pageable));
-        return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(managers), "Gestores listados com sucesso"));
+        return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(managers), "Managers listados com sucesso"));
     }
 
-    @Operation(summary = "Buscar vendedores", description = "Retorna todos os vendedores com filtros opcionais.")
+    @Operation(summary = "Buscar sellers", description = "Retorna todos os sellers com filtros opcionais.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Vendedores encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Vendedor não encontrado", content = @Content)
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Sellers encontrados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content)
     })
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/sellers")
@@ -257,14 +259,14 @@ public class CollaboratorController {
         AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
         Page<SellerResponseDTO> sellers = getAllSellersUseCase.execute(name, email, companyId, active,
                 PageableUtils.normalize(pageable), authUser);
-        return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(sellers), "Vendedores listados com sucesso"));
+        return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(sellers), "Sellers listados com sucesso"));
     }
 
 
-    @Operation(summary = "Cadastrar vendedor", description = "Cria um novo colaborador com o papel de VENDEDOR.")
+    @Operation(summary = "Cadastrar seller", description = "Cria um novo colaborador com o papel de SELLER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Vendedor criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Seller criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Empresa não encontrada", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
@@ -286,14 +288,14 @@ public class CollaboratorController {
                 request.preferences(),
                 authUser);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response, "Vendedor criado com sucesso"));
+                .body(ApiResponse.success(response, "Seller criado com sucesso"));
     }
 
-    @Operation(summary = "Editar vendedor", description = "Atualiza os dados de um colaborador com papel de VENDEDOR.")
+    @Operation(summary = "Editar seller", description = "Atualiza os dados de um colaborador com papel de SELLER.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorUpdateRequestDTO.class), examples = @ExampleObject(value = COLLABORATOR_REQUEST_EXAMPLE)))
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Vendedor atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Vendedor não encontrado", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Seller atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CollaboratorResponseDTO.class), examples = @ExampleObject(value = SELLER_RESPONSE_EXAMPLE))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Colaborador já existe nesta empresa com este e-mail", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "422", description = "Dados inválidos", content = @Content)
     })
@@ -301,7 +303,7 @@ public class CollaboratorController {
     @PutMapping("/sellers/{id}")
     public ResponseEntity<ApiResponse<CollaboratorResponseDTO>> editSeller(
             @AuthenticationPrincipal Jwt jwt,
-            @Parameter(description = "UUID do vendedor") @PathVariable UUID id,
+            @Parameter(description = "UUID do seller") @PathVariable UUID id,
             @Valid @RequestBody CollaboratorUpdateRequestDTO request) {
 
         AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
@@ -317,24 +319,24 @@ public class CollaboratorController {
                 authUser);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(response, "Vendedor atualizado com sucesso"));
+                .body(ApiResponse.success(response, "Seller atualizado com sucesso"));
     }
 
-    @Operation(summary = "Buscar vendedor por ID", description = "Retorna os dados de um vendedor pelo seu UUID.")
+    @Operation(summary = "Buscar seller por ID", description = "Retorna os dados de um seller pelo seu UUID.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Vendedor encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerWithMeetingsResponseDTO.class))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Vendedor não encontrado", content = @Content),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Cargo inválido", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Seller encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SellerWithMeetingsResponseDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Seller não encontrado", content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Role inválida", content = @Content),
     })
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER')")
     @GetMapping("/sellers/{id}")
     public ResponseEntity<ApiResponse<SellerWithMeetingsResponseDTO>> getSellerById(
             @AuthenticationPrincipal Jwt jwt,
-            @Parameter(description = "UUID do vendedor") @PathVariable UUID id) {
+            @Parameter(description = "UUID do seller") @PathVariable UUID id) {
 
         AuthUserDTO authUser = JwtUtils.toAuthUserDTO(jwt);
         SellerWithMeetingsResponseDTO sellerWithMeetingsResponseDTO = getSellerByIdUseCase.execute(id, authUser);
-        return ResponseEntity.ok(ApiResponse.success(sellerWithMeetingsResponseDTO, "Vendedor encontrado"));
+        return ResponseEntity.ok(ApiResponse.success(sellerWithMeetingsResponseDTO, "Seller encontrado"));
     }
 
     @Operation(summary = "Definir senha do colaborador", description = "Define ou atualiza a senha de um colaborador.")

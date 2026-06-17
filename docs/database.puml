@@ -1,4 +1,4 @@
-@startuml
+@startuml "Salespilot Database"
 !theme plain
 hide circle
 skinparam linetype ortho
@@ -15,19 +15,6 @@ entity "companies" as companies {
   updated_at : datetime
 }
 
-' TO-DO: needs to discuss authentication strategy before defining this table
-' entity "profiles" as profiles {
-'   * id : uuid <<PK>>
-'   --
-'   full_name : varchar
-'   email : varchar
-'   avatar_url : varchar
-'   role : varchar
-'   is_active : boolean
-'   created_at : datetime
-'   updated_at : datetime
-' }
-
 entity "collaborators" as collaborators {
   * id : uuid <<PK>>
   --
@@ -35,6 +22,7 @@ entity "collaborators" as collaborators {
   name : varchar
   role : enum('admin', 'manager', 'seller')
   email : varchar <<UNIQUE>>
+  password_hash : varchar
   phone : varchar
   active : boolean
   preferences : json
@@ -44,14 +32,37 @@ entity "collaborators" as collaborators {
   updated_at : datetime
 }
 
+entity "auth.refresh_tokens" as refresh_tokens {
+  * id : uuid <<PK>>
+  --
+  user_id : uuid <<FK>>
+  token_hash : varchar
+  expires_at : datetime
+  revoked_at : datetime
+}
+
+entity "company_status_history" as company_status_history {
+  * id : uuid <<PK>>
+  --
+  company_id : uuid <<FK>>
+  active : boolean
+  changed_at : datetime
+}
+
+entity "collaborator_status_history" as collaborator_status_history {
+  * id : uuid <<PK>>
+  --
+  collaborator_id : uuid <<FK>>
+  active : boolean
+  changed_at : datetime
+}
+
 entity "clients" as clients {
   * id : uuid <<PK>>
   --
   company_id : uuid <<FK>>
   collaborator_id : uuid <<FK>>
   name : varchar
-  ' email : varchar
-  ' phone : varchar
   client_company_name : varchar
   sector : varchar
   overall_sentiment : int
@@ -150,41 +161,18 @@ entity "subscription_plans" as plans {
   created_at : datetime
 }
 
-' entity "audit_logs" as logs {
-'   * id : uuid <<PK>>
-'   --
-'   actor_profile_id : uuid <<FK>>
-'   company_id : uuid <<FK>>
-'   action : varchar
-'   entity_type : varchar
-'   entity_id : uuid
-'   payload : json
-'   created_at : datetime
-' }
-
-' entity "flyway_schema_history" as flyway {
-'   * installed_rank : int <<PK>>
-'   --
-'   version : varchar
-'   description : varchar
-'   type : varchar
-'   script : varchar
-'   checksum : int
-'   installed_by : varchar
-'   installed_on : datetime
-'   execution_time : int
-'   success : boolean
-' }
-
 ' Companies
 companies ||--o{ collaborators : "has"
 companies ||--o{ prompt : "defines"
 companies ||--o{ clients : "owns"
+companies ||--o{ company_status_history : "tracks status"
 
 ' Collaborators
 collaborators ||--o{ meetings : "conducts"
 collaborators ||--o{ assignments
 collaborators ||--o{ clients : "manages"
+collaborators ||--o{ refresh_tokens : "has"
+collaborators ||--o{ collaborator_status_history : "tracks status"
 
 ' Clients
 clients ||--o{ meetings : "attends"
