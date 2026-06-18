@@ -177,7 +177,8 @@ class CollaboratorControllerTest {
 
     @Test
     void shouldGetManagerByIdAndReturn200() throws Exception {
-        when(getCollaboratorByIdUseCase.execute(id)).thenReturn(buildCollaboratorResponse(CollaboratorRole.MANAGER));
+        setAdminAuth();
+        when(getCollaboratorByIdUseCase.execute(any(), any())).thenReturn(buildCollaboratorResponse(CollaboratorRole.MANAGER));
 
         mockMvc.perform(get("/api/collaborators/managers/{id}", id))
                 .andExpect(status().isOk())
@@ -186,7 +187,8 @@ class CollaboratorControllerTest {
 
     @Test
     void shouldReturn404WhenManagerNotFound() throws Exception {
-        when(getCollaboratorByIdUseCase.execute(id)).thenThrow(new CollaboratorNotFoundException(id));
+        setAdminAuth();
+        when(getCollaboratorByIdUseCase.execute(any(), any())).thenThrow(new CollaboratorNotFoundException(id));
 
         mockMvc.perform(get("/api/collaborators/managers/{id}", id))
                 .andExpect(status().isNotFound());
