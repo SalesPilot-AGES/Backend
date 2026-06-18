@@ -1,14 +1,16 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.MeetingAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.MeetingPageResponseDTO;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
+import com.salespilot.api.application.queryservice.ClientQueryService;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.enums.CollaboratorRole;
-import com.salespilot.api.domain.repository.ClientRepository;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,9 +40,11 @@ class GetAllMeetingsUseCaseTest {
     @Mock
     private MeetingPostAnalysisRepository meetingPostAnalysisRepository;
     @Mock
-    private ClientRepository clientRepository;
+    private CollaboratorQueryService collaboratorQueryService;
     @Mock
-    private CollaboratorRepository collaboratorRepository;
+    private ClientQueryService clientQueryService;
+    @Spy
+    private MeetingAssembler assembler;
 
     @InjectMocks
     private GetAllMeetingsUseCase useCase;
@@ -50,6 +54,7 @@ class GetAllMeetingsUseCaseTest {
     private final UUID meetingId = UUID.randomUUID();
     private final UUID collaboratorId = UUID.randomUUID();
     private final UUID clientId = UUID.randomUUID();
+    private final AuthUserDTO authUser = new AuthUserDTO(CollaboratorRole.SYSTEM_ADMIN, UUID.randomUUID(), UUID.randomUUID());
 
     private Meeting buildMeeting() {
         return new Meeting(meetingId, collaboratorId, clientId, "Sales Call", "SCHEDULED",
@@ -58,7 +63,7 @@ class GetAllMeetingsUseCaseTest {
 
     private Collaborator buildCollaborator() {
         return new Collaborator(collaboratorId, UUID.randomUUID(), "João", "joao@acme.com",
-                "+55 11 99999-0000", CollaboratorRole.SELLER, true, 0,
+                "+55 11 99999-0000", CollaboratorRole.SELLER, true,
                 new CollaboratorPreferences("light", "gpt-4o"), now, now);
     }
 
@@ -69,16 +74,16 @@ class GetAllMeetingsUseCaseTest {
 
     @Test
     void shouldReturnMeetingPageWithSummary() {
-        Page<Meeting> meetingPage = new PageImpl<>(List.of(buildMeeting()));
+        Page<Meeting> meetingPage = new PageImpl<>(List.of(buildMeeting()), PageRequest.of(0, 10), 1);
 
-        when(meetingRepository.getAllMeetings(null, null, null, pageable)).thenReturn(meetingPage);
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.of(buildClient()));
+        when(meetingRepository.getAllMeetings(null, null, null, null, pageable)).thenReturn(meetingPage);
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(clientQueryService.getOrThrowById(clientId)).thenReturn(buildClient());
         when(meetingRepository.getTotalMeetings()).thenReturn(1L);
         when(meetingRepository.getAverageDurationSeconds()).thenReturn(3600.0);
         when(meetingPostAnalysisRepository.getAverageSuccessRate()).thenReturn(75.0);
 
-        MeetingPageResponseDTO result = useCase.execute(null, null, null, pageable);
+        MeetingPageResponseDTO result = useCase.execute(null, null, null, pageable, authUser);
 
         assertEquals(1, result.totalElements());
         assertEquals(1, result.content().size());
@@ -90,13 +95,13 @@ class GetAllMeetingsUseCaseTest {
 
     @Test
     void shouldReturnEmptyPageWithSummaryWhenNoMeetings() {
-        when(meetingRepository.getAllMeetings(null, null, null, pageable))
-                .thenReturn(new PageImpl<>(List.of()));
+        when(meetingRepository.getAllMeetings(null, null, null, null, pageable))
+                .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
         when(meetingRepository.getTotalMeetings()).thenReturn(0L);
         when(meetingRepository.getAverageDurationSeconds()).thenReturn(0.0);
         when(meetingPostAnalysisRepository.getAverageSuccessRate()).thenReturn(null);
 
-        MeetingPageResponseDTO result = useCase.execute(null, null, null, pageable);
+        MeetingPageResponseDTO result = useCase.execute(null, null, null, pageable, authUser);
 
         assertTrue(result.content().isEmpty());
         assertEquals(0L, result.summary().totalMeetings());
@@ -104,20 +109,21 @@ class GetAllMeetingsUseCaseTest {
 
     @Test
     void shouldThrowWhenCollaboratorNotFound() {
-        when(meetingRepository.getAllMeetings(null, null, null, pageable))
-                .thenReturn(new PageImpl<>(List.of(buildMeeting())));
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.empty());
+        when(meetingRepository.getAllMeetings(null, null, null, null, pageable))
+                .thenReturn(new PageImpl<>(List.of(buildMeeting()), PageRequest.of(0, 10), 1));
+        when(collaboratorQueryService.getOrThrowById(collaboratorId))
+                .thenThrow(new CollaboratorNotFoundException(collaboratorId));
 
-        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(null, null, null, pageable));
+        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(null, null, null, pageable, authUser));
     }
 
     @Test
     void shouldThrowWhenClientNotFound() {
-        when(meetingRepository.getAllMeetings(null, null, null, pageable))
-                .thenReturn(new PageImpl<>(List.of(buildMeeting())));
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(meetingRepository.getAllMeetings(null, null, null, null, pageable))
+                .thenReturn(new PageImpl<>(List.of(buildMeeting()), PageRequest.of(0, 10), 1));
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(clientQueryService.getOrThrowById(clientId)).thenThrow(new ClientNotFoundException(clientId));
 
-        assertThrows(ClientNotFoundException.class, () -> useCase.execute(null, null, null, pageable));
+        assertThrows(ClientNotFoundException.class, () -> useCase.execute(null, null, null, pageable, authUser));
     }
 }

@@ -1,24 +1,27 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.MeetingContextMetadataAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.MeetingContextMetadataResponseDTO;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.MeetingNotFoundException;
+import com.salespilot.api.application.queryservice.ClientQueryService;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.MeetingQueryService;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.entity.MeetingPreAnalysis;
 import com.salespilot.api.domain.enums.CollaboratorRole;
-import com.salespilot.api.domain.repository.ClientRepository;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.MeetingPreAnalysisRepository;
-import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import com.salespilot.api.domain.valueobject.PreAnalysisRecommendedStrategy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -33,13 +36,15 @@ import static org.mockito.Mockito.*;
 class GetMeetingContextAndMetadataUseCaseTest {
 
     @Mock
-    private MeetingRepository repository;
+    private MeetingQueryService meetingQueryService;
     @Mock
-    private CollaboratorRepository collaboratorRepository;
+    private CollaboratorQueryService collaboratorQueryService;
     @Mock
-    private ClientRepository clientRepository;
+    private ClientQueryService clientQueryService;
     @Mock
     private MeetingPreAnalysisRepository meetingPreAnalysisRepository;
+    @Spy
+    private MeetingContextMetadataAssembler assembler;
 
     @InjectMocks
     private GetMeetingContextAndMetadataUseCase useCase;
@@ -48,6 +53,7 @@ class GetMeetingContextAndMetadataUseCaseTest {
     private final UUID meetingId = UUID.randomUUID();
     private final UUID collaboratorId = UUID.randomUUID();
     private final UUID clientId = UUID.randomUUID();
+    private final AuthUserDTO authUser = new AuthUserDTO(CollaboratorRole.SYSTEM_ADMIN, UUID.randomUUID(), UUID.randomUUID());
 
     private Meeting buildMeeting() {
         return new Meeting(meetingId, collaboratorId, clientId, "Discovery Call", "SCHEDULED",
@@ -57,7 +63,7 @@ class GetMeetingContextAndMetadataUseCaseTest {
 
     private Collaborator buildCollaborator() {
         return new Collaborator(collaboratorId, UUID.randomUUID(), "Carlos", "carlos@acme.com",
-                null, CollaboratorRole.SELLER, true, 0,
+                null, CollaboratorRole.SELLER, true,
                 new CollaboratorPreferences("dark", "gpt-4o"), now, now);
     }
 
@@ -76,12 +82,12 @@ class GetMeetingContextAndMetadataUseCaseTest {
 
     @Test
     void shouldReturnMeetingContextWithPreAnalysis() {
-        when(repository.getMeetingById(meetingId)).thenReturn(Optional.of(buildMeeting()));
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.of(buildClient()));
+        when(meetingQueryService.getOrThrowById(meetingId)).thenReturn(buildMeeting());
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(clientQueryService.getOrThrowById(clientId)).thenReturn(buildClient());
         when(meetingPreAnalysisRepository.findByMeetingId(meetingId)).thenReturn(Optional.of(buildPreAnalysis()));
 
-        MeetingContextMetadataResponseDTO result = useCase.execute(meetingId);
+        MeetingContextMetadataResponseDTO result = useCase.execute(meetingId, authUser);
 
         assertEquals(meetingId, result.id());
         assertEquals("Discovery Call", result.title());
@@ -93,12 +99,12 @@ class GetMeetingContextAndMetadataUseCaseTest {
 
     @Test
     void shouldReturnMeetingContextWithNullPreAnalysisWhenNotFound() {
-        when(repository.getMeetingById(meetingId)).thenReturn(Optional.of(buildMeeting()));
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.of(buildClient()));
+        when(meetingQueryService.getOrThrowById(meetingId)).thenReturn(buildMeeting());
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(clientQueryService.getOrThrowById(clientId)).thenReturn(buildClient());
         when(meetingPreAnalysisRepository.findByMeetingId(meetingId)).thenReturn(Optional.empty());
 
-        MeetingContextMetadataResponseDTO result = useCase.execute(meetingId);
+        MeetingContextMetadataResponseDTO result = useCase.execute(meetingId, authUser);
 
         assertEquals(meetingId, result.id());
         assertNull(result.preAnalysis());
@@ -106,30 +112,30 @@ class GetMeetingContextAndMetadataUseCaseTest {
 
     @Test
     void shouldThrowWhenMeetingNotFound() {
-        when(repository.getMeetingById(meetingId)).thenReturn(Optional.empty());
+        when(meetingQueryService.getOrThrowById(meetingId)).thenThrow(new MeetingNotFoundException(meetingId));
 
-        assertThrows(MeetingNotFoundException.class, () -> useCase.execute(meetingId));
+        assertThrows(MeetingNotFoundException.class, () -> useCase.execute(meetingId, authUser));
 
-        verifyNoInteractions(collaboratorRepository, clientRepository, meetingPreAnalysisRepository);
+        verifyNoInteractions(collaboratorQueryService, clientQueryService, meetingPreAnalysisRepository);
     }
 
     @Test
     void shouldThrowWhenCollaboratorNotFound() {
-        when(repository.getMeetingById(meetingId)).thenReturn(Optional.of(buildMeeting()));
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.empty());
+        when(meetingQueryService.getOrThrowById(meetingId)).thenReturn(buildMeeting());
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenThrow(new CollaboratorNotFoundException(collaboratorId));
 
-        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(meetingId));
+        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(meetingId, authUser));
 
-        verifyNoInteractions(clientRepository, meetingPreAnalysisRepository);
+        verifyNoInteractions(clientQueryService, meetingPreAnalysisRepository);
     }
 
     @Test
     void shouldThrowWhenClientNotFound() {
-        when(repository.getMeetingById(meetingId)).thenReturn(Optional.of(buildMeeting()));
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(meetingQueryService.getOrThrowById(meetingId)).thenReturn(buildMeeting());
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(clientQueryService.getOrThrowById(clientId)).thenThrow(new ClientNotFoundException(clientId));
 
-        assertThrows(ClientNotFoundException.class, () -> useCase.execute(meetingId));
+        assertThrows(ClientNotFoundException.class, () -> useCase.execute(meetingId, authUser));
 
         verifyNoInteractions(meetingPreAnalysisRepository);
     }

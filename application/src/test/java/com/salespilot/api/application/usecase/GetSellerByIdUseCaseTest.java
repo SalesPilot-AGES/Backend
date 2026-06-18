@@ -1,24 +1,27 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.SellerWithMeetingsAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.SellerWithMeetingsResponseDTO;
 import com.salespilot.api.application.exception.ClientNotFoundException;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
+import com.salespilot.api.application.queryservice.ClientQueryService;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Client;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.entity.Meeting;
 import com.salespilot.api.domain.enums.CollaboratorRole;
-import com.salespilot.api.domain.repository.ClientRepository;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -33,13 +36,15 @@ import static org.mockito.Mockito.*;
 class GetSellerByIdUseCaseTest {
 
     @Mock
-    private CollaboratorRepository collaboratorRepository;
+    private CollaboratorQueryService collaboratorQueryService;
     @Mock
-    private CompanyRepository companyRepository;
+    private CompanyQueryService companyQueryService;
     @Mock
-    private ClientRepository clientRepository;
+    private ClientQueryService clientQueryService;
     @Mock
     private MeetingRepository meetingRepository;
+    @Spy
+    private SellerWithMeetingsAssembler assembler;
 
     @InjectMocks
     private GetSellerByIdUseCase useCase;
@@ -50,15 +55,16 @@ class GetSellerByIdUseCaseTest {
     private final UUID meetingId = UUID.randomUUID();
     private final UUID clientId = UUID.randomUUID();
     private final CollaboratorPreferences preferences = new CollaboratorPreferences("light", "gpt-4o");
+    private final AuthUserDTO authUser = new AuthUserDTO(CollaboratorRole.SYSTEM_ADMIN, UUID.randomUUID(), UUID.randomUUID());
 
     private Collaborator buildSeller() {
         return new Collaborator(sellerId, companyId, "Ana", "ana@acme.com",
-                "+55 11 88888-0000", CollaboratorRole.SELLER, true, 0, preferences, now, now);
+                "+55 11 88888-0000", CollaboratorRole.SELLER, true, preferences, now, now);
     }
 
     private Collaborator buildCollaboratorWithRole(CollaboratorRole role) {
         return new Collaborator(sellerId, companyId, "Ana", "ana@acme.com",
-                "+55 11 88888-0000", role, true, 0, preferences, now, now);
+                "+55 11 88888-0000", role, true, preferences, now, now);
     }
 
     private Company buildCompany() {
@@ -77,13 +83,13 @@ class GetSellerByIdUseCaseTest {
 
     @Test
     void shouldReturnSellerWithLatestMeetingAndTotalMeetings() {
-        when(collaboratorRepository.getCollaboratorById(sellerId)).thenReturn(Optional.of(buildSeller()));
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.of(buildCompany()));
+        when(collaboratorQueryService.getOrThrowById(sellerId)).thenReturn(buildSeller());
+        when(companyQueryService.getOrThrowById(companyId)).thenReturn(buildCompany());
         when(meetingRepository.getLatestMeetingByCollaborator(sellerId)).thenReturn(Optional.of(buildMeeting()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.of(buildClient()));
+        when(clientQueryService.getOrThrowById(clientId)).thenReturn(buildClient());
         when(meetingRepository.getTotalMeetingsByCollaborator(sellerId)).thenReturn(10L);
 
-        SellerWithMeetingsResponseDTO result = useCase.execute(sellerId);
+        SellerWithMeetingsResponseDTO result = useCase.execute(sellerId, authUser);
 
         assertEquals(sellerId, result.id());
         assertEquals("Ana", result.name());
@@ -97,12 +103,12 @@ class GetSellerByIdUseCaseTest {
 
     @Test
     void shouldReturnSellerWithNullLatestMeetingWhenNoMeetings() {
-        when(collaboratorRepository.getCollaboratorById(sellerId)).thenReturn(Optional.of(buildSeller()));
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.of(buildCompany()));
+        when(collaboratorQueryService.getOrThrowById(sellerId)).thenReturn(buildSeller());
+        when(companyQueryService.getOrThrowById(companyId)).thenReturn(buildCompany());
         when(meetingRepository.getLatestMeetingByCollaborator(sellerId)).thenReturn(Optional.empty());
         when(meetingRepository.getTotalMeetingsByCollaborator(sellerId)).thenReturn(0L);
 
-        SellerWithMeetingsResponseDTO result = useCase.execute(sellerId);
+        SellerWithMeetingsResponseDTO result = useCase.execute(sellerId, authUser);
 
         assertNull(result.latestMeeting());
         assertEquals(0L, result.totalMeetings());
@@ -110,38 +116,38 @@ class GetSellerByIdUseCaseTest {
 
     @Test
     void shouldThrowWhenCollaboratorNotFound() {
-        when(collaboratorRepository.getCollaboratorById(sellerId)).thenReturn(Optional.empty());
+        when(collaboratorQueryService.getOrThrowById(sellerId)).thenThrow(new CollaboratorNotFoundException(sellerId));
 
-        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(sellerId));
+        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(sellerId, authUser));
 
-        verifyNoInteractions(companyRepository, meetingRepository, clientRepository);
+        verifyNoInteractions(companyQueryService, meetingRepository, clientQueryService);
     }
 
     @Test
     void shouldThrowWhenCollaboratorRoleIsNotSeller() {
-        when(collaboratorRepository.getCollaboratorById(sellerId))
-                .thenReturn(Optional.of(buildCollaboratorWithRole(CollaboratorRole.MANAGER)));
+        when(collaboratorQueryService.getOrThrowById(sellerId))
+                .thenReturn(buildCollaboratorWithRole(CollaboratorRole.MANAGER));
 
-        assertThrows(InvalidCollaboratorRoleException.class, () -> useCase.execute(sellerId));
+        assertThrows(InvalidCollaboratorRoleException.class, () -> useCase.execute(sellerId, authUser));
 
-        verifyNoInteractions(companyRepository, meetingRepository, clientRepository);
+        verifyNoInteractions(companyQueryService, meetingRepository, clientQueryService);
     }
 
     @Test
     void shouldThrowWhenCompanyNotFound() {
-        when(collaboratorRepository.getCollaboratorById(sellerId)).thenReturn(Optional.of(buildSeller()));
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.empty());
+        when(collaboratorQueryService.getOrThrowById(sellerId)).thenReturn(buildSeller());
+        when(companyQueryService.getOrThrowById(companyId)).thenThrow(new CompanyNotFoundException(companyId));
 
-        assertThrows(CompanyNotFoundException.class, () -> useCase.execute(sellerId));
+        assertThrows(CompanyNotFoundException.class, () -> useCase.execute(sellerId, authUser));
     }
 
     @Test
     void shouldThrowWhenClientNotFoundForLatestMeeting() {
-        when(collaboratorRepository.getCollaboratorById(sellerId)).thenReturn(Optional.of(buildSeller()));
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.of(buildCompany()));
+        when(collaboratorQueryService.getOrThrowById(sellerId)).thenReturn(buildSeller());
+        when(companyQueryService.getOrThrowById(companyId)).thenReturn(buildCompany());
         when(meetingRepository.getLatestMeetingByCollaborator(sellerId)).thenReturn(Optional.of(buildMeeting()));
-        when(clientRepository.findById(clientId)).thenReturn(Optional.empty());
+        when(clientQueryService.getOrThrowById(clientId)).thenThrow(new ClientNotFoundException(clientId));
 
-        assertThrows(ClientNotFoundException.class, () -> useCase.execute(sellerId));
+        assertThrows(ClientNotFoundException.class, () -> useCase.execute(sellerId, authUser));
     }
 }

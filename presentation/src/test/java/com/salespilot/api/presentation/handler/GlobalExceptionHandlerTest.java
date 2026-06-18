@@ -9,8 +9,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +45,18 @@ class GlobalExceptionHandlerTest {
 
         @GetMapping("/test/invalid-role")
         void invalidRole() { throw new InvalidCollaboratorRoleException(CollaboratorRole.SELLER, CollaboratorRole.MANAGER); }
+
+        @GetMapping("/test/invalid-period")
+        void invalidPeriod() { throw new InvalidPeriodException(LocalDate.now(), LocalDate.now().plusDays(1)); }
+
+        @GetMapping("/test/invalid-credentials")
+        void invalidCredentials() { throw new InvalidCredentialsException(); }
+
+        @GetMapping("/test/refresh-token-invalid")
+        void refreshTokenInvalid() { throw new RefreshTokenInvalidException(); }
+
+        @GetMapping("/test/forbidden")
+        void forbidden() { throw new ForbiddenException(); }
     }
 
     @BeforeEach
@@ -91,5 +105,39 @@ class GlobalExceptionHandlerTest {
     @Test
     void shouldReturn409WhenInvalidCollaboratorRole() throws Exception {
         mockMvc.perform(get("/test/invalid-role")).andExpect(status().isConflict());
+    }
+
+    @Test
+    void shouldReturn400WhenInvalidPeriod() throws Exception {
+        mockMvc.perform(get("/test/invalid-period")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn401WhenInvalidCredentials() throws Exception {
+        mockMvc.perform(get("/test/invalid-credentials")).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturn401WhenRefreshTokenInvalid() throws Exception {
+        mockMvc.perform(get("/test/refresh-token-invalid")).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturn403WhenForbidden() throws Exception {
+        mockMvc.perform(get("/test/forbidden")).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturn422WhenMethodArgNotValid() {
+        GlobalExceptionHandler handler = new GlobalExceptionHandler();
+        var response = handler.handleMethodArgumentNotValidException();
+        assertThat(response.getStatusCode().value()).isEqualTo(422);
+    }
+
+    @Test
+    void shouldReturn422WhenHandlerMethodValidation() {
+        GlobalExceptionHandler handler = new GlobalExceptionHandler();
+        var response = handler.handleHandlerMethodValidationException();
+        assertThat(response.getStatusCode().value()).isEqualTo(422);
     }
 }

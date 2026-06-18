@@ -1,17 +1,19 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +33,10 @@ class GetAllManagersUseCaseTest {
     private CollaboratorRepository repository;
 
     @Mock
-    private CompanyRepository companyRepository;
+    private CompanyQueryService companyQueryService;
+
+    @Spy
+    private CollaboratorAssembler assembler;
 
     @InjectMocks
     private GetAllManagersUseCase useCase;
@@ -44,7 +48,7 @@ class GetAllManagersUseCaseTest {
     private final PageRequest pageable = PageRequest.of(0, 10);
 
     private Collaborator buildManager() {
-        return new Collaborator(collaboratorId, companyId, "Ana", "ana@acme.com", "+55 11 99999-0000", CollaboratorRole.MANAGER, true, 0, preferences, now, now);
+        return new Collaborator(collaboratorId, companyId, "Ana", "ana@acme.com", "+55 11 99999-0000", CollaboratorRole.MANAGER, true, preferences, now, now);
     }
 
     private Company buildCompany() {
@@ -56,7 +60,7 @@ class GetAllManagersUseCaseTest {
         Page<Collaborator> managersPage = new PageImpl<>(List.of(buildManager()), pageable, 1);
 
         when(repository.getManagers(null, null, companyId, true, pageable)).thenReturn(managersPage);
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.of(buildCompany()));
+        when(companyQueryService.getOrThrowById(companyId)).thenReturn(buildCompany());
 
         Page<CollaboratorResponseDTO> result = useCase.execute(null, null, companyId, true, pageable);
 
@@ -71,7 +75,7 @@ class GetAllManagersUseCaseTest {
         Page<Collaborator> managersPage = new PageImpl<>(List.of(buildManager()), pageable, 1);
 
         when(repository.getManagers(null, null, companyId, null, pageable)).thenReturn(managersPage);
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.empty());
+        when(companyQueryService.getOrThrowById(companyId)).thenThrow(new CompanyNotFoundException(companyId));
 
         assertThrows(CompanyNotFoundException.class,
                 () -> useCase.execute(null, null, companyId, null, pageable));

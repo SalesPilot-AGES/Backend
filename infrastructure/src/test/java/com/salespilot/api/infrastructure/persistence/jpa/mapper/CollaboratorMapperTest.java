@@ -29,7 +29,6 @@ class CollaboratorMapperTest {
         entity.setPhone("+55 11 99999-0000");
         entity.setRole(CollaboratorRole.SELLER);
         entity.setActive(true);
-        entity.setAverageFeeling(7);
         entity.setPreferences(new CollaboratorPreferences("dark", "gpt-4o"));
         entity.setCreatedAt(LocalDateTime.now());
         entity.setUpdatedAt(LocalDateTime.now());
@@ -49,7 +48,6 @@ class CollaboratorMapperTest {
         assertEquals(entity.getPhone(), result.getPhone());
         assertEquals(entity.getRole(), result.getRole());
         assertEquals(entity.isActive(), result.isActive());
-        assertEquals(entity.getAverageFeeling(), result.getAverageFeeling());
         assertEquals(entity.getPreferences(), result.getPreferences());
         assertEquals(entity.getCreatedAt(), result.getCreatedAt());
         assertEquals(entity.getUpdatedAt(), result.getUpdatedAt());

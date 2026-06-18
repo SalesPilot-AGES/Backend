@@ -52,6 +52,6 @@ class SystemStatusControllerTest {
 
         mockMvc.perform(get("/api/v1/system/ping"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.current_status").value("UP"));
+                .andExpect(jsonPath("$.content.current_status").value("UP"));
     }
 }

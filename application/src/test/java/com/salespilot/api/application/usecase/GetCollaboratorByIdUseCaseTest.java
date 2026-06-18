@@ -1,24 +1,25 @@
 package com.salespilot.api.application.usecase;
 
+import com.salespilot.api.application.assembler.CollaboratorAssembler;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
-import com.salespilot.api.domain.repository.CollaboratorRepository;
-import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,10 +29,13 @@ import static org.mockito.Mockito.*;
 class GetCollaboratorByIdUseCaseTest {
 
     @Mock
-    private CollaboratorRepository collaboratorRepository;
+    private CollaboratorQueryService collaboratorQueryService;
 
     @Mock
-    private CompanyRepository companyRepository;
+    private CompanyQueryService companyQueryService;
+
+    @Spy
+    private CollaboratorAssembler assembler;
 
     @InjectMocks
     private GetCollaboratorByIdUseCase useCase;
@@ -42,11 +46,11 @@ class GetCollaboratorByIdUseCaseTest {
     private final CollaboratorPreferences preferences = new CollaboratorPreferences("light", "gpt-4o");
 
     private Collaborator buildCollaborator() {
-        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", CollaboratorRole.MANAGER, true, 0, preferences, now, now);
+        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", CollaboratorRole.MANAGER, true, preferences, now, now);
     }
 
     private Collaborator buildCollaboratorWithRole(CollaboratorRole role) {
-        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", role, true, 0, preferences, now, now);
+        return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", role, true, preferences, now, now);
     }
 
     private Company buildCompany() {
@@ -55,8 +59,8 @@ class GetCollaboratorByIdUseCaseTest {
 
     @Test
     void shouldReturnCollaboratorWithCompanyData() {
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.of(buildCompany()));
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(companyQueryService.getOrThrowById(companyId)).thenReturn(buildCompany());
 
         CollaboratorResponseDTO result = useCase.execute(collaboratorId);
 
@@ -70,27 +74,27 @@ class GetCollaboratorByIdUseCaseTest {
 
     @Test
     void shouldThrowWhenCollaboratorNotFound() {
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.empty());
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenThrow(new CollaboratorNotFoundException(collaboratorId));
 
         assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(collaboratorId));
 
-        verify(companyRepository, never()).getCompanyById(any());
+        verifyNoInteractions(companyQueryService);
     }
 
     @Test
     void shouldThrowWhenCollaboratorRoleIsNotManager() {
-        when(collaboratorRepository.getCollaboratorById(collaboratorId))
-                .thenReturn(Optional.of(buildCollaboratorWithRole(CollaboratorRole.SELLER)));
+        when(collaboratorQueryService.getOrThrowById(collaboratorId))
+                .thenReturn(buildCollaboratorWithRole(CollaboratorRole.SELLER));
 
         assertThrows(InvalidCollaboratorRoleException.class, () -> useCase.execute(collaboratorId));
 
-        verify(companyRepository, never()).getCompanyById(any());
+        verifyNoInteractions(companyQueryService);
     }
 
     @Test
     void shouldThrowWhenCompanyNotFound() {
-        when(collaboratorRepository.getCollaboratorById(collaboratorId)).thenReturn(Optional.of(buildCollaborator()));
-        when(companyRepository.getCompanyById(companyId)).thenReturn(Optional.empty());
+        when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
+        when(companyQueryService.getOrThrowById(companyId)).thenThrow(new CompanyNotFoundException(companyId));
 
         assertThrows(CompanyNotFoundException.class, () -> useCase.execute(collaboratorId));
     }

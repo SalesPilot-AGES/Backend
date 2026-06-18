@@ -98,7 +98,7 @@ class CompanyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createBody()))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Digital Sales"));
+                .andExpect(jsonPath("$.content.name").value("Digital Sales"));
     }
 
     @Test
@@ -117,7 +117,7 @@ class CompanyControllerTest {
 
         mockMvc.perform(get("/api/companies/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Digital Sales"));
+                .andExpect(jsonPath("$.content.name").value("Digital Sales"));
     }
 
     @Test
@@ -136,7 +136,7 @@ class CompanyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Digital Sales"));
+                .andExpect(jsonPath("$.content.name").value("Digital Sales"));
     }
 
     @Test
