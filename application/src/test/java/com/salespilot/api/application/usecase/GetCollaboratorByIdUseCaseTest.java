@@ -1,6 +1,7 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.CollaboratorAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.application.exception.CompanyNotFoundException;
@@ -44,6 +45,7 @@ class GetCollaboratorByIdUseCaseTest {
     private final UUID collaboratorId = UUID.randomUUID();
     private final LocalDateTime now = LocalDateTime.now();
     private final CollaboratorPreferences preferences = new CollaboratorPreferences("light", "gpt-4o");
+    private final AuthUserDTO authUser = new AuthUserDTO(CollaboratorRole.SYSTEM_ADMIN, UUID.randomUUID(), companyId);
 
     private Collaborator buildCollaborator() {
         return new Collaborator(collaboratorId, companyId, "João", "joao@acme.com", "+55 11 99999-0000", CollaboratorRole.MANAGER, true, preferences, now, now);
@@ -62,7 +64,7 @@ class GetCollaboratorByIdUseCaseTest {
         when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
         when(companyQueryService.getOrThrowById(companyId)).thenReturn(buildCompany());
 
-        CollaboratorResponseDTO result = useCase.execute(collaboratorId);
+        CollaboratorResponseDTO result = useCase.execute(collaboratorId, authUser);
 
         assertEquals(collaboratorId, result.id());
         assertEquals(companyId, result.companyId());
@@ -76,7 +78,7 @@ class GetCollaboratorByIdUseCaseTest {
     void shouldThrowWhenCollaboratorNotFound() {
         when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenThrow(new CollaboratorNotFoundException(collaboratorId));
 
-        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(collaboratorId));
+        assertThrows(CollaboratorNotFoundException.class, () -> useCase.execute(collaboratorId, authUser));
 
         verifyNoInteractions(companyQueryService);
     }
@@ -86,7 +88,7 @@ class GetCollaboratorByIdUseCaseTest {
         when(collaboratorQueryService.getOrThrowById(collaboratorId))
                 .thenReturn(buildCollaboratorWithRole(CollaboratorRole.SELLER));
 
-        assertThrows(InvalidCollaboratorRoleException.class, () -> useCase.execute(collaboratorId));
+        assertThrows(InvalidCollaboratorRoleException.class, () -> useCase.execute(collaboratorId, authUser));
 
         verifyNoInteractions(companyQueryService);
     }
@@ -96,6 +98,6 @@ class GetCollaboratorByIdUseCaseTest {
         when(collaboratorQueryService.getOrThrowById(collaboratorId)).thenReturn(buildCollaborator());
         when(companyQueryService.getOrThrowById(companyId)).thenThrow(new CompanyNotFoundException(companyId));
 
-        assertThrows(CompanyNotFoundException.class, () -> useCase.execute(collaboratorId));
+        assertThrows(CompanyNotFoundException.class, () -> useCase.execute(collaboratorId, authUser));
     }
 }
