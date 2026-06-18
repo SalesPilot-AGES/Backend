@@ -42,7 +42,7 @@ public class CompanyController {
 
     private final PostCompanyUseCase postCompanyUseCase;
     private final GetCompanyByIdUseCase getCompanyByIdUseCase;
-    private final GetAllCompaniesUseCase getCompanyUseCase;
+    private final GetAllCompaniesUseCase getAllCompaniesUseCase;
     private final UpdateCompanyUseCase updateCompanyUseCase;
 
     private static final int MAX_PAGE_SIZE = 100;
@@ -61,11 +61,11 @@ public class CompanyController {
 
     public CompanyController(PostCompanyUseCase postCompanyUseCase,
                              GetCompanyByIdUseCase getCompanyByIdUseCase,
-                             GetAllCompaniesUseCase getCompanyUseCase,
+                             GetAllCompaniesUseCase getAllCompaniesUseCase,
                              UpdateCompanyUseCase updateCompanyUseCase) {
         this.postCompanyUseCase = postCompanyUseCase;
         this.getCompanyByIdUseCase = getCompanyByIdUseCase;
-        this.getCompanyUseCase = getCompanyUseCase;
+        this.getAllCompaniesUseCase = getAllCompaniesUseCase;
         this.updateCompanyUseCase = updateCompanyUseCase;
     }
 
@@ -175,7 +175,7 @@ public class CompanyController {
             @Parameter(description = "Filtro por status de ativação") @RequestParam(required = false) Boolean active,
             Pageable pageable) {
         Pageable safePageable = normalizePageable(pageable);
-        Page<CompanyResponseDTO> companies = getCompanyUseCase.execute(name, taxId, plan, active, safePageable);
+        Page<CompanyResponseDTO> companies = getAllCompaniesUseCase.execute(name, taxId, plan, active, safePageable);
         return ResponseEntity.ok(ApiResponse.success(PaginatedResponse.from(companies), "Empresas listadas com sucesso"));
     }
 

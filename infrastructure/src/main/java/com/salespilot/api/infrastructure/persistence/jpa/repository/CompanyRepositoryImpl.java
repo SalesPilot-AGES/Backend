@@ -1,16 +1,5 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.model.CompanyStatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
@@ -21,6 +10,18 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.SubscriptionPlan
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.CompanySpecification;
 import com.salespilot.api.model.CompanyNameAndTotalMeetings;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
@@ -51,13 +52,39 @@ public class CompanyRepositoryImpl implements CompanyRepository {
                 .and(CompanySpecification.planEquals(plan))
                 .and(CompanySpecification.isActiveEquals(active));
 
-        return companyJpaRepository.findAll(spec, pageable).map(mapper::toDomain);
+        Page<CompanyEntity> page = companyJpaRepository.findAll(spec, pageable);
+
+        List<UUID> ids = page.getContent().stream().map(CompanyEntity::getId).toList();
+
+        Map<UUID, Object[]> statsMap = fetchStatsMap(ids);
+        return page.map(entity -> enrichWithStats(entity, statsMap));
     }
 
     @Transactional(readOnly = true)
     @Override
     public Optional<Company> getCompanyById(UUID id) {
-        return companyJpaRepository.findById(id).map(mapper::toDomain);
+        return companyJpaRepository.findById(id).map(entity -> {
+            Map<UUID, Object[]> statsMap = fetchStatsMap(List.of(id));
+            return enrichWithStats(entity, statsMap);
+        });
+    }
+
+    private Company enrichWithStats(CompanyEntity entity, Map<UUID, Object[]> statsMap) {
+        Object[] stats = statsMap.get(entity.getId());
+        long totalMeetings = stats != null ? ((Number) stats[3]).longValue() : 0L;
+        long totalCollaborators = stats != null ? ((Number) stats[1]).longValue() : 0L;
+        long totalManagers = stats != null ? ((Number) stats[2]).longValue() : 0L;
+
+        return mapper.toDomain(entity)
+                .withTotalMeetings(totalMeetings)
+                .withTotalCollaborators(totalCollaborators)
+                .withTotalManagers(totalManagers);
+    }
+
+    private Map<UUID, Object[]> fetchStatsMap(List<UUID> ids) {
+        return companyJpaRepository.getStatsByCompanyIds(ids)
+                .stream()
+                .collect(Collectors.toMap(row -> UUID.fromString(row[0].toString()), row -> row));
     }
 
     @Transactional
@@ -73,7 +100,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
                         companyStatusHistoryJpaRepository.save(new CompanyStatusHistoryEntity(entity, active));
                     }
                     updateSubscription(entity, plan);
-                    return mapper.toDomain(entity);
+
+                    Map<UUID, Object[]> statsMap = fetchStatsMap(List.of(id));
+                    return enrichWithStats(entity, statsMap);
                 });
     }
 

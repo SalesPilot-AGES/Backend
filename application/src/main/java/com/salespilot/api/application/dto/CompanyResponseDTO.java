@@ -1,9 +1,9 @@
 package com.salespilot.api.application.dto;
 
+import com.salespilot.api.domain.entity.Company;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import com.salespilot.api.domain.entity.Company;
 
 public record CompanyResponseDTO(
         UUID id,
@@ -14,7 +14,10 @@ public record CompanyResponseDTO(
         boolean active,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String plan
+        String plan,
+        Long totalMeetings,
+        Long totalCollaborators,
+        Long totalManagers
 ) {
     public static CompanyResponseDTO from(Company company) {
         return new CompanyResponseDTO(
@@ -26,7 +29,10 @@ public record CompanyResponseDTO(
                 company.isActive(),
                 company.getCreatedAt(),
                 company.getUpdatedAt(),
-                company.getPlan()
+                company.getPlan(),
+                company.getTotalMeetings(),
+                company.getTotalCollaborators(),
+                company.getTotalManagers()
         );
     }
 }

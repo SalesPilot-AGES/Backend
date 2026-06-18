@@ -1,19 +1,18 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
-import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>, JpaSpecificationExecutor<CompanyEntity>  {
@@ -40,11 +39,25 @@ public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, UUID>
     """, nativeQuery = true)
     List<Object[]> getTopFiveCompaniesByMeetingTotal(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-    
+
     @Query("""
         SELECT c.active, COUNT(c)
         FROM CompanyEntity c
         GROUP BY c.active
     """)
     List<Object[]> countCompaniesGroupedByStatus();
+
+    @Query(value = """
+        SELECT 
+            c.id AS company_id,
+            COUNT(DISTINCT col.id) AS total_collaborators,
+            COUNT(DISTINCT CASE WHEN col.role = 'MANAGER' THEN col.id END) AS total_managers,
+            COUNT(DISTINCT m.id) AS total_meetings
+        FROM companies c
+        LEFT JOIN collaborators col ON col.company_id = c.id
+        LEFT JOIN meetings m ON m.collaborator_id = col.id
+        WHERE c.id IN :ids
+        GROUP BY c.id
+    """, nativeQuery = true)
+    List<Object[]> getStatsByCompanyIds(@Param("ids") List<UUID> ids);
 }
