@@ -10,8 +10,8 @@ import java.util.UUID;
 
 @Schema(description = "Dados para cadastro de um colaborador")
 public record CollaboratorRequestDTO(
-        @Schema(description = "UUID da empresa à qual o colaborador pertence", example = "b1c2d3e4-f5a6-7890-2345-67890abcdef1")
-        @NotNull UUID companyId,
+        @Schema(description = "UUID da empresa à qual o colaborador pertence. Se omitido, será usada a empresa do usuário autenticado (apenas para MANAGERS).", example = "b1c2d3e4-f5a6-7890-2345-67890abcdef1")
+        UUID companyId,
 
         @Schema(description = "Nome completo do colaborador", example = "Gabriel Ribeiro")
         @NotBlank String name,

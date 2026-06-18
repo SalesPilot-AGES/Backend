@@ -28,6 +28,7 @@ services:
     env_file:
       - .env
     environment:
+      - DB_URL=jdbc:postgresql://db:5432/${DB_NAME:-salespilot}
       - FLYWAY_LOCATIONS=classpath:db/migration,classpath:db/seed
     depends_on:
       db:

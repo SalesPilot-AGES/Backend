@@ -153,7 +153,7 @@ public class MeetingController {
                                       "created_at": "2024-06-10T13:30:00Z"
                                     }
                                     """))),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião, seller ou cliente não encontrado", content = @Content)
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Reunião, vendedor ou cliente não encontrado", content = @Content)
     })
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER', 'SELLER')")
     @GetMapping("/{id}")

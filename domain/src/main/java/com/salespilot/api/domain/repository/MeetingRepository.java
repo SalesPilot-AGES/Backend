@@ -18,7 +18,7 @@ public interface MeetingRepository {
     double getAverageDurationSeconds();
     Optional<Meeting> getMeetingById(UUID id);
     boolean existsById(UUID id);
-    Optional<Meeting> getLatestMeetingByCollaborator(UUID CollaboratorId);
+    Optional<Meeting> getLatestMeetingByCollaborator(UUID collaboratorId);
     List<MonthAndTotal> getMeetingsGroupedByMonth(LocalDateTime start, LocalDateTime end, UUID companyId, UUID collaboratorId);
     Long countTotalMeetingsByPeriod(LocalDateTime currentStart, LocalDateTime currentEnd);
     Long countTotalMeetingsByCompanyIdAndPeriod(UUID companyId, LocalDateTime start, LocalDateTime end);

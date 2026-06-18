@@ -30,6 +30,10 @@ public class EditCollaboratorUseCase {
     }
 
     public CollaboratorResponseDTO execute(UUID companyId, UUID collaboratorId, String name, String email, String phone, boolean active, CollaboratorPreferences collaboratorPreferences, CollaboratorRole role, AuthUserDTO authUser){
+        if (companyId == null) {
+            companyId = authUser.companyId();
+        }
+
         Company company = companyQueryService.getOrThrowById(companyId);
 
         Collaborator existing = collaboratorQueryService.getOrThrowById(collaboratorId);
