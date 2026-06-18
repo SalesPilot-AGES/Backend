@@ -1,10 +1,12 @@
 package com.salespilot.api.application.usecase;
 
 import com.salespilot.api.application.assembler.CollaboratorAssembler;
+import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.CollaboratorResponseDTO;
 import com.salespilot.api.application.exception.InvalidCollaboratorRoleException;
 import com.salespilot.api.application.queryservice.CollaboratorQueryService;
 import com.salespilot.api.application.queryservice.CompanyQueryService;
+import com.salespilot.api.application.utils.CollaboratorAccessUtils;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.entity.Company;
 import com.salespilot.api.domain.enums.CollaboratorRole;
@@ -22,7 +24,9 @@ public class GetCollaboratorByIdUseCase {
         this.assembler = assembler;
     }
 
-    public CollaboratorResponseDTO execute(UUID id) {
+    public CollaboratorResponseDTO execute(UUID id, AuthUserDTO authUser) {
+        CollaboratorAccessUtils.grantSelfOrAdminAccess(id, authUser);
+
         Collaborator collaborator = collaboratorQueryService.getOrThrowById(id);
 
         if(collaborator.getRole() != CollaboratorRole.MANAGER) {

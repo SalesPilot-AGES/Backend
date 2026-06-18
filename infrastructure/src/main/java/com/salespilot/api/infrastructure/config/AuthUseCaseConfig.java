@@ -1,7 +1,11 @@
 package com.salespilot.api.infrastructure.config;
 
+import com.salespilot.api.application.assembler.CollaboratorAssembler;
+import com.salespilot.api.application.queryservice.CollaboratorQueryService;
+import com.salespilot.api.application.queryservice.CompanyQueryService;
 import com.salespilot.api.application.service.PasswordHasher;
 import com.salespilot.api.application.service.TokenService;
+import com.salespilot.api.application.usecase.GetAuthenticatedUserUseCase;
 import com.salespilot.api.application.usecase.LoginUseCase;
 import com.salespilot.api.application.usecase.RefreshTokenUseCase;
 import com.salespilot.api.domain.repository.AuthenticationRepository;
@@ -27,6 +31,13 @@ public class AuthUseCaseConfig {
                                                    TokenService tokenService,
                                                    @Value("${app.security.jwt.refresh-ttl-seconds:2592000}") long refreshTokenTtlSeconds) {
         return new RefreshTokenUseCase(authenticationRepository, refreshTokenRepository, tokenService, refreshTokenTtlSeconds);
+    }
+
+    @Bean
+    public GetAuthenticatedUserUseCase getAuthenticatedUserUseCase(CollaboratorQueryService collaboratorQueryService,
+                                                                   CompanyQueryService companyQueryService,
+                                                                   CollaboratorAssembler assembler) {
+        return new GetAuthenticatedUserUseCase(collaboratorQueryService, companyQueryService, assembler);
     }
 }
 

@@ -26,6 +26,10 @@ public class PostCollaboratorUseCase {
     }
 
     public CollaboratorResponseDTO create(UUID companyId, String name, String email, CollaboratorRole role, boolean active, String phone, CollaboratorPreferences collaboratorPreferences, AuthUserDTO authUser) {
+        if (companyId == null) {
+            companyId = authUser.companyId();
+        }
+
         CollaboratorAccessUtils.grantAccess(companyId, authUser);
 
         if(collaboratorRepository.existsByCompanyIdAndEmail(companyId, email)) {

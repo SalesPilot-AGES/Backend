@@ -9,7 +9,6 @@ import com.salespilot.api.model.CompanyNameAndTotalMeetings;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 

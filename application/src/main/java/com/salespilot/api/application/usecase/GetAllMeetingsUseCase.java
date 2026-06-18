@@ -64,16 +64,12 @@ public class GetAllMeetingsUseCase {
         UUID authUserCompanyId = null;
 
         switch(authUserRole) {
-            case SELLER -> {
-                authUserCollaboratorId = authUser.id();
-            }
+            case SELLER -> authUserCollaboratorId = authUser.id();
             case MANAGER -> {
                 authUserCollaboratorId = requestedCollaboratorId;
                 authUserCompanyId = authUser.companyId();
             }
-            case SYSTEM_ADMIN -> {
-                authUserCollaboratorId = requestedCollaboratorId;
-            }
+            case SYSTEM_ADMIN -> authUserCollaboratorId = requestedCollaboratorId;
         }
 
         return new MeetingFilters(
