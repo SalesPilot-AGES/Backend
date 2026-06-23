@@ -3,6 +3,7 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 import com.salespilot.api.application.exception.CollaboratorNotFoundException;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
+import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -165,5 +167,14 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
                 false,
                 period
         );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<StatusCount> countSellersGroupedByStatus() {
+        return collaboratorJpaRepository.countSellersGroupedByStatus()
+                .stream()
+                .map(item -> new StatusCount((Boolean) item[0], ((Number) item[1]).longValue()))
+                .toList();
     }
 }

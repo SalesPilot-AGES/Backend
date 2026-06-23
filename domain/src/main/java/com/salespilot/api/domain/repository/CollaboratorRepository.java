@@ -2,11 +2,13 @@ package com.salespilot.api.domain.repository;
 
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
+import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,4 +25,5 @@ public interface CollaboratorRepository {
     Long countSellersByCompanyIdAndActiveValue(UUID companyId, boolean active);
     Long countActiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period);
     Long countInactiveSellersByCompanyIdAndPeriod(UUID companyId, LocalDateTime period);
+    List<StatusCount> countSellersGroupedByStatus();
 }

@@ -15,11 +15,12 @@ import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
-import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
+import com.salespilot.api.application.usecase.GetGroupedSellersCountUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
@@ -148,5 +149,10 @@ public class UseCaseConfig {
     @Bean
     public GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase(MeetingRepository meetingRepository) {
         return new GetAverageMeetingDurationPerMonthUseCase(meetingRepository);
+    }
+
+    @Bean
+    public GetGroupedSellersCountUseCase getGroupedSellersCountUseCase(CollaboratorRepository collaboratorRepository) {
+        return new GetGroupedSellersCountUseCase(collaboratorRepository);
     }
 }

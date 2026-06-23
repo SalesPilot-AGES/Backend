@@ -4,9 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.salespilot.api.application.dto.*;
+import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
+import com.salespilot.api.application.dto.CardMetricsResponseDTO;
+import com.salespilot.api.application.dto.CompanyNameAndTotalMeetingsDto;
+import com.salespilot.api.application.dto.DashboardStatusCountDTO;
+import com.salespilot.api.application.dto.GroupAverageMeetingDurationPerMonthResponseDTO;
+import com.salespilot.api.application.dto.GroupStatusCountResponseDTO;
+import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
+import com.salespilot.api.application.dto.TopFiveCompanyByMeetingTotalResponseDto;
 import com.salespilot.api.application.exception.InvalidPeriodException;
-import com.salespilot.api.application.usecase.*;
+import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
+import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
+import com.salespilot.api.application.usecase.GetGroupedSellersCountUseCase;
+import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
+import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 import com.salespilot.api.presentation.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +44,8 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class DashboardControllerTest {
@@ -44,6 +57,8 @@ class DashboardControllerTest {
     @Mock GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase;
     @Mock GetCardMetricsUseCase getCardMetricsUseCase;
     @Mock GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase;
+    @Mock
+    GetGroupedSellersCountUseCase getGroupedSellersCountUseCase;
 
     @InjectMocks
     DashboardController controller;
@@ -107,8 +122,8 @@ class DashboardControllerTest {
     @Test
     void shouldGetCompaniesStatusAndReturn200() throws Exception {
         when(getGroupedCompaniesCountUseCase.execute())
-                .thenReturn(new GroupCompanyCountResponseDTO(
-                        List.of(new CompanyStatusCountDTO("Ativas", 5L)), 5L));
+                .thenReturn(new GroupStatusCountResponseDTO(
+                        List.of(new DashboardStatusCountDTO("Ativas", 5L)), 5L));
 
         mockMvc.perform(get("/api/dashboard/companies-status"))
                 .andExpect(status().isOk())
