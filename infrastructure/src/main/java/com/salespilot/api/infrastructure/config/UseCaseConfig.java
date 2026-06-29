@@ -138,8 +138,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository) {
-        return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository);
+    public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
+        return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository, meetingPostAnalysisRepository);
     }
 
     @Bean

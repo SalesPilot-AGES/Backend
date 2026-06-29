@@ -156,7 +156,7 @@ public class DashboardController {
         return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
     }
 
-    @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
+    @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard de acordo com o papel do usuário. No contexto de vendedor, inclui total de reuniões, duração média e sentimento médio.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AdminGroupCardMetricsResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),

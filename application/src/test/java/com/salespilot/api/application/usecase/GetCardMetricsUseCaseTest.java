@@ -8,6 +8,7 @@ import com.salespilot.api.application.dto.SellerGroupCardMetricsResponseDTO;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.repository.CompanyRepository;
+import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.domain.repository.MeetingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,9 @@ class GetCardMetricsUseCaseTest {
 
     @Mock
     private CollaboratorRepository collaboratorRepository;
+
+    @Mock
+    private MeetingPostAnalysisRepository meetingPostAnalysisRepository;
 
     @InjectMocks
     private GetCardMetricsUseCase useCase;
@@ -89,6 +93,39 @@ class GetCardMetricsUseCaseTest {
         GroupCardMetricsResponse result = useCase.execute("30d", null, null, authUser);
 
         assertInstanceOf(SellerGroupCardMetricsResponseDTO.class, result);
+    }
+
+    @Test
+    void shouldIncludeAverageSentimentCard_whenSeller() {
+        AuthUserDTO authUser = new AuthUserDTO(CollaboratorRole.SELLER, sellerId, UUID.randomUUID());
+
+        when(meetingRepository.countTotalMeetingsByCollaboratorIdAndPeriod(eq(sellerId), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(5L);
+        when(meetingRepository.getAverageDurationByCollaboratorIdAndPeriod(eq(sellerId), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(60.0);
+        when(meetingPostAnalysisRepository.getAverageFeelingByCollaboratorAndPeriod(eq(sellerId), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(8.0, 4.0);
+
+        GroupCardMetricsResponse result = useCase.execute("30d", null, null, authUser);
+
+        SellerGroupCardMetricsResponseDTO sellerResult = (SellerGroupCardMetricsResponseDTO) result;
+        assertEquals(8.0, sellerResult.averageSentiment().value());
+        assertEquals(100.0, sellerResult.averageSentiment().variationPercent());
+        assertEquals("up", sellerResult.averageSentiment().trend());
+    }
+
+    @Test
+    void shouldDefaultAverageSentimentToZero_whenNoPostAnalysis() {
+        AuthUserDTO authUser = new AuthUserDTO(CollaboratorRole.SELLER, sellerId, UUID.randomUUID());
+
+        when(meetingRepository.countTotalMeetingsByCollaboratorIdAndPeriod(eq(sellerId), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(0L);
+        when(meetingRepository.getAverageDurationByCollaboratorIdAndPeriod(eq(sellerId), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(0.0);
+        when(meetingPostAnalysisRepository.getAverageFeelingByCollaboratorAndPeriod(eq(sellerId), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(null);
+
+        GroupCardMetricsResponse result = useCase.execute("30d", null, null, authUser);
+
+        SellerGroupCardMetricsResponseDTO sellerResult = (SellerGroupCardMetricsResponseDTO) result;
+        assertEquals(0.0, sellerResult.averageSentiment().value());
+        assertEquals("neutral", sellerResult.averageSentiment().trend());
     }
 
     @Test

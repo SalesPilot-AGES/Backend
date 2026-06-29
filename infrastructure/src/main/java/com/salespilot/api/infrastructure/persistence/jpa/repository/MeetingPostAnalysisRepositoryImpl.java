@@ -5,6 +5,7 @@ import com.salespilot.api.domain.repository.MeetingPostAnalysisRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.MeetingPostAnalysisMapper;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,5 +33,10 @@ public class MeetingPostAnalysisRepositoryImpl implements MeetingPostAnalysisRep
     @Override
     public Double getAverageFeelingByCollaborator(UUID collaboratorId) {
         return meetingPostAnalysisJpaRepository.findAverageScoreByCollaboratorId(collaboratorId).orElse(null);
+    }
+
+    @Override
+    public Double getAverageFeelingByCollaboratorAndPeriod(UUID collaboratorId, LocalDateTime start, LocalDateTime end) {
+        return meetingPostAnalysisJpaRepository.findAverageScoreByCollaboratorIdAndPeriod(collaboratorId, start, end).orElse(null);
     }
 }
