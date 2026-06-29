@@ -10,13 +10,16 @@ import com.salespilot.api.application.dto.CompanyNameAndTotalMeetingsDto;
 import com.salespilot.api.application.dto.DashboardStatusCountDTO;
 import com.salespilot.api.application.dto.GroupAverageMeetingDurationPerMonthResponseDTO;
 import com.salespilot.api.application.dto.GroupStatusCountResponseDTO;
+import com.salespilot.api.application.dto.MeetingsBySellerResponseDto;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
+import com.salespilot.api.application.dto.SellerNameAndTotalMeetingsDto;
 import com.salespilot.api.application.dto.TopFiveCompanyByMeetingTotalResponseDto;
 import com.salespilot.api.application.exception.InvalidPeriodException;
 import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
 import com.salespilot.api.application.usecase.GetGroupedSellersCountUseCase;
+import com.salespilot.api.application.usecase.GetMeetingsBySellerUseCase;
 import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 import com.salespilot.api.presentation.handler.GlobalExceptionHandler;
@@ -59,6 +62,8 @@ class DashboardControllerTest {
     @Mock GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase;
     @Mock
     GetGroupedSellersCountUseCase getGroupedSellersCountUseCase;
+    @Mock
+    GetMeetingsBySellerUseCase getMeetingsBySellerUseCase;
 
     @InjectMocks
     DashboardController controller;
@@ -117,6 +122,27 @@ class DashboardControllerTest {
         mockMvc.perform(get("/api/dashboard/meetings-by-company?period=all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].company_name").value("Acme"));
+    }
+
+    @Test
+    void shouldGetMeetingsBySellerAndReturn200() throws Exception {
+        when(getMeetingsBySellerUseCase.execute(any(), any(), any()))
+                .thenReturn(new MeetingsBySellerResponseDto(
+                        List.of(new SellerNameAndTotalMeetingsDto("Ana Silva", 18L))));
+
+        mockMvc.perform(get("/api/dashboard/meetings-by-seller?period=all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].seller_name").value("Ana Silva"))
+                .andExpect(jsonPath("$.data[0].total").value(18));
+    }
+
+    @Test
+    void shouldReturn400WhenInvalidPeriodOnMeetingsBySeller() throws Exception {
+        when(getMeetingsBySellerUseCase.execute(any(), any(), any()))
+                .thenThrow(new InvalidPeriodException(null, null));
+
+        mockMvc.perform(get("/api/dashboard/meetings-by-seller?period=invalid"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

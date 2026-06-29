@@ -24,6 +24,7 @@ import com.salespilot.api.application.usecase.GetGroupedSellersCountUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
+import com.salespilot.api.application.usecase.GetMeetingsBySellerUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
@@ -154,5 +155,10 @@ public class UseCaseConfig {
     @Bean
     public GetGroupedSellersCountUseCase getGroupedSellersCountUseCase(CollaboratorRepository collaboratorRepository) {
         return new GetGroupedSellersCountUseCase(collaboratorRepository);
+    }
+
+    @Bean
+    public GetMeetingsBySellerUseCase getMeetingsBySellerUseCase(CollaboratorRepository collaboratorRepository) {
+        return new GetMeetingsBySellerUseCase(collaboratorRepository);
     }
 }

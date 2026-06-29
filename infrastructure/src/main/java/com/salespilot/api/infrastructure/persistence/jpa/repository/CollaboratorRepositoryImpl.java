@@ -6,6 +6,7 @@ import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.domain.repository.CollaboratorRepository;
 import com.salespilot.api.domain.valueobject.CollaboratorPreferences;
+import com.salespilot.api.model.SellerNameAndTotalMeetings;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorStatusHistoryEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
@@ -176,5 +177,18 @@ public class CollaboratorRepositoryImpl implements CollaboratorRepository {
                 .stream()
                 .map(item -> new StatusCount((Boolean) item[0], ((Number) item[1]).longValue()))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<SellerNameAndTotalMeetings> getMeetingsBySeller(LocalDateTime start, LocalDateTime end) {
+        return collaboratorJpaRepository.getMeetingsBySeller(start, end).stream().map(this::mapToSellerNameAndTotalMeetings).toList();
+    }
+
+    private SellerNameAndTotalMeetings mapToSellerNameAndTotalMeetings(Object[] item) {
+        String name = item[0].toString();
+        Long total = ((Number) item[1]).longValue();
+
+        return new SellerNameAndTotalMeetings(name, total);
     }
 }
