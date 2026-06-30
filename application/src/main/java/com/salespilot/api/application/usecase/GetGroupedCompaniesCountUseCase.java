@@ -1,11 +1,11 @@
 package com.salespilot.api.application.usecase;
 
-import java.util.List;
-
-import com.salespilot.api.application.dto.CompanyStatusCountDTO;
-import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
-import com.salespilot.api.domain.model.CompanyStatusCount;
+import com.salespilot.api.application.dto.DashboardStatusCountDTO;
+import com.salespilot.api.application.dto.GroupStatusCountResponseDTO;
+import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
+
+import java.util.List;
 
 public class GetGroupedCompaniesCountUseCase {
     private final CompanyRepository companyRepository;
@@ -14,22 +14,22 @@ public class GetGroupedCompaniesCountUseCase {
         this.companyRepository = companyRepository;
     }
 
-    public GroupCompanyCountResponseDTO execute() {
+    public GroupStatusCountResponseDTO execute() {
 
-        List<CompanyStatusCountDTO> data = companyRepository
+        List<DashboardStatusCountDTO> data = companyRepository
             .countCompaniesGroupedByStatus()
             .stream()
             .map(this::mapToDto)
             .toList();
 
         Long total = data.stream()
-            .mapToLong(CompanyStatusCountDTO::value)
+            .mapToLong(DashboardStatusCountDTO::value)
             .sum();
 
-        return new GroupCompanyCountResponseDTO(data, total);
+        return new GroupStatusCountResponseDTO(data, total);
     }
 
-    private CompanyStatusCountDTO mapToDto(CompanyStatusCount item) {
-        return new CompanyStatusCountDTO(item.active() ? "Ativas" : "Inativas", item.total());
+    private DashboardStatusCountDTO mapToDto(StatusCount item) {
+        return new DashboardStatusCountDTO(item.active() ? "Ativas" : "Inativas", item.total());
     }
 }

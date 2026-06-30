@@ -3,7 +3,11 @@ package com.salespilot.api.infrastructure.persistence.jpa.repository;
 import com.salespilot.api.domain.entity.Collaborator;
 import com.salespilot.api.domain.enums.CollaboratorRole;
 import com.salespilot.api.infrastructure.InfrastructureTestApplication;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.ClientEntity;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.CollaboratorEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
+import com.salespilot.api.infrastructure.persistence.jpa.entity.MeetingEntity;
+import com.salespilot.api.model.SellerNameAndTotalMeetings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +21,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,12 +63,39 @@ class CollaboratorRepositoryImplTest {
     @Autowired
     CollaboratorJpaRepository collaboratorJpaRepository;
 
+    @Autowired
+    ClientsJpaRepository clientsJpaRepository;
+
+    @Autowired
+    MeetingsJpaRepository meetingsJpaRepository;
+
     // ---------------------------------------------------------------------------
     // Helper
     // ---------------------------------------------------------------------------
 
     private CompanyEntity createCompany(String taxId) {
         return companyJpaRepository.saveAndFlush(new CompanyEntity("Test Corp", taxId, true));
+    }
+
+    private ClientEntity createClient(CompanyEntity company, CollaboratorEntity seller) {
+        ClientEntity client = new ClientEntity();
+        client.setId(UUID.randomUUID());
+        client.setCompany(company);
+        client.setCollaborator(seller);
+        client.setName("Client of " + seller.getName());
+        client.setCreatedAt(LocalDateTime.now());
+        client.setUpdatedAt(LocalDateTime.now());
+        return clientsJpaRepository.saveAndFlush(client);
+    }
+
+    private void createMeeting(CollaboratorEntity seller, ClientEntity client) {
+        MeetingEntity meeting = new MeetingEntity();
+        meeting.setId(UUID.randomUUID());
+        meeting.setCollaborator(seller);
+        meeting.setClient(client);
+        meeting.setStatus("COMPLETED");
+        meeting.setCreatedAt(LocalDateTime.now());
+        meetingsJpaRepository.saveAndFlush(meeting);
     }
 
     // ---------------------------------------------------------------------------
@@ -254,6 +287,50 @@ class CollaboratorRepositoryImplTest {
         assertThat(found.get().getName()).isEqualTo("Updated Name");
         assertThat(found.get().getEmail()).isEqualTo("updated@test.com");
         assertThat(found.get().getPhone()).isEqualTo("11999999999");
+    }
+
+    @Test
+    void shouldReturnMeetingsBySellerOrderedByTotalDesc() {
+        CompanyEntity company = createCompany("99.111.111/0009-99");
+
+        Collaborator topSeller = collaboratorRepository.create(
+                company.getId(), "Top Seller", "top.seller@test.com", CollaboratorRole.SELLER, true, null, null);
+        Collaborator lowSeller = collaboratorRepository.create(
+                company.getId(), "Low Seller", "low.seller@test.com", CollaboratorRole.SELLER, true, null, null);
+        collaboratorRepository.create(
+                company.getId(), "Some Manager", "some.manager@test.com", CollaboratorRole.MANAGER, true, null, null);
+
+        CollaboratorEntity topSellerEntity = collaboratorJpaRepository.getReferenceById(topSeller.getId());
+        CollaboratorEntity lowSellerEntity = collaboratorJpaRepository.getReferenceById(lowSeller.getId());
+
+        ClientEntity topClient = createClient(company, topSellerEntity);
+        ClientEntity lowClient = createClient(company, lowSellerEntity);
+
+        createMeeting(topSellerEntity, topClient);
+        createMeeting(topSellerEntity, topClient);
+        createMeeting(lowSellerEntity, lowClient);
+
+        List<SellerNameAndTotalMeetings> result = collaboratorRepository.getMeetingsBySeller(
+                LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+
+        assertThat(result).extracting(SellerNameAndTotalMeetings::sellerName)
+                .containsExactly("Top Seller", "Low Seller");
+        assertThat(result.get(0).total()).isEqualTo(2L);
+        assertThat(result.get(1).total()).isEqualTo(1L);
+        assertThat(result).noneMatch(item -> item.sellerName().equals("Some Manager"));
+    }
+
+    @Test
+    void shouldReturnSellersWithZeroMeetingsWhenNoneInPeriod() {
+        CompanyEntity company = createCompany("99.222.222/0010-99");
+
+        collaboratorRepository.create(
+                company.getId(), "Idle Seller", "idle.seller@test.com", CollaboratorRole.SELLER, true, null, null);
+
+        List<SellerNameAndTotalMeetings> result = collaboratorRepository.getMeetingsBySeller(
+                LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+
+        assertThat(result).anyMatch(item -> item.sellerName().equals("Idle Seller") && item.total() == 0L);
     }
 
     @Test

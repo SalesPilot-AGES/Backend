@@ -1,18 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.salespilot.api.domain.entity.Company;
-import com.salespilot.api.domain.model.CompanyStatusCount;
+import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyStatusHistoryEntity;
@@ -21,6 +10,16 @@ import com.salespilot.api.infrastructure.persistence.jpa.entity.SubscriptionPlan
 import com.salespilot.api.infrastructure.persistence.jpa.mapper.CompanyMapper;
 import com.salespilot.api.infrastructure.persistence.jpa.specification.CompanySpecification;
 import com.salespilot.api.model.CompanyNameAndTotalMeetings;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
@@ -154,7 +153,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     
     @Transactional(readOnly = true)
     @Override
-    public List<CompanyStatusCount> countCompaniesGroupedByStatus() {
+    public List<StatusCount> countCompaniesGroupedByStatus() {
         return companyJpaRepository
             .countCompaniesGroupedByStatus()
             .stream()
@@ -162,7 +161,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
             .toList();
     }
 
-    private CompanyStatusCount mapToCompanyStatusCount(Object[] item) {
+    private StatusCount mapToCompanyStatusCount(Object[] item) {
         if (item == null || item.length < 2) {
             throw new IllegalStateException("Resultado inválido da query de companies");
         }
@@ -170,7 +169,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         Boolean active = (Boolean) item[0];
         Number total = (Number) item[1];
 
-        return new CompanyStatusCount(
+        return new StatusCount(
             Boolean.TRUE.equals(active),
             total.longValue()
         );

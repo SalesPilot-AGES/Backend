@@ -4,12 +4,15 @@ import com.salespilot.api.application.dto.AdminGroupCardMetricsResponseDTO;
 import com.salespilot.api.application.dto.AuthUserDTO;
 import com.salespilot.api.application.dto.GroupAverageMeetingDurationPerMonthResponseDTO;
 import com.salespilot.api.application.dto.GroupCardMetricsResponse;
-import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
+import com.salespilot.api.application.dto.GroupStatusCountResponseDTO;
+import com.salespilot.api.application.dto.MeetingsBySellerResponseDto;
 import com.salespilot.api.application.dto.MeetingsGroupedByMonthResponseDTO;
 import com.salespilot.api.application.dto.TopFiveCompanyByMeetingTotalResponseDto;
 import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
 import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
+import com.salespilot.api.application.usecase.GetGroupedSellersCountUseCase;
+import com.salespilot.api.application.usecase.GetMeetingsBySellerUseCase;
 import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
 import com.salespilot.api.application.usecase.GetTotalMeetingsGroupedByMonthUseCase;
 import com.salespilot.api.presentation.utils.JwtUtils;
@@ -41,6 +44,8 @@ public class DashboardController {
     private final GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase;
     private final GetCardMetricsUseCase getCardMetricsUseCase;
     private final GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase;
+    private final GetGroupedSellersCountUseCase getGroupedSellersCountUseCase;
+    private final GetMeetingsBySellerUseCase getMeetingsBySellerUseCase;
 
     private static final String COMPANY_STATUS_RESPONSE_EXAMPLE = """
             {
@@ -52,12 +57,14 @@ public class DashboardController {
             }
             """;
 
-    public DashboardController(GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth, GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase, GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase, GetCardMetricsUseCase getCardMetricsUseCase, GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase){
+    public DashboardController(GetTotalMeetingsGroupedByMonthUseCase getTotalMeetingsGroupedByMonth, GetGroupedCompaniesCountUseCase getGroupedCompaniesCountUseCase, GetTopFiveCompaniesByMeetingTotalUseCase getTopFiveCompaniesByMeetingTotalUseCase, GetCardMetricsUseCase getCardMetricsUseCase, GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase, GetGroupedSellersCountUseCase getGroupedSellersCountUseCase, GetMeetingsBySellerUseCase getMeetingsBySellerUseCase){
         this.getTotalMeetingsGroupedByMonth = getTotalMeetingsGroupedByMonth;
         this.getGroupedCompaniesCountUseCase = getGroupedCompaniesCountUseCase;
         this.getTopFiveCompaniesByMeetingTotalUseCase = getTopFiveCompaniesByMeetingTotalUseCase;
         this.getCardMetricsUseCase = getCardMetricsUseCase;
         this.getAverageMeetingDurationPerMonthUseCase = getAverageMeetingDurationPerMonthUseCase;
+        this.getGroupedSellersCountUseCase = getGroupedSellersCountUseCase;
+        this.getMeetingsBySellerUseCase = getMeetingsBySellerUseCase;
     }
 
     @Operation(summary = "Listar reunoões por mês", description = "Retorna uma lista contendo o mês e sua quantidade de reniões a partir de filtros personalizados, 30d, ou 90d.")
@@ -112,20 +119,44 @@ public class DashboardController {
         return ResponseEntity.ok(getTopFiveCompaniesByMeetingTotalUseCase.execute(period, startDate, endDate));
     }
 
+    @Operation(summary = "Listar reuniões por vendedor", description = "Retorna uma lista contendo o nome do vendedor e a quantidade de reuniões, em ordem decrescente de reuniões, de todo período ou intervalo de datas personalizadas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",
+            content = @Content(mediaType = "application/json",
+                    examples = @ExampleObject(value = """
+                            {
+                                "data": [
+                                    { "seller_name": "Ana Silva", "total": 18 },
+                                    { "seller_name": "Saulo Souza", "total": 12 },
+                                    { "seller_name": "Carlos Lima", "total": 0 }
+                                ]
+                            }
+                            """))),
+        @ApiResponse(responseCode = "400", description = "Parâmetros 'start_date' ou 'end_date' inválidos")
+    })
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'MANAGER')")
+    @GetMapping("/meetings-by-seller")
+    public ResponseEntity<MeetingsBySellerResponseDto> getMeetingsBySeller(
+        @RequestParam(required = true) String period,
+        @RequestParam(name = "start_date", required = false) LocalDate startDate,
+        @RequestParam(name = "end_date", required = false) LocalDate endDate) {
+        return ResponseEntity.ok(getMeetingsBySellerUseCase.execute(period, startDate, endDate));
+    }
+
     @Operation(summary = "Retornar empresas ativas e inativas", description = "Retorna a quantidade de empresas ativas e inativas")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GroupCompanyCountResponseDTO.class),
+                            schema = @Schema(implementation = GroupStatusCountResponseDTO.class),
                             examples = @ExampleObject(value = COMPANY_STATUS_RESPONSE_EXAMPLE))),
     })
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @GetMapping("/companies-status")
-    public ResponseEntity<GroupCompanyCountResponseDTO> getGroupedCompaniesCount() {
+    public ResponseEntity<GroupStatusCountResponseDTO> getGroupedCompaniesCount() {
         return ResponseEntity.ok(getGroupedCompaniesCountUseCase.execute());
     }
 
-    @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard.")
+    @Operation(summary = "Buscar as métricas dos cards de dashboard", description = "Retorna as métricas dos cards de dashboard de acordo com o papel do usuário. No contexto de vendedor, inclui total de reuniões, duração média e sentimento médio.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Métricas retornadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AdminGroupCardMetricsResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Período inválido", content = @Content),
@@ -155,5 +186,18 @@ public class DashboardController {
         @RequestParam(name = "end_date", required = false) LocalDate endDate)
     {
         return ResponseEntity.ok(getAverageMeetingDurationPerMonthUseCase.execute(period, startDate, endDate));
+    }
+
+    @Operation(summary = "Retornar vendedores ativos e inativos", description = "Retorna a quantidade de vendedores ativos e inativos")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Dados retornados com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GroupStatusCountResponseDTO.class),
+                            examples = @ExampleObject(value = ""))),
+    })
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @GetMapping("/sellers-status")
+    public ResponseEntity<GroupStatusCountResponseDTO> getGroupedSellersCount() {
+        return ResponseEntity.ok(getGroupedSellersCountUseCase.execute());
     }
 }

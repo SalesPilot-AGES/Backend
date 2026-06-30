@@ -1,7 +1,7 @@
 package com.salespilot.api.application.usecase;
 
-import com.salespilot.api.application.dto.GroupCompanyCountResponseDTO;
-import com.salespilot.api.domain.model.CompanyStatusCount;
+import com.salespilot.api.application.dto.GroupStatusCountResponseDTO;
+import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.domain.repository.CompanyRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +11,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GetGroupedCompaniesCountUseCaseTest {
@@ -26,10 +27,10 @@ class GetGroupedCompaniesCountUseCaseTest {
     @Test
     void shouldReturnActiveAndInactiveLabels() {
         when(companyRepository.countCompaniesGroupedByStatus()).thenReturn(
-                List.of(new CompanyStatusCount(true, 10L), new CompanyStatusCount(false, 3L))
+                List.of(new StatusCount(true, 10L), new StatusCount(false, 3L))
         );
 
-        GroupCompanyCountResponseDTO result = useCase.execute();
+        GroupStatusCountResponseDTO result = useCase.execute();
 
         assertEquals(2, result.data().size());
         assertEquals("Ativas", result.data().get(0).label());
@@ -41,10 +42,10 @@ class GetGroupedCompaniesCountUseCaseTest {
     @Test
     void shouldSumTotalCorrectly() {
         when(companyRepository.countCompaniesGroupedByStatus()).thenReturn(
-                List.of(new CompanyStatusCount(true, 10L), new CompanyStatusCount(false, 3L))
+                List.of(new StatusCount(true, 10L), new StatusCount(false, 3L))
         );
 
-        GroupCompanyCountResponseDTO result = useCase.execute();
+        GroupStatusCountResponseDTO result = useCase.execute();
 
         assertEquals(13L, result.total());
     }
@@ -53,7 +54,7 @@ class GetGroupedCompaniesCountUseCaseTest {
     void shouldReturnZeroTotal_whenRepositoryReturnsEmpty() {
         when(companyRepository.countCompaniesGroupedByStatus()).thenReturn(List.of());
 
-        GroupCompanyCountResponseDTO result = useCase.execute();
+        GroupStatusCountResponseDTO result = useCase.execute();
 
         assertTrue(result.data().isEmpty());
         assertEquals(0L, result.total());
@@ -62,10 +63,10 @@ class GetGroupedCompaniesCountUseCaseTest {
     @Test
     void shouldMapInactiveCompaniesToInativasLabel() {
         when(companyRepository.countCompaniesGroupedByStatus()).thenReturn(
-                List.of(new CompanyStatusCount(false, 7L))
+                List.of(new StatusCount(false, 7L))
         );
 
-        GroupCompanyCountResponseDTO result = useCase.execute();
+        GroupStatusCountResponseDTO result = useCase.execute();
 
         assertEquals("Inativas", result.data().get(0).label());
         assertEquals(7L, result.total());

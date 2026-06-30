@@ -1,7 +1,7 @@
 package com.salespilot.api.infrastructure.persistence.jpa.repository;
 
 import com.salespilot.api.domain.entity.Company;
-import com.salespilot.api.domain.model.CompanyStatusCount;
+import com.salespilot.api.domain.model.StatusCount;
 import com.salespilot.api.infrastructure.InfrastructureTestApplication;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.CompanyEntity;
 import com.salespilot.api.infrastructure.persistence.jpa.entity.SubscriptionPlans;
@@ -158,7 +158,7 @@ class CompanyRepositoryImplTest {
         companyJpaRepository.saveAndFlush(new CompanyEntity("Active Beta", "44.002.002/0001-02", true));
         companyJpaRepository.saveAndFlush(new CompanyEntity("Inactive Gamma", "44.003.003/0001-03", false));
 
-        List<CompanyStatusCount> result = companyRepository.countCompaniesGroupedByStatus();
+        List<StatusCount> result = companyRepository.countCompaniesGroupedByStatus();
 
         assertThat(result).isNotEmpty();
         assertThat(result).anyMatch(entry -> entry.active() && entry.total() >= 2);

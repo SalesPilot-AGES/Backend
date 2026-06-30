@@ -15,14 +15,16 @@ import com.salespilot.api.application.usecase.GetAllCompaniesUseCase;
 import com.salespilot.api.application.usecase.GetAllManagersUseCase;
 import com.salespilot.api.application.usecase.GetAllMeetingsUseCase;
 import com.salespilot.api.application.usecase.GetAllSellersUseCase;
-import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetAverageMeetingDurationPerMonthUseCase;
+import com.salespilot.api.application.usecase.GetCardMetricsUseCase;
 import com.salespilot.api.application.usecase.GetCollaboratorByIdUseCase;
 import com.salespilot.api.application.usecase.GetCompanyByIdUseCase;
 import com.salespilot.api.application.usecase.GetGroupedCompaniesCountUseCase;
+import com.salespilot.api.application.usecase.GetGroupedSellersCountUseCase;
 import com.salespilot.api.application.usecase.GetMeetingContextAndMetadataUseCase;
 import com.salespilot.api.application.usecase.GetMeetingInsightUseCase;
 import com.salespilot.api.application.usecase.GetMeetingPostAnalysisUseCase;
+import com.salespilot.api.application.usecase.GetMeetingsBySellerUseCase;
 import com.salespilot.api.application.usecase.GetSellerByIdUseCase;
 import com.salespilot.api.application.usecase.GetSystemStatusUseCase;
 import com.salespilot.api.application.usecase.GetTopFiveCompaniesByMeetingTotalUseCase;
@@ -136,8 +138,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository) {
-        return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository);
+    public GetCardMetricsUseCase getCardMetricsUseCase(CompanyRepository companyRepository, MeetingRepository meetingRepository, CollaboratorRepository collaboratorRepository, MeetingPostAnalysisRepository meetingPostAnalysisRepository) {
+        return new GetCardMetricsUseCase(companyRepository, meetingRepository, collaboratorRepository, meetingPostAnalysisRepository);
     }
 
     @Bean
@@ -148,5 +150,15 @@ public class UseCaseConfig {
     @Bean
     public GetAverageMeetingDurationPerMonthUseCase getAverageMeetingDurationPerMonthUseCase(MeetingRepository meetingRepository) {
         return new GetAverageMeetingDurationPerMonthUseCase(meetingRepository);
+    }
+
+    @Bean
+    public GetGroupedSellersCountUseCase getGroupedSellersCountUseCase(CollaboratorRepository collaboratorRepository) {
+        return new GetGroupedSellersCountUseCase(collaboratorRepository);
+    }
+
+    @Bean
+    public GetMeetingsBySellerUseCase getMeetingsBySellerUseCase(CollaboratorRepository collaboratorRepository) {
+        return new GetMeetingsBySellerUseCase(collaboratorRepository);
     }
 }
